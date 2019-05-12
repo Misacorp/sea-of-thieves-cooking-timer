@@ -3,9 +3,9 @@ const baseFonts = ['Roboto', 'Arial', 'sans-serif'];
 export default {
   palette: {
     primary: {
-      main: '#74c1f7',
-      light: '#D4DBE0',
-      dark: '#439bd9',
+      main: '#efd71f',
+      light: '#fff8bf',
+      dark: '#59563d',
     },
     secondary: {
       main: '#FFE2BC',

@@ -15,11 +15,11 @@ const TestContainer = styled.div`
 const TwoByTwoLayout = styled(grid`
     50%   50%
 50% A     B
-50% A,C   C,D
+50% C     D
 `)`
   background-color: blue;
-  width: 50vw;
-  height: 50vw;
+  width: 100vw
+  height: 100vw;
 `;
 
 const SingleTimer = () => {

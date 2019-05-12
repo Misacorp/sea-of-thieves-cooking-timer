@@ -1,15 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import FoodSelect from './FoodSelect';
-import SingleTimer from './SingleTimer';
-
-import { SquareContainer } from './Generic/Containers/SquareContainer';
-
-const MainContainer = styled(SquareContainer)`
-  padding: 0.5rem;
-  max-width: calc(100vw - 1rem);
-`;
+import Header from './Header';
+import TimerGrid from './TimerGrid';
+import AppControls from './AppControls';
 
 /**
  * Actual main app content.
@@ -17,13 +10,9 @@ const MainContainer = styled(SquareContainer)`
 const Main = () => {
   return (
     <React.Fragment>
-      {/* <MainContainer>
-        <FoodSelect />
-        <FoodSelect />
-        <FoodSelect />
-        <FoodSelect />
-      </MainContainer> */}
-      <SingleTimer />
+      <Header />
+      <TimerGrid />
+      <AppControls />
     </React.Fragment>
   );
 };
