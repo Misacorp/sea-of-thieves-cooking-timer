@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import FoodSelect from './FoodSelect';
+import SingleTimer from './SingleTimer';
 
 import { SquareContainer } from './Generic/Containers/SquareContainer';
 
@@ -16,12 +17,13 @@ const MainContainer = styled(SquareContainer)`
 const Main = () => {
   return (
     <React.Fragment>
-      <MainContainer>
+      {/* <MainContainer>
         <FoodSelect />
         <FoodSelect />
         <FoodSelect />
         <FoodSelect />
-      </MainContainer>
+      </MainContainer> */}
+      <SingleTimer />
     </React.Fragment>
   );
 };

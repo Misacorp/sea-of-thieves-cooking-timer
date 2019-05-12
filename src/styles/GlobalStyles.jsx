@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyles = createGlobalStyle`
   body {
     font-family: ${({ theme }) => theme.typography.base.fontFamily};
-    color: ${({ theme }) => theme.palette.typography.dark};
+    color: ${({ theme }) => theme.palette.typography.light};
     background-color: #1A1A1A;
   }
 
