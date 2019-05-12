@@ -1,23 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import Timer from './Timer';
 import { Fish, TrophyFish, Meat, MonsterMeat } from '../types/Foods';
 
-import SquareFlexContainer from './Generic/Containers/SquareFlexContainer';
+import { SquareContent } from './Generic/Containers/SquareContainer';
 
+/**
+ * Food selection container.
+ * Should eventually hold state for what is being cooked and show a timer when a food has been selected.
+ */
 const FoodSelect = ({ className }) => {
-  console.log('FoodSelect className:', className);
-
   return (
     <div className={className}>
-      <SquareFlexContainer style={{ marginTop: '-100%' }}>
+      <SquareContent>
         <Timer options={Fish} />
         <Timer options={TrophyFish} />
         <Timer options={Meat} />
         <Timer options={MonsterMeat} />
-      </SquareFlexContainer>
+      </SquareContent>
     </div>
   );
 };

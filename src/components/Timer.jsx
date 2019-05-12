@@ -9,7 +9,6 @@ const TimerBase = ({ options, className }) => {
     <div className={className}>
       <div>
         {title}: {duration}
-        Eyy My dudes
       </div>
     </div>
   );

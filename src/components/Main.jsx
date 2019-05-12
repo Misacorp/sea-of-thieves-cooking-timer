@@ -3,21 +3,20 @@ import styled from 'styled-components';
 
 import FoodSelect from './FoodSelect';
 
-import SquareFlexContainer from './Generic/Containers/SquareFlexContainer';
+import { SquareContainer } from './Generic/Containers/SquareContainer';
 
-const MainContainer = styled(SquareFlexContainer)`
+const MainContainer = styled(SquareContainer)`
   padding: 0.5rem;
   max-width: calc(100vw - 1rem);
-  background-color: palegoldenrod;
 `;
 
+/**
+ * Actual main app content.
+ */
 const Main = () => {
   return (
     <React.Fragment>
       <MainContainer>
-        <FoodSelect />
-        <FoodSelect />
-        <FoodSelect />
         <FoodSelect />
         <FoodSelect />
         <FoodSelect />
