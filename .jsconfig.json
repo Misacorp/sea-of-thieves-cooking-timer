@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+      "target": "ES6"
+  },
+  "exclude": [
+      "node_modules",
+      "public"
+  ],
+  "maybe_someday_include": [
+    "node_modules/@material-ui",
+    "node_modules/styled-components",
+    "node_modules/prop-types"
+  ]
+}
