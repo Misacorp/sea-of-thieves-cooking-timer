@@ -15,7 +15,6 @@ const GridBase = grid`
 const Grid = styled(GridBase)`
   width: calc(100vw - 1rem);
   height: calc(100vw - 1rem);
-  background-color: ${({ theme }) => theme.palette.primary.dark};
   margin: 0.5rem;
 `;
 
@@ -52,9 +51,9 @@ const Timers = () => {
    * On each tick, update all timers.
    */
   useEffect(() => {
-    timers.forEach(timer => {
-      timer.tick();
-    });
+    // timers.forEach(timer => {
+    //   timer.tick();
+    // });
   }, [date]);
 
   /**
@@ -63,11 +62,14 @@ const Timers = () => {
    * @param {string} newFood New food.
    */
   const changeFood = (index, newFood) => () => {
-    setTimers([
-      ...timers.slice(0, index),
-      timers[index].setFood(newFood),
-      ...timers.slice(Math.min(index + 1, timers.length), timers.length),
-    ]);
+    // setTimers([
+    //   ...timers.slice(0, index),
+    //   timers[index].setFood(newFood),
+    //   ...timers.slice(Math.min(index + 1, timers.length), timers.length),
+    // ]);
+
+    timers[index].setFood(newFood);
+    timers[index].start();
   };
 
   return (

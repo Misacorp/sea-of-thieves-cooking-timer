@@ -11,6 +11,9 @@ const foods = {
     duration: 60,
   },
   MONSTER_MEAT: {
+    duration: 120,
+  },
+  TEST: {
     duration: 2,
   },
   null: {
@@ -27,7 +30,7 @@ class Timer {
     this.food = food || null;
     this.id = uuid();
     this.isRunning = false;
-    this.lastUpdate = null;
+    this.startDate = null;
     this.timeElapsed = 0;
   }
 
@@ -38,7 +41,6 @@ class Timer {
   setFood = newFood => {
     if (Object.keys(foods).includes(newFood)) {
       this.food = newFood;
-      this.start();
     }
     return this;
   };
@@ -47,25 +49,41 @@ class Timer {
    * Start the timer.
    */
   start = () => {
-    console.log('Starting timer');
-    this.lastUpdate = new Date();
+    this.startDate = new Date();
     this.isRunning = true;
   };
 
-  tick = () => {
-    // If the timer is running...
-    if (this.isRunning) {
-      // And it has fallen behind on ticks...
-      const currentTime = new Date();
-      this.timeElapsed = currentTime - this.lastUpdate;
-    }
+  /**
+   * Stops the timer and clears any food that was set.
+   */
+  stop = () => {
+    this.food = null;
+    this.isRunning = false;
+    this.startDate = null;
   };
 
   /**
    * Returns the time left in this counter.
    */
-  getTimeLeft = () =>
-    Math.round(foods[this.food].duration - this.timeElapsed / 1000);
+  getTimeLeft = () => {
+    if (this.isRunning) {
+      // Calculate time that has elapsed since starting the counter.
+      const currentTime = new Date();
+      this.timeElapsed = currentTime - this.startDate;
+
+      // Calculate seconds that are left
+      const timeLeft = foods[this.food].duration - this.timeElapsed / 1000;
+
+      // Stop the timer if we reach 0
+      if (timeLeft <= 0) {
+        this.stop();
+      }
+
+      return Math.round(timeLeft);
+    }
+
+    return 0;
+  };
 }
 
 export default Timer;

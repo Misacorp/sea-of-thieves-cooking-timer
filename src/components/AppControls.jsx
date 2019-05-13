@@ -19,7 +19,7 @@ const AppControls = styled(AppControlsContent)`
   background-color: #efd71f;
   color: black;
 
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
