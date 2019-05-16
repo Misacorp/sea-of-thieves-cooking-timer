@@ -1,11 +1,18 @@
 {
   "name": "sea-of-thieves-cooking-timer-server",
   "version": "1.0.0",
-  "description": "Socket.io server for the Sea of Thieves Cooking Timer",
+  "description": "Socket.io server for the Sea of Thieves Cooking Timer.",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Misacorp",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
 }

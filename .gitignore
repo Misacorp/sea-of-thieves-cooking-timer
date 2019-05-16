@@ -12,12 +12,15 @@
 /client/build
 
 # misc
-/client.DS_Store
-/client.env.local
-/client.env.development.local
-/client.env.test.local
-/client.env.production.local
+/client/.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
 
-/clientnpm-debug.log*
-/clientyarn-debug.log*
-/clientyarn-error.log*
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+
+# Server
+/server/node_modules

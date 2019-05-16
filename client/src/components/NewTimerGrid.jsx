@@ -1,24 +1,57 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import io from 'socket.io-client';
+import openSocket from 'socket.io-client';
 
 import Socket from './contexts/SocketContext';
 import FourByFourGrid from './Generic/Grids/FourByFourGrid';
 import Timer from './Timers/NewTimer';
 
 const NewTimerGrid = () => {
-  let socket;
+  // Create a socket.
+  const [socket, setSocket] = useState(null);
+
+  // Connect to the socket on mount and disconnect on unmount.
   useEffect(() => {
-    // Connect to socket here
     console.log('🌷 Connecting to socket');
-    socket = io();
+
+    // Determine the server URL
+    const serverUrl =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:1338'
+        : '__heroku_address_here__';
+
+    setSocket(
+      openSocket(serverUrl, {
+        forceNew: true,
+      }),
+    );
 
     return () => {
-      // Disconnect from socket here
       console.log('🥀 Disconnecting from socket');
+      socket.disconnect(true);
     };
   }, []);
+
+  // Give this component an internal date that refreshes each timer.
+  const [, setDate] = useState(new Date());
+
+  // Ticking function to update the stored date.
+  const tick = () => {
+    setDate(new Date()); // This refreshes the component state and triggers a re-render (?)
+  };
+
+  /**
+   * Set up an internal interval to call tick()
+   * Runs on mount and clears itself on unmount.
+   */
+  useEffect(() => {
+    const timerID = setInterval(() => tick(), 100);
+
+    return function cleanup() {
+      clearInterval(timerID);
+    };
+  }, []); // Only run on 'mount' and 'unmount'.
 
   return (
     <Socket.Provider value={socket}>
