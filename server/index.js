@@ -3,10 +3,22 @@ const io = require("socket.io")(server);
 io.on("connection", client => {
   console.log("Client connected");
 
+  /**
+   * Starts a given timer.
+   */
   client.on("start", data => {
     const { id, food } = data;
     console.log(`Starting timer ${id} with ${food}`);
-    client.emit('start', { date: new Date(), id: data.id, food: data.food });
+    client.emit("start", { date: new Date(), id: data.id, food: data.food });
+  });
+
+  /**
+   * Stops a given timer.
+   */
+  client.on("stop", data => {
+    const { id } = data;
+    console.log(`Stopping timer ${id}`);
+    client.emit("stop", { id });
   });
 
   client.on("disconnect", () => {

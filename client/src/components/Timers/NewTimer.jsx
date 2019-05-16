@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
@@ -18,6 +18,8 @@ const NewTimerBase = ({ className }) => {
   // Keep track of the food being cooked.
   const [food, setFood] = useState(null);
 
+  const [running, setRunning] = useState(false);
+
   // Asks the server to start the timer with the given food
   const [startDate, setStartDate] = useState(null);
   const start = newFood => () => {
@@ -26,18 +28,43 @@ const NewTimerBase = ({ className }) => {
     }
   };
 
+  const stop = () => {
+    // Tell the server to stop the timer.
+    socket.emit('stop', { id });
+
+    // Stop the timer locally. The server will attempt
+    // to stop this timer as well so we should be ready for it.
+    setRunning(false);
+    setFood(null);
+  };
+
   /**
    * Get remaining time in seconds.
    */
   const getTimeLeft = () => {
-    // Calculate time that has elapsed since starting the counter.
-    const currentTime = new Date();
-    const timeElapsed = currentTime - startDate;
+    if (running) {
+      // Calculate time that has elapsed since starting the counter.
+      const currentTime = new Date();
+      const timeElapsed = currentTime - startDate;
 
-    // Calculate seconds that are left
-    const timeLeft = foods[food].duration - timeElapsed / 1000;
+      // Calculate seconds that are left
+      let { duration } = foods[food];
 
-    return Math.round(timeLeft);
+      // Speed times up while in development
+      if (process.env.NODE_ENV === 'development') {
+        duration *= 0.05;
+      }
+      const timeLeft = duration - timeElapsed / 1000;
+
+      // Stop the timer if we reach 0
+      if (timeLeft <= 0) {
+        stop();
+      }
+
+      return Math.round(timeLeft);
+    }
+
+    return 0;
   };
 
   /**
@@ -49,15 +76,25 @@ const NewTimerBase = ({ className }) => {
       if (data.id === id) {
         setFood(data.food);
         setStartDate(new Date(data.date));
+        setRunning(true);
+      }
+    });
+
+    // Stop a timer when the server tells us to.
+    socket.on('stop', data => {
+      if (data.id === id) {
+        setRunning(false);
+        setFood(null);
       }
     });
   }
 
   if (food) {
+    // If a food is set, the timer is either RUNNING or PAUSED.
     return (
       <div className={className}>
         <p>{food} is cooking</p>
-        <h2>{getTimeLeft()}</h2>
+        <h2>{running ? getTimeLeft() : 'PAUSED'}</h2>
       </div>
     );
   }
