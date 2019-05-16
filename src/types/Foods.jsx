@@ -1,21 +1,22 @@
-const Fish = {
-  duration: 40,
-  title: 'Fish',
+const foods = {
+  FISH: {
+    duration: 40,
+  },
+  TROPHY_FISH: {
+    duration: 90,
+  },
+  MEAT: {
+    duration: 60,
+  },
+  MONSTER_MEAT: {
+    duration: 120,
+  },
+  TEST: {
+    duration: 2,
+  },
+  null: {
+    duration: 0,
+  },
 };
 
-const TrophyFish = {
-  duration: 90,
-  title: 'Trophy Fish',
-};
-
-const Meat = {
-  duration: 60,
-  title: 'Meat',
-};
-
-const MonsterMeat = {
-  duration: 120,
-  title: 'Monster Meat',
-};
-
-export { Fish, TrophyFish, Meat, MonsterMeat };
+export default foods;

@@ -31,7 +31,6 @@ class Timer {
     this.id = uuid();
     this.isRunning = false;
     this.startDate = null;
-    this.timeElapsed = 0;
   }
 
   /**
@@ -46,7 +45,7 @@ class Timer {
   };
 
   /**
-   * Start the timer.
+   * Starts the timer.
    */
   start = () => {
     this.startDate = new Date();
@@ -69,10 +68,10 @@ class Timer {
     if (this.isRunning) {
       // Calculate time that has elapsed since starting the counter.
       const currentTime = new Date();
-      this.timeElapsed = currentTime - this.startDate;
+      const timeElapsed = currentTime - this.startDate;
 
       // Calculate seconds that are left
-      const timeLeft = foods[this.food].duration - this.timeElapsed / 1000;
+      const timeLeft = foods[this.food].duration - timeElapsed / 1000;
 
       // Stop the timer if we reach 0
       if (timeLeft <= 0) {

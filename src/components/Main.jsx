@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Header from './Header';
-import TimerGrid from './TimerGrid';
+import NewTimerGrid from './NewTimerGrid';
 import AppControls from './AppControls';
 
 /**
@@ -11,7 +11,7 @@ const Main = () => {
   return (
     <React.Fragment>
       <Header />
-      <TimerGrid />
+      <NewTimerGrid />
       <AppControls />
     </React.Fragment>
   );

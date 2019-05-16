@@ -20,8 +20,8 @@ const Grid = styled(GridBase)`
 
 // Currently the grid only allows us to create a predefined amount of timers.
 // Look into generating layouts dynamically!
-const Timers = () => {
-  const [timers, setTimers] = useState([
+const TimerGrid = () => {
+  const [timers] = useState([
     new Timer(),
     new Timer(),
     new Timer(),
@@ -29,15 +29,16 @@ const Timers = () => {
   ]);
 
   // Give this component an internal date that refreshes each timer.
-  const [date, setDate] = useState(new Date());
+  const [, setDate] = useState(new Date());
 
   // Ticking function to update the stored date.
   const tick = () => {
-    setDate(new Date());
+    setDate(new Date()); // This refreshes the component state and triggers a re-render (?)
   };
 
   /**
    * Set up an internal interval to call tick()
+   * Runs on mount and clears itself on unmount.
    */
   useEffect(() => {
     const timerID = setInterval(() => tick(), 100);
@@ -45,16 +46,7 @@ const Timers = () => {
     return function cleanup() {
       clearInterval(timerID);
     };
-  });
-
-  /**
-   * On each tick, update all timers.
-   */
-  useEffect(() => {
-    // timers.forEach(timer => {
-    //   timer.tick();
-    // });
-  }, [date]);
+  }, []); // Only run on 'mount' and 'unmount'.
 
   /**
    * Handles changing food of a given Timer.
@@ -62,14 +54,9 @@ const Timers = () => {
    * @param {string} newFood New food.
    */
   const changeFood = (index, newFood) => () => {
-    // setTimers([
-    //   ...timers.slice(0, index),
-    //   timers[index].setFood(newFood),
-    //   ...timers.slice(Math.min(index + 1, timers.length), timers.length),
-    // ]);
-
-    timers[index].setFood(newFood);
-    timers[index].start();
+    const timer = timers[index];
+    timer.setFood(newFood);
+    timer.start();
   };
 
   return (
@@ -86,4 +73,4 @@ const Timers = () => {
   );
 };
 
-export default Timers;
+export default TimerGrid;
