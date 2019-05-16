@@ -1,0 +1,11 @@
+{
+  "name": "sea-of-thieves-cooking-timer-server",
+  "version": "1.0.0",
+  "description": "Socket.io server for the Sea of Thieves Cooking Timer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Misacorp",
+  "license": "MIT"
+}
