@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cc24c5053d3ade668444c907ef04bbe0",
+    "revision": "f5506e544cb69079902b609340cf165c",
     "url": "/sea-of-thieves-cooking-timer/index.html"
   },
   {
-    "revision": "d1119a35353a8d38dc81",
+    "revision": "728b1e3ba614ba635f01",
     "url": "/sea-of-thieves-cooking-timer/static/css/main.036f711b.chunk.css"
   },
   {
-    "revision": "72930c4eb292439df8cb",
-    "url": "/sea-of-thieves-cooking-timer/static/js/2.20a6036d.chunk.js"
+    "revision": "233708378ddaea992f9c",
+    "url": "/sea-of-thieves-cooking-timer/static/js/2.1c3b55a2.chunk.js"
   },
   {
-    "revision": "d1119a35353a8d38dc81",
-    "url": "/sea-of-thieves-cooking-timer/static/js/main.7b78790e.chunk.js"
+    "revision": "728b1e3ba614ba635f01",
+    "url": "/sea-of-thieves-cooking-timer/static/js/main.b4ec2396.chunk.js"
   },
   {
     "revision": "94a2043b083d3b36d782",

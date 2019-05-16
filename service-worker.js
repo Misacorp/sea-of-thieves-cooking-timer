@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/sea-of-thieves-cooking-timer/precache-manifest.90cd72313dbc493139c9172511370167.js"
+  "/sea-of-thieves-cooking-timer/precache-manifest.8f01371d6fadb9caa73f95437bf01162.js"
 );
 
 self.addEventListener('message', (event) => {
