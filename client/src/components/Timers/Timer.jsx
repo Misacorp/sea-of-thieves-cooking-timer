@@ -8,6 +8,8 @@ import foods from '../../types/foods';
 import TimerButtonGrid from '../Generic/Grids/TimerButtonGrid';
 import FoodSelectButton from '../FoodSelectButton';
 
+import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
+
 const NewTimerBase = ({ className }) => {
   // Give the timer a unique unchanging ID throughout the session.
   const id = uuid();
@@ -51,6 +53,9 @@ const NewTimerBase = ({ className }) => {
   const localStop = () => {
     setRunning(false);
     setFood(null);
+
+    const audio = new Audio(audioFile);
+    audio.play();
   };
 
   const stop = () => {
