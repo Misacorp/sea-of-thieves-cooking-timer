@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import openSocket from 'socket.io-client';
 
-import Socket from './contexts/SocketContext';
-import FourByFourGrid from './Generic/Grids/FourByFourGrid';
-import Timer from './Timers/NewTimer';
+import Socket from '../contexts/SocketContext';
+import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
+import Timer from './Timer';
 
 const NewTimerGrid = props => {
   // Create a socket.
   const [socket, setSocket] = useState(null);
 
   /**
-   * Connect to the socket on mount and disconnect on unmount.
+   * Connect to the socket if the user goes online.
    */
   useEffect(() => {
     const { online } = props;
@@ -38,7 +36,7 @@ const NewTimerGrid = props => {
     }
 
     return undefined;
-  }, []);
+  }, [props]);
 
   /**
    * Monitor changes to socket connection.

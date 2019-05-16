@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Header from './Header';
-import NewTimerGrid from './NewTimerGrid';
+import NewTimerGrid from './Timers/TimerGrid';
 import AppControls from './AppControls';
 
 /**
