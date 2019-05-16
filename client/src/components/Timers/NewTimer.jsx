@@ -22,20 +22,43 @@ const NewTimerBase = ({ className }) => {
 
   // Asks the server to start the timer with the given food
   const [startDate, setStartDate] = useState(null);
+
+  /**
+   * Start the timer locally.
+   * Used when there is no socket connection or even when there is!
+   */
+  const localStart = data => {
+    setFood(data.food);
+    setStartDate(new Date(data.date));
+    setRunning(true);
+  };
+
   const start = newFood => () => {
     if (Object.keys(foods).includes(newFood)) {
-      socket.emit('start', { id, food: newFood });
+      if (socket) {
+        socket.emit('start', { id, food: newFood });
+      } else {
+        localStart({ food: newFood, date: new Date() });
+      }
     }
+  };
+
+  /**
+   * Stop the timer locally.
+   * Clears currently set food.
+   * Used when there is no socket connection or even when there is!
+   */
+  const localStop = () => {
+    setRunning(false);
+    setFood(null);
   };
 
   const stop = () => {
     // Tell the server to stop the timer.
-    socket.emit('stop', { id });
-
-    // Stop the timer locally. The server will attempt
-    // to stop this timer as well so we should be ready for it.
-    setRunning(false);
-    setFood(null);
+    if (socket) {
+      socket.emit('stop', { id });
+    }
+    localStop();
   };
 
   /**
@@ -74,17 +97,14 @@ const NewTimerBase = ({ className }) => {
     socket.on('start', data => {
       // Set this timer with the values in data
       if (data.id === id) {
-        setFood(data.food);
-        setStartDate(new Date(data.date));
-        setRunning(true);
+        localStart();
       }
     });
 
     // Stop a timer when the server tells us to.
     socket.on('stop', data => {
       if (data.id === id) {
-        setRunning(false);
-        setFood(null);
+        localStop();
       }
     });
   }
@@ -109,7 +129,6 @@ const NewTimerBase = ({ className }) => {
       <FoodSelectButton onClick={start('MONSTER_MEAT')}>
         Monster meat
       </FoodSelectButton>
-      <FoodSelectButton onClick={start('TEST')}>Test</FoodSelectButton>
     </TimerButtonGrid>
   );
 };

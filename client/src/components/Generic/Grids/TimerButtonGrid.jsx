@@ -3,9 +3,8 @@ import grid from 'easy-grid';
 
 const GridBase = grid`
     50% 50%
-40% A   B
-40% C   D
-20% E   E
+50% A   B
+50% C   D
 `;
 
 const Grid = styled(GridBase)`
