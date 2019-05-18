@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import openSocket from 'socket.io-client';
 
 import Socket from '../contexts/SocketContext';
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import Timer from './Timer';
+import OnlineControls from '../OnlineControls';
 
-const NewTimerGrid = props => {
+const TimerGrid = props => {
+  const { online, setOnline } = props;
+
   // Create a socket.
   const [socket, setSocket] = useState(null);
 
@@ -13,7 +17,6 @@ const NewTimerGrid = props => {
    * Connect to the socket if the user goes online.
    */
   useEffect(() => {
-    const { online } = props;
     if (online) {
       console.log('🌷 Connecting to socket');
 
@@ -23,20 +26,11 @@ const NewTimerGrid = props => {
           ? 'http://localhost:1338'
           : '__heroku_address_here__';
 
-      setSocket(
-        openSocket(serverUrl, {
-          forceNew: true,
-        }),
-      );
-
-      return () => {
-        console.log('🥀 Disconnecting from socket');
-        socket.disconnect(true);
-      };
+      setSocket(openSocket(serverUrl));
     }
 
-    return undefined;
-  }, [props]);
+    // Disconnect from socket somehow?
+  }, [online]);
 
   /**
    * Monitor changes to socket connection.
@@ -44,7 +38,7 @@ const NewTimerGrid = props => {
   useEffect(() => {
     if (socket) {
       socket.on('disconnect', () => {
-        console.log('Socket is DOWN');
+        console.log('Socket DISCONNECTED');
       });
 
       socket.on('connect_error', () => {
@@ -52,7 +46,7 @@ const NewTimerGrid = props => {
       });
 
       socket.on('connect', () => {
-        console.log('Socket is UP');
+        console.log('Socket CONNECTED');
       });
     }
   }, [socket]);
@@ -85,8 +79,14 @@ const NewTimerGrid = props => {
         <Timer />
         <Timer />
       </FourByFourGrid>
+      <OnlineControls online={online} setOnline={setOnline} />
     </Socket.Provider>
   );
 };
 
-export default NewTimerGrid;
+TimerGrid.propTypes = {
+  online: PropTypes.bool,
+  setOnline: PropTypes.func,
+};
+
+export default TimerGrid;
