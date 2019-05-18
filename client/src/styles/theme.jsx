@@ -22,6 +22,9 @@ export default {
       light: '#FF7365',
       dark: '#953930',
     },
+    disabled: {
+      main: '#7A7A7A',
+    },
     typography: {
       light: '#FFFFFF',
       dark: '#020202',

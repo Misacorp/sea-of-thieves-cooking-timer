@@ -1,0 +1,4 @@
+const CREATE_ROOM = 'CREATE_ROOM';
+const JOIN_ROOM = 'JOIN_ROOM';
+
+export { CREATE_ROOM, JOIN_ROOM };
