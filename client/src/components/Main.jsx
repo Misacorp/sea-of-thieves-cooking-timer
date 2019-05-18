@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+import useComms from './hooks/useComms';
 import OnlineContext from './contexts/OnlineContext';
 
 import Header from './Header';
 import Welcome from './Welcome';
 import RoomSelect from './RoomSelect';
-import NewTimerGrid from './Timers/TimerGrid';
 import AppControls from './AppControls';
-
-import Checkbox from './Generic/Checkbox';
 
 /**
  * Actual main app content.
@@ -16,24 +14,27 @@ import Checkbox from './Generic/Checkbox';
 const Main = () => {
   // Does the user want to be online or not?
   const [online, setOnline] = useState(null);
+  const contextValue = { online, setOnline }; // Provide this to context consumers.
 
-  // Toggle displaying the timer grid
-  const [showGrid, setGrid] = useState(true);
+  // (re-)initialize the socket used by useComms when 'online' changes.
+  const { init } = useComms();
+  useEffect(() => {
+    init(online);
+  }, [online]);
 
-  const handleChange = event => {
-    setGrid(event.target.checked);
-  };
-
-  return (
-    <OnlineContext.Provider value={{ online, setOnline }}>
+  const content = (
+    <React.Fragment>
       <Header />
       {online === null && <Welcome />}
 
       {online === true && <RoomSelect />}
-
-      {/* {showGrid && <NewTimerGrid online={online} setOnline={setOnline} />}
-      Show timer grid <Checkbox checked={showGrid} onChange={handleChange} /> */}
       <AppControls />
+    </React.Fragment>
+  );
+
+  return (
+    <OnlineContext.Provider value={contextValue}>
+      {content}
     </OnlineContext.Provider>
   );
 };

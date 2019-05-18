@@ -1,6 +1,4 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import OnlineContext from './contexts/OnlineContext';
 import Button from './Generic/Button';
@@ -13,10 +11,12 @@ const Welcome = () => {
   const { setOnline } = useContext(OnlineContext);
 
   const goOffline = () => {
+    console.log('Selected offline');
     setOnline(false);
   };
 
   const goOnline = () => {
+    console.log('Selected online');
     setOnline(true);
   };
 

@@ -1,7 +1,16 @@
 const server = require("http").createServer();
 const io = require("socket.io")(server);
+
 io.on("connection", client => {
   console.log("Client connected");
+
+  client.on('JOIN_ROOM', data => {
+    console.log('Client wants to JOIN room', data);
+  });
+
+  client.on('CREATE_ROOM', data => {
+    console.log('Client wants to CREATE room', data);
+  });
 
   /**
    * Starts a given timer.

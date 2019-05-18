@@ -1,4 +1,7 @@
 const CREATE_ROOM = 'CREATE_ROOM';
 const JOIN_ROOM = 'JOIN_ROOM';
+const START = 'START';
+const STOP = 'STOP';
+const PAUSE = 'PAUSE';
 
-export { CREATE_ROOM, JOIN_ROOM };
+export { CREATE_ROOM, JOIN_ROOM, START, STOP, PAUSE };

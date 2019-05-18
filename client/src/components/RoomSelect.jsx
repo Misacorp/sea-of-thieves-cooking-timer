@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { CREATE_ROOM, JOIN_ROOM } from './actions/actionTypes';
 import Button from './Generic/Button';
 import Input from './Generic/Input';
 import Divider from './Generic/Divider';
+
+import useComms from './hooks/useComms';
 
 const roomCodeLength = 4;
 
@@ -60,26 +61,24 @@ const RoomSelectBase = ({ className }) => {
     return roomCode.length === roomCodeLength;
   };
 
+  // Use our custom useComms hook to communicate with the server.
+  const { createRoom, joinRoom } = useComms();
+
   /**
    * Pass create room event to its action handler.
    */
-  const createRoom = () => {
+  const handleCreateRoom = () => {
     if (nicknameIsValid()) {
-      console.log(
-        `${CREATE_ROOM}: ${nickname || 'Unnamed user'} is creating a room`,
-      );
+      createRoom();
     }
   };
 
   /**
    * Pass join room eventd to its action handler.
    */
-  const joinRoom = () => {
+  const handleJoinRoom = () => {
     if (nicknameIsValid() && roomCodeIsValid()) {
-      console.log(
-        `${JOIN_ROOM}: ${nickname ||
-          'Unnamed user'} is joining room ${roomCode}`,
-      );
+      joinRoom(roomCode);
     }
   };
 
@@ -99,7 +98,7 @@ const RoomSelectBase = ({ className }) => {
         <React.Fragment>
           <Button
             variant="main"
-            onClick={createRoom}
+            onClick={handleCreateRoom}
             disabled={!nicknameIsValid()}
           >
             Create room
@@ -116,7 +115,7 @@ const RoomSelectBase = ({ className }) => {
           />
           <Button
             variant="main"
-            onClick={joinRoom}
+            onClick={handleJoinRoom}
             disabled={!roomCodeIsValid()}
           >
             Join room
