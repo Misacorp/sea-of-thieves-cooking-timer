@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { USER_JOINED } from '../actions/actionTypes';
 import useComms from '../hooks/useComms';
 import Message from './Message';
+import OnlineContext from '../contexts/OnlineContext';
 
 const MessageDisplayBase = ({ className }) => {
   // Store messages in state.
   const [messages, setMessages] = useState([]);
 
   // Read the network event stack
-  const { events } = useComms();
-  console.log('MessageDisplay events', events);
+  const { events, getEvents } = useComms();
+  console.log(events, getEvents());
 
   /**
    * When a USER_JOINED event is on top of the queue, update our messages array
@@ -24,8 +25,8 @@ const MessageDisplayBase = ({ className }) => {
   }
 
   useEffect(() => {
-    console.log('events changed in messagedisplay', events);
-  }, [events]);
+    console.log('MessageDisplay events', events);
+  });
 
   return (
     <div className={className}>
@@ -35,6 +36,10 @@ const MessageDisplayBase = ({ className }) => {
       ))}
     </div>
   );
+};
+
+MessageDisplayBase.propTypes = {
+  className: PropTypes.string,
 };
 
 const MessageDisplay = styled(MessageDisplayBase)`

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
@@ -11,18 +10,16 @@ const serverUrl =
 
 let socket = null;
 
+// Try using useReducer for this
+// https://codeburst.io/hook-your-component-react-7f3f3994079c
+let events = [];
+let getEvents = () => events;
 /**
  * Custom hook.
  * Provides functionality for other components to communicate with the server.
+ * This can help with stale state: https://github.com/facebook/react/issues/15041
  */
 const useComms = () => {
-  /**
-   * Create a queue to store events received by the server.
-   * Components can listen for changes in the queue and handle events
-   * if they are fit to do so.
-   */
-  const [events, setEvents] = useState([]);
-
   /**
    * Initializes network communication.
    * @param {boolean} online Will the app be used online or offline
@@ -41,14 +38,10 @@ const useComms = () => {
         socket.on(actions.USER_JOINED, userJoinData => {
           console.log(`Received ${actions.USER_JOINED} event`, userJoinData);
 
-          setEvents(() => {
-            // Add the new event to the event queue.
-            events.push({ event: actions.USER_JOINED, ...userJoinData });
-            // Return a copy of the event queue so that it appears to have changed.
-            return events.slice(0);
-          });
+          events = [...events, userJoinData];
+          getEvents = () => events;
 
-          console.log('📲 Event stack', events);
+          console.log('useComms events', events);
         });
       });
     } else {
@@ -83,7 +76,7 @@ const useComms = () => {
     socket.emit(actions.CREATE_ROOM, 'lol');
   };
 
-  return { init, start, createRoom, joinRoom, events };
+  return { init, start, createRoom, joinRoom, events, getEvents };
 };
 
 export default useComms;

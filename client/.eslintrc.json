@@ -1,7 +1,7 @@
 {
   "extends": ["airbnb", "prettier", "prettier/react"],
   "parser": "babel-eslint",
-  "plugins": ["react", "prettier"],
+  "plugins": ["react", "prettier", "react-hooks"],
   "rules": {
     "react/no-multi-comp": 0,
     "react/forbid-prop-types": 0,
@@ -12,6 +12,8 @@
         "extensions": [".js", "jsx"]
       }
     ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": "error",
     "ignoreComments": true,
     "max-len": ["error", 160]
