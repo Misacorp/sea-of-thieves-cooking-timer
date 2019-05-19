@@ -1,55 +1,32 @@
+import { useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
 
-// Socket details
-const serverUrl =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:1338'
-    : '__heroku_address_here__';
+import OnlineContext from '../contexts/OnlineContext';
+import EventContext from '../contexts/EventContext';
 
-let socket = null;
-
-// Try using useReducer for this
-// https://codeburst.io/hook-your-component-react-7f3f3994079c
-let events = [];
-let getEvents = () => events;
 /**
  * Custom hook.
  * Provides functionality for other components to communicate with the server.
  * This can help with stale state: https://github.com/facebook/react/issues/15041
  */
 const useComms = () => {
-  /**
-   * Initializes network communication.
-   * @param {boolean} online Will the app be used online or offline
-   */
-  const init = online => {
-    if (online) {
-      // User wants to be ONLINE.
-      console.log('Initializing useComms in ONLINE mode');
+  // Using EventContext
+  const eventContext = useContext(EventContext);
+  const { addEvent } = eventContext;
 
-      // Register event listeners here.
-      socket = io(serverUrl);
-      socket.on('connect', () => {
-        /**
-         * Listen to user join events.
-         */
-        socket.on(actions.USER_JOINED, userJoinData => {
-          console.log(`Received ${actions.USER_JOINED} event`, userJoinData);
+  const { socket } = useContext(OnlineContext);
 
-          events = [...events, userJoinData];
-          getEvents = () => events;
+  useEffect(() => {
+    socket.on(actions.USER_JOINED, data => {
+      console.log('useComms received USER_JOINED event', data);
+      addEvent({ type: actions.USER_JOINED, ...data });
+    });
 
-          console.log('useComms events', events);
-        });
-      });
-    } else {
-      // User wants to be OFFLINE.
-      console.log('Initializing useComms in OFFLINE mode');
-      socket = 'fakeSocket';
-    }
-  };
+    // Cleanup
+    return () => socket.off(actions.USER_JOINED);
+  }, [socket]);
 
   /**
    * Starts a timer with the given id.
@@ -76,7 +53,7 @@ const useComms = () => {
     socket.emit(actions.CREATE_ROOM, 'lol');
   };
 
-  return { init, start, createRoom, joinRoom, events, getEvents };
+  return { start, createRoom, joinRoom };
 };
 
 export default useComms;

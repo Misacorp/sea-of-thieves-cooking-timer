@@ -3,30 +3,23 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { USER_JOINED } from '../actions/actionTypes';
-import useComms from '../hooks/useComms';
+import EventContext from '../contexts/EventContext';
 import Message from './Message';
-import OnlineContext from '../contexts/OnlineContext';
 
 const MessageDisplayBase = ({ className }) => {
   // Store messages in state.
   const [messages, setMessages] = useState([]);
 
-  // Read the network event stack
-  const { events, getEvents } = useComms();
-  console.log(events, getEvents());
-
-  /**
-   * When a USER_JOINED event is on top of the queue, update our messages array
-   * with its details.
-   */
-  if (events.length > 0 && events[0].event === USER_JOINED) {
-    const { nickname, timestamp } = events[0];
-    setMessages([...messages, { nickname, timestamp }]);
-  }
-
+  // Listen for changes in the event queue
+  const { events } = useContext(EventContext);
   useEffect(() => {
-    console.log('MessageDisplay events', events);
-  });
+    console.log('🖥 MessageDisplay detected changes in the event queue', events);
+
+    // Add a message if the event is one that warrants a message.
+    if (events.length > 0 && events[0].type === USER_JOINED) {
+      setMessages(prevMessages => [...prevMessages, events[0]]);
+    }
+  }, [events]);
 
   return (
     <div className={className}>

@@ -9,9 +9,11 @@ const TimeContainer = styled.span`
 `;
 
 const MessageBase = ({ className, timestamp, children }) => {
+  const date = new Date(timestamp);
+
   return (
     <p className={className}>
-      <TimeContainer>{`${timestamp.getHours()}:${timestamp.getMinutes()}`}</TimeContainer>
+      <TimeContainer>{`${date.getHours()}:${date.getMinutes()}`}</TimeContainer>
       <span>{children}</span>
     </p>
   );

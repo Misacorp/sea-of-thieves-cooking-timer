@@ -72,7 +72,7 @@ const RoomSelectBase = ({ className }) => {
   };
 
   // Use our custom useComms hook to communicate with the server.
-  const { createRoom, joinRoom } = useComms();
+  const { createRoom, joinRoom, state } = useComms();
 
   /**
    * Pass create room event to its action handler.
@@ -89,6 +89,7 @@ const RoomSelectBase = ({ className }) => {
   const handleJoinRoom = () => {
     if (nicknameIsValid() && roomCodeIsValid()) {
       joinRoom(nickname, roomCode);
+      console.log(state);
     }
   };
 
