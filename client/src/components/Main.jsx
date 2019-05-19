@@ -7,6 +7,7 @@ import Header from './Header';
 import Welcome from './Welcome';
 import RoomSelect from './RoomSelect';
 import AppControls from './AppControls';
+import MessageDisplay from './MessageDisplay/MessageDisplay';
 
 /**
  * Actual main app content.
@@ -19,7 +20,9 @@ const Main = () => {
   // (re-)initialize the socket used by useComms when 'online' changes.
   const { init } = useComms();
   useEffect(() => {
-    init(online);
+    if (online !== null) {
+      init(online);
+    }
   }, [online]);
 
   const content = (
@@ -28,6 +31,7 @@ const Main = () => {
       {online === null && <Welcome />}
 
       {online === true && <RoomSelect />}
+      <MessageDisplay />
       <AppControls />
     </React.Fragment>
   );

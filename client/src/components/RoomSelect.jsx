@@ -9,6 +9,16 @@ import Divider from './Generic/Divider';
 import useComms from './hooks/useComms';
 
 const roomCodeLength = 4;
+let initialNickname = '';
+let initialRoomCode = '';
+
+/**
+ * Auto-populate fields in development for faster testing
+ */
+if (process.env.NODE_ENV === 'development') {
+  initialNickname = 'Tester';
+  initialRoomCode = '1234';
+}
 
 /**
  * Displays a form where a user can
@@ -22,7 +32,7 @@ const RoomSelectBase = ({ className }) => {
   /**
    * Allow the user to set a nickname
    */
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState(initialNickname);
   const handleNicknameChange = event => {
     const newName = event.target.value;
     setNickname(newName);
@@ -43,7 +53,7 @@ const RoomSelectBase = ({ className }) => {
   /**
    * Allow the user to set a room code
    */
-  const [roomCode, setRoomCode] = useState('');
+  const [roomCode, setRoomCode] = useState(initialRoomCode);
   const handleRoomCodeChange = event => {
     let newRoomCode = event.target.value;
 

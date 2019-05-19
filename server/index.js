@@ -13,7 +13,7 @@ io.on("connection", client => {
 
     console.log(`${nickname} wants to join room ${roomCode}`);
     client.join(roomCode);
-    io.to(roomCode).emit('USER_JOINED', { nickname });
+    io.to(roomCode).emit('USER_JOINED', { nickname, timestamp: new Date() });
   });
 
   client.on('CREATE_ROOM', data => {
