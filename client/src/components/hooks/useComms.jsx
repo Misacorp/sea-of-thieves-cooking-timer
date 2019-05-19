@@ -42,9 +42,10 @@ const useComms = () => {
    * Join a room with the given code code
    * @param {string} roomCode Room to join.
    */
-  const joinRoom = roomCode => {
-    console.log(actions.JOIN_ROOM, roomCode);
-    socket.emit(actions.JOIN_ROOM, 'lol');
+  const joinRoom = (nickname, roomCode) => {
+    console.log(actions.JOIN_ROOM, { nickname, roomCode });
+    socket.emit(actions.JOIN_ROOM, { nickname, roomCode });
+    console.log(socket);
   };
 
   /**

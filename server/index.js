@@ -4,8 +4,16 @@ const io = require("socket.io")(server);
 io.on("connection", client => {
   console.log("Client connected");
 
+  /**
+   * Assign client to a room on their request.
+   * Notify room members of the new client.
+   */
   client.on('JOIN_ROOM', data => {
-    console.log('Client wants to JOIN room', data);
+    const { nickname, roomCode } = data;
+
+    console.log(`${nickname} wants to join room ${roomCode}`);
+    client.join(roomCode);
+    io.to(roomCode).emit('USER_JOINED', { nickname });
   });
 
   client.on('CREATE_ROOM', data => {
