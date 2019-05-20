@@ -2,7 +2,7 @@ const server = require("http").createServer();
 const io = require("socket.io")(server);
 
 io.on("connection", client => {
-  console.log("Client connected");
+  console.log('Clients:', io.sockets.clients());
 
   /**
    * Assign client to a room on their request.

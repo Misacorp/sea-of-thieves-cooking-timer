@@ -21,7 +21,7 @@ const MessageBase = ({ className, timestamp, children }) => {
 
 MessageBase.propTypes = {
   className: PropTypes.string,
-  timestamp: PropTypes.object,
+  timestamp: PropTypes.string,
   children: PropTypes.node,
 };
 

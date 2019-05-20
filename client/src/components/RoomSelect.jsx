@@ -89,7 +89,6 @@ const RoomSelectBase = ({ className }) => {
   const handleJoinRoom = () => {
     if (nicknameIsValid() && roomCodeIsValid()) {
       joinRoom(nickname, roomCode);
-      console.log(state);
     }
   };
 

@@ -11,22 +11,28 @@ const MessageDisplayBase = ({ className }) => {
   const [messages, setMessages] = useState([]);
 
   // Listen for changes in the event queue
-  const { events } = useContext(EventContext);
+  const { events, popEvent } = useContext(EventContext);
   useEffect(() => {
     console.log('🖥 MessageDisplay detected changes in the event queue', events);
 
     // Add a message if the event is one that warrants a message.
     if (events.length > 0 && events[0].type === USER_JOINED) {
-      setMessages(prevMessages => [...prevMessages, events[0]]);
+      setMessages(prevMessages => {
+        const newMessages = [...prevMessages, events[0]];
+        popEvent();
+        return newMessages;
+      });
     }
   }, [events]);
 
   return (
     <div className={className}>
       <h3>Messages</h3>
-      {messages.map(msg => (
-        <Message timestamp={msg.timestamp}>{msg.nickname} joined</Message>
-      ))}
+      {messages.map(msg => {
+        return (
+          <Message timestamp={msg.timestamp}>{msg.nickname} joined</Message>
+        );
+      })}
     </div>
   );
 };

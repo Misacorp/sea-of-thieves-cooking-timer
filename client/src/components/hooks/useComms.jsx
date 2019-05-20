@@ -2,9 +2,15 @@ import { useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
-
-import OnlineContext from '../contexts/OnlineContext';
 import EventContext from '../contexts/EventContext';
+
+// Connect to the socket
+const serverUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:1338'
+    : '__heroku_address_here__';
+
+const socket = io(serverUrl);
 
 /**
  * Custom hook.
@@ -16,8 +22,6 @@ const useComms = () => {
   const eventContext = useContext(EventContext);
   const { addEvent } = eventContext;
 
-  const { socket } = useContext(OnlineContext);
-
   useEffect(() => {
     socket.on(actions.USER_JOINED, data => {
       console.log('useComms received USER_JOINED event', data);
@@ -26,7 +30,7 @@ const useComms = () => {
 
     // Cleanup
     return () => socket.off(actions.USER_JOINED);
-  }, [socket]);
+  }, []);
 
   /**
    * Starts a timer with the given id.

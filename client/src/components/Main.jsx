@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React, { useState } from 'react';
 
-import useComms from './hooks/useComms';
 import EventContext from './contexts/EventContext';
 import OnlineContext from './contexts/OnlineContext';
 
@@ -17,21 +15,27 @@ import MessageDisplay from './MessageDisplay/MessageDisplay';
 const Main = () => {
   // Store an app-wide event queue
   const [events, setEvents] = useState([]);
+
+  // Adds an entry to the event queue by recreating the entire array.
+  // This way components that rely on this array can update.
   const addEvent = newEvent =>
     setEvents(prevEvents => [...prevEvents, newEvent]);
-  const eventValue = { events, addEvent };
+
+  // Remove the first item of an array.
+  // Call this when an event has been handled.
+  const popEvent = () => {
+    setEvents(prevEvents => {
+      const cutEvents = prevEvents;
+      cutEvents.shift();
+      return cutEvents;
+    });
+  };
+
+  const eventValue = { events, addEvent, popEvent };
 
   // Does the user want to be online or not?
   const [online, setOnline] = useState(null);
-
-  // Connect to the socket
-  const serverUrl =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:1338'
-      : '__heroku_address_here__';
-
-  const socket = io(serverUrl);
-  const onlineValue = { online, setOnline, socket }; // Provide this to context consumers.
+  const onlineValue = { online, setOnline }; // Provide this to context consumers.
 
   return (
     <EventContext.Provider value={eventValue}>
