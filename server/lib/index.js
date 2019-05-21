@@ -1,8 +1,17 @@
-const server = require("http").createServer();
-const io = require("socket.io")(server);
+import http from 'http';
+import socketIo from 'socket.io';
+
+const server = http.createServer();
+const io = socketIo(server);
 
 // This crashes if client is in no rooms
-const getClientRooms = clientId => Object.entries(io.sockets.adapter.sids[clientId]); // Returns [[key, isClientInThisRoom], ...]
+const getClientRooms = clientId => {
+  if (io.sockets.adapter.sids) {
+    return [];
+    return Object.entries(io.sockets.adapter.sids[clientId]); // Returns [[key, isClientInThisRoom], ...]
+  }
+  return [];
+}
 
 // Emit a "Client left room" event to everyone in a specific room.
 const emitLeaveRoom = (roomId, nickname) => {
@@ -59,7 +68,8 @@ io.on("connection", client => {
     client.emit("stop", { id });
   });
 
-  client.on("disconnect", () => {
+  client.on("disconnecting", data => {
+    console.log('Disconnecting data', data);
     // Loop through all rooms the client is connected to
     const currentRooms = getClientRooms(client.id);
     for (let i = 0; i < currentRooms.length; i += 1) {
@@ -70,6 +80,7 @@ io.on("connection", client => {
     console.log("Client disconnected");
   });
 });
+
 server.listen(1338);
 
 // https://medium.com/dailyjs/combining-react-with-socket-io-for-real-time-goodness-d26168429a34

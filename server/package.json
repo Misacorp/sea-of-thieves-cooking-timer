@@ -4,8 +4,10 @@
   "description": "Socket.io server for the Sea of Thieves Cooking Timer.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run build && npm run serve",
+    "build": "babel lib -d dist",
+    "serve": "node dist/index.js",
+    "watch": "nodemon --watch lib --exec npm run start"
   },
   "author": "Misacorp",
   "license": "MIT",
@@ -13,6 +15,9 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "nodemon": "^1.19.0"
   }
 }
