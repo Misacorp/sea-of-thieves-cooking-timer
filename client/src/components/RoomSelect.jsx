@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { uniqueNamesGenerator } from 'unique-names-generator';
 
 import Button from './Generic/Button';
 import Input from './Generic/Input';
@@ -16,7 +17,7 @@ let initialRoomCode = '';
  * Auto-populate fields in development for faster testing
  */
 if (process.env.NODE_ENV === 'development') {
-  initialNickname = 'Tester';
+  initialNickname = uniqueNamesGenerator('-', true);
   initialRoomCode = '1234';
 }
 
@@ -46,7 +47,7 @@ const RoomSelectBase = ({ className }) => {
     return (
       typeof nickname === 'string' &&
       nickname.length >= 3 &&
-      nickname.length <= 16
+      nickname.length <= 32
     );
   };
 

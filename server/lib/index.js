@@ -1,23 +1,25 @@
-import http from 'http';
-import socketIo from 'socket.io';
+import http from "http";
+import socketIo from "socket.io";
 
 const server = http.createServer();
 const io = socketIo(server);
 
 // This crashes if client is in no rooms
-const getClientRooms = clientId => {
-  if (io.sockets.adapter.sids) {
-    return [];
-    return Object.entries(io.sockets.adapter.sids[clientId]); // Returns [[key, isClientInThisRoom], ...]
-  }
+const getClientRooms = client => {
+  console.log("client.rooms:", client.rooms);
+  Object.keys(client.rooms).forEach(roomId =>
+    emitLeaveRoom(roomId, "test client id")
+  );
   return [];
-}
+};
 
 // Emit a "Client left room" event to everyone in a specific room.
 const emitLeaveRoom = (roomId, nickname) => {
-  console.log(`Client is leaving ${roomId} and joining ${roomId || 'nothing'}`);
-  io.to(roomId).emit("USER_LEFT", { nickname, timestamp: new Date() });
-}
+  // Don't emit a 'client left' event when it leaves the initial default room.
+  if (roomId.length === 4) {
+    io.to(roomId).emit("USER_LEFT", { nickname, timestamp: new Date() });
+  }
+};
 
 io.on("connection", client => {
   const clients = io.sockets.clients();
@@ -29,7 +31,7 @@ io.on("connection", client => {
    */
   client.on("JOIN_ROOM", data => {
     const { nickname, roomCode } = data;
-    const currentRooms = getClientRooms(client.id);
+    const currentRooms = getClientRooms(client);
 
     // Leave any rooms the client is currently in
     client.leaveAll();
@@ -69,9 +71,8 @@ io.on("connection", client => {
   });
 
   client.on("disconnecting", data => {
-    console.log('Disconnecting data', data);
     // Loop through all rooms the client is connected to
-    const currentRooms = getClientRooms(client.id);
+    const currentRooms = getClientRooms(client);
     for (let i = 0; i < currentRooms.length; i += 1) {
       // Emit an event saying the user left
       const roomId = currentRooms[i][0];

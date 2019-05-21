@@ -2,9 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { USER_JOINED } from '../actions/actionTypes';
+import { USER_JOINED, USER_LEFT } from '../actions/actionTypes';
 import EventContext from '../contexts/EventContext';
 import Message from './Message';
+
+// List of events this component subscribes to (and handles).
+const subscribedEvents = [USER_JOINED, USER_LEFT];
 
 const MessageDisplayBase = ({ className }) => {
   // Store messages in state.
@@ -16,7 +19,7 @@ const MessageDisplayBase = ({ className }) => {
     console.log('🖥 MessageDisplay detected changes in the event queue', events);
 
     // Add a message if the event is one that warrants a message.
-    if (events.length > 0 && events[0].type === USER_JOINED) {
+    if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
       setMessages(prevMessages => {
         const newMessages = [...prevMessages, events[0]];
         popEvent();
@@ -30,7 +33,9 @@ const MessageDisplayBase = ({ className }) => {
       <h3>Messages</h3>
       {messages.map(msg => {
         return (
-          <Message timestamp={msg.timestamp}>{msg.nickname} joined</Message>
+          <Message timestamp={msg.timestamp}>
+            {msg.nickname}: {msg.type}
+          </Message>
         );
       })}
     </div>

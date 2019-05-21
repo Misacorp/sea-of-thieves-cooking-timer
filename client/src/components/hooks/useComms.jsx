@@ -25,7 +25,16 @@ const useComms = () => {
   useEffect(() => {
     socket.on(actions.USER_JOINED, data => {
       console.log('useComms received USER_JOINED event', data);
-      addEvent({ type: actions.USER_JOINED, ...data });
+
+      const { nickname, timestamp } = data;
+      addEvent({ type: actions.USER_JOINED, timestamp, nickname });
+    });
+
+    socket.on(actions.USER_LEFT, data => {
+      console.log('useComms received USER_LEFT event', data);
+
+      const { nickname, timestamp } = data;
+      addEvent({ type: actions.USER_LEFT, timestamp, nickname });
     });
 
     // Cleanup
