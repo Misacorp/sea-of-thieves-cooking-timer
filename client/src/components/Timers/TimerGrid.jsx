@@ -1,55 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import openSocket from 'socket.io-client';
+import React, { useState, useEffect, useContext } from 'react';
 
-import Socket from '../contexts/SocketContext';
+import { START, STOP, PAUSE } from '../actions/actionTypes';
+import EventContext from '../contexts/EventContext';
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import Timer from './Timer';
-import OnlineControls from '../OnlineControls';
 
-const TimerGrid = props => {
-  const { online, setOnline } = props;
+// List of events this component subscribes to (and handles).
+const subscribedEvents = [START, STOP, PAUSE];
 
-  // Create a socket.
-  const [socket, setSocket] = useState(null);
-
-  /**
-   * Connect to the socket if the user goes online.
-   */
+const TimerGrid = () => {
+  // Listen for changes in the event queue
+  const { events, popEvent } = useContext(EventContext);
   useEffect(() => {
-    if (online) {
-      console.log('🌷 Connecting to socket');
+    console.log('🖥 MessageDisplay detected changes in the event queue', events);
 
-      // Determine the server URL
-      const serverUrl =
-        process.env.NODE_ENV === 'development'
-          ? 'http://localhost:1338'
-          : '__heroku_address_here__';
-
-      setSocket(openSocket(serverUrl));
+    // Add a message if the event is one that warrants a message.
+    if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
+      console.log('🕓', events[0]);
+      popEvent();
     }
-
-    // Disconnect from socket somehow?
-  }, [online]);
-
-  /**
-   * Monitor changes to socket connection.
-   */
-  useEffect(() => {
-    if (socket) {
-      socket.on('disconnect', () => {
-        console.log('Socket DISCONNECTED');
-      });
-
-      socket.on('connect_error', () => {
-        console.log('Socket is DOWN');
-      });
-
-      socket.on('connect', () => {
-        console.log('Socket CONNECTED');
-      });
-    }
-  }, [socket]);
+  }, [events]);
 
   // Give this component an internal date that refreshes each timer.
   const [, setDate] = useState(new Date());
@@ -72,21 +42,13 @@ const TimerGrid = props => {
   }, []); // Only run on 'mount' and 'unmount'.
 
   return (
-    <Socket.Provider value={socket}>
-      <FourByFourGrid>
-        <Timer />
-        <Timer />
-        <Timer />
-        <Timer />
-      </FourByFourGrid>
-      <OnlineControls online={online} setOnline={setOnline} />
-    </Socket.Provider>
+    <FourByFourGrid>
+      <Timer />
+      <Timer />
+      <Timer />
+      <Timer />
+    </FourByFourGrid>
   );
-};
-
-TimerGrid.propTypes = {
-  online: PropTypes.bool,
-  setOnline: PropTypes.func,
 };
 
 export default TimerGrid;

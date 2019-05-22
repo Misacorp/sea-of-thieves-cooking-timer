@@ -5,9 +5,9 @@ import OnlineContext from './contexts/OnlineContext';
 
 import Header from './Header';
 import Welcome from './Welcome';
-import RoomSelect from './RoomSelect';
 import AppControls from './AppControls';
 import MessageDisplay from './MessageDisplay/MessageDisplay';
+import TimerGrid from './Timers/TimerGrid';
 
 /**
  * Actual main app content.
@@ -33,8 +33,14 @@ const Main = () => {
 
   const eventValue = { events, addEvent, popEvent };
 
-  // Does the user want to be online or not?
-  const [online, setOnline] = useState(null);
+  /**
+   * Does the user want to be online or not?
+   * User can be
+   *   - Offline            'OFFLINE'
+   *   - Setting up online  'SETUP'
+   *   - Online             'ONLINE'
+   */
+  const [online, setOnline] = useState('SETUP');
   const onlineValue = { online, setOnline }; // Provide this to context consumers.
 
   return (
@@ -42,9 +48,8 @@ const Main = () => {
       <OnlineContext.Provider value={onlineValue}>
         <React.Fragment>
           <Header />
-          {online === null && <Welcome />}
-
-          {online === true && <RoomSelect />}
+          {online === 'SETUP' && <Welcome />}
+          {(online === 'OFFLINE' || online === 'ONLINE') && <TimerGrid />}
           <MessageDisplay />
           <AppControls />
         </React.Fragment>

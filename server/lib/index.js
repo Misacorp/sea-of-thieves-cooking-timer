@@ -23,7 +23,7 @@ const emitLeaveRoom = (roomId, nickname) => {
 
 io.on("connection", client => {
   const clients = io.sockets.clients();
-  // console.log('Clients:', clients);
+  console.log('Clients:', Object.keys(clients.connected));
 
   /**
    * Assign client to a room on their request.

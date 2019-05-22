@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
@@ -7,6 +7,7 @@ import Button from './Generic/Button';
 import Input from './Generic/Input';
 import Divider from './Generic/Divider';
 
+import OnlineContext from './contexts/OnlineContext';
 import useComms from './hooks/useComms';
 
 const roomCodeLength = 4;
@@ -74,6 +75,7 @@ const RoomSelectBase = ({ className }) => {
 
   // Use our custom useComms hook to communicate with the server.
   const { createRoom, joinRoom } = useComms();
+  const { setOnline } = useContext(OnlineContext);
 
   /**
    * Pass create room event to its action handler.
@@ -81,6 +83,7 @@ const RoomSelectBase = ({ className }) => {
   const handleCreateRoom = () => {
     if (nicknameIsValid()) {
       createRoom();
+      setOnline('ONLINE');
     }
   };
 
@@ -90,6 +93,7 @@ const RoomSelectBase = ({ className }) => {
   const handleJoinRoom = () => {
     if (nicknameIsValid() && roomCodeIsValid()) {
       joinRoom(nickname, roomCode);
+      setOnline('ONLINE');
     }
   };
 
