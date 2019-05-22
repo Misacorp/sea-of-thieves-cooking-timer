@@ -18,7 +18,7 @@ let initialRoomCode = '';
  */
 if (process.env.NODE_ENV === 'development') {
   initialNickname = uniqueNamesGenerator('-', true);
-  initialRoomCode = '1234';
+  initialRoomCode = '0000';
 }
 
 /**
@@ -73,7 +73,7 @@ const RoomSelectBase = ({ className }) => {
   };
 
   // Use our custom useComms hook to communicate with the server.
-  const { createRoom, joinRoom, state } = useComms();
+  const { createRoom, joinRoom } = useComms();
 
   /**
    * Pass create room event to its action handler.

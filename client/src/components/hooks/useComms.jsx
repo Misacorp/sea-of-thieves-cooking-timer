@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
 import EventContext from '../contexts/EventContext';
+import EventListener from './EventListener';
 
 // Connect to the socket
 const serverUrl =
@@ -11,6 +12,7 @@ const serverUrl =
     : '__heroku_address_here__';
 
 const socket = io(serverUrl);
+const startEventListener = EventListener(socket);
 
 /**
  * Custom hook.
@@ -23,19 +25,7 @@ const useComms = () => {
   const { addEvent } = eventContext;
 
   useEffect(() => {
-    socket.on(actions.USER_JOINED, data => {
-      console.log('useComms received USER_JOINED event', data);
-
-      const { nickname, timestamp } = data;
-      addEvent({ type: actions.USER_JOINED, timestamp, nickname });
-    });
-
-    socket.on(actions.USER_LEFT, data => {
-      console.log('useComms received USER_LEFT event', data);
-
-      const { nickname, timestamp } = data;
-      addEvent({ type: actions.USER_LEFT, timestamp, nickname });
-    });
+    startEventListener(addEvent);
 
     // Cleanup
     return () => socket.off(actions.USER_JOINED);
