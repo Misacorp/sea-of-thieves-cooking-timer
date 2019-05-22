@@ -16,24 +16,29 @@ const MessageDisplayBase = ({ className }) => {
   // Listen for changes in the event queue
   const { events, popEvent } = useContext(EventContext);
   useEffect(() => {
-    console.log('🖥 MessageDisplay detected changes in the event queue', events);
-
     // Add a message if the event is one that warrants a message.
     if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
+      console.log(
+        '🖥 MessageDisplay detected changes in the event queue for itself',
+        events.length,
+      );
+
+      console.log(events[0]);
+
       setMessages(prevMessages => {
         const newMessages = [...prevMessages, events[0]];
         popEvent();
         return newMessages;
       });
     }
-  }, [events]);
+  }, [events, popEvent]);
 
   return (
     <div className={className}>
       <h3>Messages</h3>
-      {messages.map(msg => {
+      {messages.map((msg, index) => {
         return (
-          <Message timestamp={msg.timestamp}>
+          <Message key={`${index}-${msg.timestamp}`} timestamp={msg.timestamp}>
             {msg.nickname}: {msg.type}
           </Message>
         );

@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import * as actions from '../actions/actionTypes';
 
 /**
@@ -14,14 +15,14 @@ const EventListener = socket => {
       console.log('📩 USER_JOINED', data);
 
       const { nickname, timestamp } = data;
-      addEvent({ type: actions.USER_JOINED, timestamp, nickname });
+      addEvent({ id: uuid(), type: actions.USER_JOINED, timestamp, nickname });
     });
 
     socket.on(actions.USER_LEFT, data => {
       console.log('📩 USER_LEFT', data);
 
       const { nickname, timestamp } = data;
-      addEvent({ type: actions.USER_LEFT, timestamp, nickname });
+      addEvent({ id: uuid(), type: actions.USER_LEFT, timestamp, nickname });
     });
   };
 

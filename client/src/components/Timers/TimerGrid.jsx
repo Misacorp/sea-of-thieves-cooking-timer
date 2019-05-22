@@ -12,14 +12,14 @@ const TimerGrid = () => {
   // Listen for changes in the event queue
   const { events, popEvent } = useContext(EventContext);
   useEffect(() => {
-    console.log('🖥 MessageDisplay detected changes in the event queue', events);
+    // console.log('🖥 TimerGrid detected changes in the event queue', events);
 
     // Add a message if the event is one that warrants a message.
     if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
       console.log('🕓', events[0]);
       popEvent();
     }
-  }, [events]);
+  }, [events, popEvent]);
 
   // Give this component an internal date that refreshes each timer.
   const [, setDate] = useState(new Date());

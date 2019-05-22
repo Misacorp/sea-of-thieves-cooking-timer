@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
@@ -24,12 +24,8 @@ const useComms = () => {
   const eventContext = useContext(EventContext);
   const { addEvent } = eventContext;
 
-  useEffect(() => {
-    startEventListener(addEvent);
-
-    // Cleanup
-    return () => socket.off(actions.USER_JOINED);
-  }, []);
+  // Start an event listener that handles incoming events.
+  startEventListener(addEvent);
 
   /**
    * Starts a timer with the given id.
@@ -42,17 +38,16 @@ const useComms = () => {
   /**
    * Join a room with the given code code
    * @param {string} roomCode Room to join.
+   * @param {string} nickname Client nickname
    */
-  const joinRoom = (nickname, roomCode) => {
-    console.log(actions.JOIN_ROOM, { nickname, roomCode });
-    socket.emit(actions.JOIN_ROOM, { nickname, roomCode });
+  const joinRoom = (roomCode, nickname) => {
+    socket.emit(actions.JOIN_ROOM, { roomCode, nickname });
   };
 
   /**
    * Creates a new room.
    */
   const createRoom = () => {
-    console.log(actions.CREATE_ROOM);
     socket.emit(actions.CREATE_ROOM, 'lol');
   };
 
