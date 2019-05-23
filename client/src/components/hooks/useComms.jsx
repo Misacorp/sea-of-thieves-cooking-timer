@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
@@ -12,6 +12,8 @@ const serverUrl =
     : '__heroku_address_here__';
 
 const socket = io(serverUrl);
+
+console.log('Initializing an event listener');
 const startEventListener = EventListener(socket);
 
 /**
@@ -25,7 +27,10 @@ const useComms = () => {
   const { addEvent } = eventContext;
 
   // Start an event listener that handles incoming events.
-  startEventListener(addEvent);
+  useEffect(() => {
+    console.log('useComms registering event listeners');
+    startEventListener(addEvent);
+  }, []);
 
   /**
    * Starts a timer with the given id.

@@ -1,8 +1,8 @@
 import getRooms from "./getClientRooms";
 import RoomStore from "./RoomStore";
 
-import User from './types/User';
-import Room from './types/Room';
+import User from "./types/User";
+import Room from "./types/Room";
 
 /**
  * Handles clients joining and leaving rooms.
@@ -29,17 +29,20 @@ const roomHandler = (io, client) => {
     // Leave all rooms the client is currently in.
     leaveRooms();
 
-    // Join new room and emit 'user joined' event
+    // Join new room
     client.join(roomCode);
-    io.to(roomCode).emit("USER_JOINED", { nickname, timestamp: new Date() });
 
-    // Create a new User and Room
+    // Update in-memory room list
     const user = new User(nickname);
     const room = new Room(roomCode);
-    room.members.push(user);  // Add user to room.
+    room.members.push(user); // Add user to room.
     const roomCount = RoomStore.addRoom(room);
 
     console.log(`New room count is ${roomCount}`);
+
+    // Notify room members of the new arrival
+    console.log(typeof roomCode);
+    client.to(roomCode).emit("USER_JOINED", { nickname, timestamp: new Date() });
 
     // Transmit room timer data to client.
     // Should updates from clients always contain the entire state of their timers?
