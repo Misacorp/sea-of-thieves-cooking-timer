@@ -18,4 +18,8 @@ messageTemplates[actions.USER_LEFT] = ({ nickname }) => {
   return `${nickname} left`;
 };
 
+messageTemplates[actions.NONEXISTANT_ROOM] = ({ roomCode }) => {
+  return `Room ${roomCode} doesn't exist. Create it?`;
+};
+
 export default messageTemplates;

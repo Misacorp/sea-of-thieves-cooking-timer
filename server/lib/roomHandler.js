@@ -27,6 +27,16 @@ const roomHandler = (io, client) => {
   const joinRoom = (roomCode, nickname) => {
     console.log(`${nickname} is joining room ${roomCode}`);
 
+    // Halt if the desired room doesn't exist!
+    if (!RoomStore.getRoom(roomCode)) {
+      console.log(
+        `Client ${client.id} tried to join nonexisting room ${roomCode}.`
+      );
+
+      client.emit("NONEXISTANT_ROOM", { timestamp: new Date(), roomCode });
+      return;
+    }
+
     // Clients can only be in one room at a single time.
     // Leave all rooms the client is currently in.
     leaveRooms();

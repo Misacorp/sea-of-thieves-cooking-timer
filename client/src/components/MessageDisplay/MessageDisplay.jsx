@@ -2,14 +2,24 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { USER_JOINED, USER_LEFT, MEMBER_LIST } from '../actions/actionTypes';
+import {
+  USER_JOINED,
+  USER_LEFT,
+  MEMBER_LIST,
+  NONEXISTANT_ROOM,
+} from '../actions/actionTypes';
 import EventContext from '../contexts/EventContext';
 import SingleMessage from './SingleMessage';
 import messageTemplates from '../../types/messageTemplates';
 import Message from '../../types/message';
 
 // List of events this component subscribes to (and handles).
-const subscribedEvents = [USER_JOINED, USER_LEFT, MEMBER_LIST];
+const subscribedEvents = [
+  USER_JOINED,
+  USER_LEFT,
+  MEMBER_LIST,
+  NONEXISTANT_ROOM,
+];
 const MAX_MESSAGES = 7;
 
 const MessageDisplayBase = ({ className }) => {

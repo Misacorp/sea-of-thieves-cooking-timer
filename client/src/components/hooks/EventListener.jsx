@@ -37,6 +37,17 @@ const EventListener = socket => {
       const { nickname, timestamp } = data;
       addEvent({ id: uuid(), type: actions.USER_LEFT, timestamp, nickname });
     });
+
+    // Client tried to join a room that doesn't exist.
+    socket.on(actions.NONEXISTANT_ROOM, data => {
+      const { roomCode, timestamp } = data;
+      addEvent({
+        id: uuid(),
+        type: actions.NONEXISTANT_ROOM,
+        timestamp,
+        roomCode,
+      });
+    });
   };
 
   const removeEventListener = () => {
