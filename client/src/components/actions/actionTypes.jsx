@@ -4,8 +4,8 @@ const START = 'START';
 const STOP = 'STOP';
 const PAUSE = 'PAUSE';
 const USER_JOINED = 'USER_JOINED';
-const USER_JOINED_SELF = 'USER_JOINED_SELF';
 const USER_LEFT = 'USER_LEFT';
+const MEMBER_LIST = 'MEMBER_LIST';
 
 export {
   CREATE_ROOM,
@@ -14,6 +14,6 @@ export {
   STOP,
   PAUSE,
   USER_JOINED,
-  USER_JOINED_SELF,
   USER_LEFT,
+  MEMBER_LIST,
 };

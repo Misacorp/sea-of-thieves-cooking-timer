@@ -5,6 +5,10 @@ class Room {
     this.timers = [];
   }
 
+  getMemberNames() {
+    return Object.keys(this.members).map(id => this.members[id].nickname);
+  }
+
   getMemberById(id) {
     return this.members[id];
   }

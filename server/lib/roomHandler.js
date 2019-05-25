@@ -51,11 +51,20 @@ const roomHandler = (io, client) => {
       .to(roomCode)
       .emit("USER_JOINED", { nickname, timestamp: new Date() });
 
-    // Notify client that they arrived
-    client.emit("USER_JOINED_SELF", { nickname: "You", timestamp: new Date(), timers: room.timers, members: room.members });
+    // Tell the client they joined.
+    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date() });
+
+    // Notify client that they arrived and who else is in the room
+    client.emit("MEMBER_LIST", {
+      timestamp: new Date(),
+      members: room.getMemberNames()
+    });
 
     // Transmit room timer data to client.
-    // Should updates from clients always contain the entire state of their timers?
+    client.emit("TIMER_SYNC", {
+      timestamp: new Date(),
+      timers: room.timers
+    });
   };
 
   /**

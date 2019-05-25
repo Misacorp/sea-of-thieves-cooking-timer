@@ -48,7 +48,7 @@ const Message = styled(MessageBase)`
   background-color: white;
   display: inline-flex;
   padding: 0.5rem 1rem;
-  border-radius: 10rem;
+  border-radius: 1rem;
   color: ${({ theme }) => theme.palette.typography.dark};
   margin: 0.15rem;
   /* animation: ${fadeOut} 2s ease-out 3s 1 forwards; */

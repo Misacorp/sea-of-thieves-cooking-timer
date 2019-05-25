@@ -19,8 +19,15 @@ const EventListener = socket => {
       addEvent({ id: uuid(), type: actions.USER_JOINED, timestamp, nickname });
     });
 
-    socket.on(actions.USER_JOINED_SELF, data => {
-      console.log(data);
+    // User themself joined a room.
+    socket.on(actions.MEMBER_LIST, data => {
+      const { timestamp, members } = data;
+      addEvent({
+        id: uuid(),
+        type: actions.MEMBER_LIST,
+        timestamp,
+        members,
+      });
     });
 
     // Someone else left the room.

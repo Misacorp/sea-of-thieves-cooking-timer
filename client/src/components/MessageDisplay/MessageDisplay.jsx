@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { USER_JOINED, USER_LEFT } from '../actions/actionTypes';
+import { USER_JOINED, USER_LEFT, MEMBER_LIST } from '../actions/actionTypes';
 import EventContext from '../contexts/EventContext';
 import SingleMessage from './SingleMessage';
 import messageTemplates from '../../types/messageTemplates';
 import Message from '../../types/message';
 
 // List of events this component subscribes to (and handles).
-const subscribedEvents = [USER_JOINED, USER_LEFT];
+const subscribedEvents = [USER_JOINED, USER_LEFT, MEMBER_LIST];
 const MAX_MESSAGES = 7;
 
 const MessageDisplayBase = ({ className }) => {
@@ -21,10 +21,10 @@ const MessageDisplayBase = ({ className }) => {
   useEffect(() => {
     // Add a message if the event is one that warrants a message.
     if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
-      const { id, type, timestamp, nickname } = events[0];
+      const { id, type, timestamp, ...data } = events[0];
 
       // Set the message content
-      const content = messageTemplates[type](nickname);
+      const content = messageTemplates[type](data);
       const newMessage = new Message({ id, timestamp, content });
 
       setMessages(prevMessages => {
@@ -38,7 +38,7 @@ const MessageDisplayBase = ({ className }) => {
   return (
     <div className={className}>
       {// Only show a portion of the latest messages.
-      messages.slice(-1 * MAX_MESSAGES).map(msg => (
+      messages.slice(MAX_MESSAGES * -1).map(msg => (
         <SingleMessage key={`${msg.id}`} timestamp={msg.timestamp}>
           {msg.content}
         </SingleMessage>
