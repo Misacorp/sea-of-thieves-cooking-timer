@@ -4,10 +4,13 @@ import PropTypes from 'prop-types';
 
 import { USER_JOINED, USER_LEFT } from '../actions/actionTypes';
 import EventContext from '../contexts/EventContext';
-import Message from './Message';
+import SingleMessage from './SingleMessage';
+import messageTemplates from '../../types/messageTemplates';
+import Message from '../../types/message';
 
 // List of events this component subscribes to (and handles).
 const subscribedEvents = [USER_JOINED, USER_LEFT];
+const MAX_MESSAGES = 7;
 
 const MessageDisplayBase = ({ className }) => {
   // Store messages in state.
@@ -18,15 +21,14 @@ const MessageDisplayBase = ({ className }) => {
   useEffect(() => {
     // Add a message if the event is one that warrants a message.
     if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
-      console.log(
-        '🖥 MessageDisplay detected changes in the event queue for itself',
-        events.length,
-      );
+      const { id, type, timestamp, nickname } = events[0];
 
-      console.log(events[0]);
+      // Set the message content
+      const content = messageTemplates[type](nickname);
+      const newMessage = new Message({ id, timestamp, content });
 
       setMessages(prevMessages => {
-        const newMessages = [...prevMessages, events[0]];
+        const newMessages = [...prevMessages, newMessage];
         popEvent();
         return newMessages;
       });
@@ -35,14 +37,12 @@ const MessageDisplayBase = ({ className }) => {
 
   return (
     <div className={className}>
-      <h3>Messages</h3>
-      {messages.map((msg, index) => {
-        return (
-          <Message key={`${index}-${msg.timestamp}`} timestamp={msg.timestamp}>
-            {msg.nickname}: {msg.type}
-          </Message>
-        );
-      })}
+      {// Only show a portion of the latest messages.
+      messages.slice(-1 * MAX_MESSAGES).map(msg => (
+        <SingleMessage key={`${msg.id}`} timestamp={msg.timestamp}>
+          {msg.content}
+        </SingleMessage>
+      ))}
     </div>
   );
 };
@@ -52,10 +52,17 @@ MessageDisplayBase.propTypes = {
 };
 
 const MessageDisplay = styled(MessageDisplayBase)`
-  &,
-  h3 {
-    background-color: purple;
-    color: white;
+  position: absolute;
+  bottom: 2.5rem;
+  left: 0.25rem;
+  right: 0.25rem;
+  text-align: right;
+  z-index: 999;
+  user-select: none;
+  pointer-events: none;
+
+  & span {
+    text-align: left;
   }
 `;
 
