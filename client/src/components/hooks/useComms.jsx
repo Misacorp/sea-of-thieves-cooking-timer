@@ -14,7 +14,7 @@ const serverUrl =
 const socket = io(serverUrl);
 
 console.log('Initializing an event listener');
-const startEventListener = EventListener(socket);
+const { startEventListener } = EventListener(socket);
 
 /**
  * Custom hook.

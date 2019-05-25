@@ -41,8 +41,12 @@ const roomHandler = (io, client) => {
     console.log(`New room count is ${roomCount}`);
 
     // Notify room members of the new arrival
-    console.log(typeof roomCode);
-    client.to(roomCode).emit("USER_JOINED", { nickname, timestamp: new Date() });
+    client
+      .to(roomCode)
+      .emit("USER_JOINED", { nickname, timestamp: new Date() });
+    
+    // Notify client that they arrived
+    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date() });
 
     // Transmit room timer data to client.
     // Should updates from clients always contain the entire state of their timers?

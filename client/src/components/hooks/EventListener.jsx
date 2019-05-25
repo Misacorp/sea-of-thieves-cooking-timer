@@ -26,7 +26,14 @@ const EventListener = socket => {
     });
   };
 
-  return startEventListener;
+  const removeEventListener = () => {
+    socket.off(actions.USER_JOINED);
+    socket.off(actions.USER_LEFT);
+
+    console.log('Removed event listeners');
+  };
+
+  return { startEventListener, removeEventListener };
 };
 
 export default EventListener;
