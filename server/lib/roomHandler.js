@@ -76,10 +76,15 @@ const roomHandler = (io, client) => {
       // Only do things if the room code is a 'custom' one.
       if (roomCode.length === ROOMCODE_LENGTH) {
         const room = RoomStore.getRoom(roomCode);
+
+        // Let other users know someone left.
         const user = room.getMemberById(client.id);
         if (user) {
           emitLeaveRoom(roomCode, user.nickname);
         }
+
+        // Remove the user from the room's user list.
+        delete room.members[client.id];
       }
     });
 
