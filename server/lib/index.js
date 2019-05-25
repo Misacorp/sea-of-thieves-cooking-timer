@@ -33,6 +33,7 @@ io.on("connection", client => {
    * Handle leaving rooms.
    */
   client.on("LEAVE_ROOM", () => {
+    console.log('Client leaving room', client.id)
     roomHandler.leaveRooms();
   });
 
@@ -40,6 +41,7 @@ io.on("connection", client => {
    * Handle disconnecting clients.
    */
   client.on("disconnecting", data => {
+    console.log('Client disconnecting', client.id);
     roomHandler.leaveRooms();
     console.log("Client disconnected");
   });
@@ -60,11 +62,6 @@ io.on("connection", client => {
     const { id } = data;
     console.log(`Stopping timer ${id}`);
     client.emit("stop", { id });
-  });
-
-  client.on("disconnecting", data => {
-    roomHandler.leaveRooms();
-    console.log("Client disconnected");
   });
 });
 

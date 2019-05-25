@@ -4,6 +4,8 @@ import RoomStore from "./RoomStore";
 import User from "./types/User";
 import Room from "./types/Room";
 
+const ROOMCODE_LENGTH = 4;
+
 /**
  * Handles clients joining and leaving rooms.
  */
@@ -12,7 +14,7 @@ const roomHandler = (io, client) => {
    * Emits a 'nickname left the room' event to the given room.
    */
   const emitLeaveRoom = (roomId, nickname) => {
-    if (roomId.length === 4) {
+    if (roomId.length === ROOMCODE_LENGTH) {
       io.to(roomId).emit("USER_LEFT", { nickname, timestamp: new Date() });
     }
   };
@@ -32,21 +34,25 @@ const roomHandler = (io, client) => {
     // Join new room
     client.join(roomCode);
 
-    // Update in-memory room list
-    const user = new User(nickname);
-    const room = new Room(roomCode);
-    room.members.push(user); // Add user to room.
-    const roomCount = RoomStore.addRoom(room);
+    // Add the new User to the given Room.
+    const user = new User(client.id, nickname);
+    let room;
+    if (RoomStore.getRoom(roomCode)) {
+      // Room with given code already exists.
+      room = RoomStore.getRoom(roomCode);
+    } else {
+      room = new Room(roomCode);
+    }
+    room.addMember(user);
+    RoomStore.addRoom(room);
 
-    console.log(`New room count is ${roomCount}`);
-
-    // Notify room members of the new arrival
+    // Notify other room members of the new arrival
     client
       .to(roomCode)
       .emit("USER_JOINED", { nickname, timestamp: new Date() });
-    
+
     // Notify client that they arrived
-    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date() });
+    client.emit("USER_JOINED_SELF", { nickname: "You", timestamp: new Date(), timers: room.timers, members: room.members });
 
     // Transmit room timer data to client.
     // Should updates from clients always contain the entire state of their timers?
@@ -56,11 +62,18 @@ const roomHandler = (io, client) => {
    * Removes a client from ALL rooms and notifies participants.
    */
   const leaveRooms = () => {
-    console.log(`Client is leaving the following rooms:`);
-    getRooms(client).forEach(room => {
-      console.log(room);
-      emitLeaveRoom(room, "Someone");
+    // Loop through all the rooms the client is in
+    getRooms(client).forEach(roomCode => {
+      // Only do things if the room code is a 'custom' one.
+      if (roomCode.length === ROOMCODE_LENGTH) {
+        const room = RoomStore.getRoom(roomCode);
+        const user = room.getMemberById(client.id);
+        if (user) {
+          emitLeaveRoom(roomCode, user.nickname);
+        }
+      }
     });
+
     client.leaveAll();
   };
 

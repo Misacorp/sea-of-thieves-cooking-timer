@@ -1,3 +1,5 @@
+const debug = true;
+
 class RoomStore {
   constructor() {
     this.rooms = {};
@@ -17,9 +19,9 @@ class RoomStore {
     // Check if a room already exists with the given code.
     if (!Object.keys(this.rooms).includes(code)) {
       this.rooms[code] = room;
-      console.log(`[RoomStore] Added ${code} to rooms:`, this.rooms);
+      if (debug) console.log(`[RoomStore] Added ${code} to rooms:`, this.rooms);
     } else {
-      console.log(`[RoomStore] Room ${code} already exists. Rooms:`, this.rooms);
+      if (debug) console.log(`[RoomStore] Room ${code} already exists. Rooms:`, this.rooms);
     }
     return Object.keys(this.rooms).length;
   };

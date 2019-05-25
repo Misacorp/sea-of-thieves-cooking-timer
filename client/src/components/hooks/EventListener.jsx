@@ -11,6 +11,7 @@ const EventListener = socket => {
    * @param {function} addEvent Function that adds events to the event queue.
    */
   const startEventListener = addEvent => {
+    // Someone else joined the room.
     socket.on(actions.USER_JOINED, data => {
       console.log('📩 USER_JOINED', data);
 
@@ -18,6 +19,11 @@ const EventListener = socket => {
       addEvent({ id: uuid(), type: actions.USER_JOINED, timestamp, nickname });
     });
 
+    socket.on(actions.USER_JOINED_SELF, data => {
+      console.log(data);
+    });
+
+    // Someone else left the room.
     socket.on(actions.USER_LEFT, data => {
       console.log('📩 USER_LEFT', data);
 
