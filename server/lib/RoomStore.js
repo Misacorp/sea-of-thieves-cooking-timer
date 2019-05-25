@@ -25,6 +25,10 @@ class RoomStore {
     }
     return Object.keys(this.rooms).length;
   };
+
+  deleteRoom(roomCode) {
+    delete this.rooms[roomCode];
+  }
 }
 
 export default new RoomStore();

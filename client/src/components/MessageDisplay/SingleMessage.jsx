@@ -51,7 +51,7 @@ const Message = styled(MessageBase)`
   border-radius: 1rem;
   color: ${({ theme }) => theme.palette.typography.dark};
   margin: 0.15rem;
-  /* animation: ${fadeOut} 2s ease-out 3s 1 forwards; */
+  animation: ${fadeOut} 1s ease-out 4s 1 forwards;
 `;
 
 export default Message;

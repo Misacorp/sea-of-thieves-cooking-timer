@@ -85,6 +85,11 @@ const roomHandler = (io, client) => {
 
         // Remove the user from the room's user list.
         delete room.members[client.id];
+
+        // If the member list is empty, delete the entire room.
+        if (Object.entries(room.members).length === 0) {
+          RoomStore.deleteRoom(roomCode);
+        }
       }
     });
 
