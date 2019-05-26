@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
+import { filter } from 'rxjs/operators';
 
 import Button from './Generic/Button';
 import Input from './Generic/Input';
 import Divider from './Generic/Divider';
 
+import MessageCenter from './MessageCenter';
 import useComms from './hooks/useComms';
 import OnlineContext from './contexts/OnlineContext';
 import { USER_JOINED, ROOM_CREATED } from './actions/actionTypes';
@@ -33,31 +35,32 @@ if (process.env.NODE_ENV === 'development') {
  *   - Join that room
  */
 const RoomSelectBase = ({ className }) => {
-  // Listen for changes in the event queue
-  const { events, popEvent } = useContext(EventContext);
   const { setOnline } = useContext(OnlineContext);
-  useEffect(() => {
-    if (events.length > 0) {
-      switch (events[0].type) {
-        case ROOM_CREATED:
-          setOnline('ONLINE');
-          popEvent();
-          break;
-        case USER_JOINED:
-          // If the current user joined a room, set their status to online.
-          if (Object.prototype.hasOwnProperty.call(events[0], 'self')) {
-            if (events[0].self === true) {
-              setOnline('ONLINE');
-            }
-          }
-          // Don't pop an event since MessageDisplay handles it.
-          // This system will require tweaking...
-          break;
-        default:
-          break;
-      }
+
+  // Use MessageCenter to subscribe to ROOM_CREATED event.
+  const subscription = useRef();
+  const subscribedTopics = [ROOM_CREATED, USER_JOINED];
+  subscription.current = MessageCenter.pipe(
+    filter(({ topic }) => subscribedTopics.includes(topic)),
+  ).subscribe(({ topic, data }) => {
+    // Separately handle events here.
+    switch (topic) {
+      case ROOM_CREATED:
+        console.log('Room created', data);
+        setOnline('ONLINE');
+        break;
+      case USER_JOINED:
+        console.log('Joined room', data);
+        setOnline('ONLINE'); // This code duplication is redundant right now. Remove it if it remains so in the future.
+        break;
+      default:
+        throw new Error('RoomSelect is listening to an unnecessary event. ');
     }
-  }, [events, popEvent, setOnline]);
+  });
+
+  useEffect(() => {
+    return () => subscription.current.unsubscribe();
+  });
 
   /**
    * Allow the user to set a nickname

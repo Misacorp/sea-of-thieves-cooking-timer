@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4';
 import * as actions from '../actions/actionTypes';
+import { publish } from '../MessageCenter';
 
 /**
  * Event listener that is attached to a socket once one is created.
@@ -16,7 +17,7 @@ const EventListener = socket => {
       console.log('📩 USER_JOINED', data);
 
       const { nickname, timestamp } = data;
-      addEvent({ id: uuid(), type: actions.USER_JOINED, timestamp, nickname });
+      publish(actions.ROOM_CREATED, { nickname, timestamp });
     });
 
     // User themself joined a room.
@@ -43,11 +44,7 @@ const EventListener = socket => {
       const { roomCode } = data;
       console.log(`Room ${roomCode} was created and you are now a member`);
 
-      addEvent({
-        id: uuid(),
-        type: actions.ROOM_CREATED,
-        roomCode,
-      });
+      publish(actions.ROOM_CREATED, roomCode);
     });
 
     // Client tried to join a room that doesn't exist.
