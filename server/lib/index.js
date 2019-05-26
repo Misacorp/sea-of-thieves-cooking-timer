@@ -18,7 +18,8 @@ io.on("connection", client => {
    * Handle creating a room.
    */
   client.on("CREATE_ROOM", data => {
-    console.log("Client wants to CREATE room", data);
+    const { nickname } = data;
+    roomHandler.createRoom(nickname);
   });
 
   /**

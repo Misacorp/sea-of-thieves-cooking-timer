@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
@@ -8,6 +8,9 @@ import Input from './Generic/Input';
 import Divider from './Generic/Divider';
 
 import useComms from './hooks/useComms';
+import OnlineContext from './contexts/OnlineContext';
+import { USER_JOINED, ROOM_CREATED } from './actions/actionTypes';
+import EventContext from './contexts/EventContext';
 
 const roomCodeLength = 4;
 let initialNickname = '';
@@ -30,6 +33,32 @@ if (process.env.NODE_ENV === 'development') {
  *   - Join that room
  */
 const RoomSelectBase = ({ className }) => {
+  // Listen for changes in the event queue
+  const { events, popEvent } = useContext(EventContext);
+  const { setOnline } = useContext(OnlineContext);
+  useEffect(() => {
+    if (events.length > 0) {
+      switch (events[0].type) {
+        case ROOM_CREATED:
+          setOnline('ONLINE');
+          popEvent();
+          break;
+        case USER_JOINED:
+          // If the current user joined a room, set their status to online.
+          if (Object.prototype.hasOwnProperty.call(events[0], 'self')) {
+            if (events[0].self === true) {
+              setOnline('ONLINE');
+            }
+          }
+          // Don't pop an event since MessageDisplay handles it.
+          // This system will require tweaking...
+          break;
+        default:
+          break;
+      }
+    }
+  }, [events, popEvent, setOnline]);
+
   /**
    * Allow the user to set a nickname
    */
@@ -80,7 +109,7 @@ const RoomSelectBase = ({ className }) => {
    */
   const handleCreateRoom = () => {
     if (nicknameIsValid()) {
-      createRoom();
+      createRoom(nickname);
     }
   };
 

@@ -11,7 +11,7 @@ const EventListener = socket => {
    * @param {function} addEvent Function that adds events to the event queue.
    */
   const startEventListener = addEvent => {
-    // Someone else joined the room.
+    // Someone joined the room.
     socket.on(actions.USER_JOINED, data => {
       console.log('📩 USER_JOINED', data);
 
@@ -38,6 +38,18 @@ const EventListener = socket => {
       addEvent({ id: uuid(), type: actions.USER_LEFT, timestamp, nickname });
     });
 
+    // Room was created.
+    socket.on(actions.ROOM_CREATED, data => {
+      const { roomCode } = data;
+      console.log(`Room ${roomCode} was created and you are now a member`);
+
+      addEvent({
+        id: uuid(),
+        type: actions.ROOM_CREATED,
+        roomCode,
+      });
+    });
+
     // Client tried to join a room that doesn't exist.
     socket.on(actions.NONEXISTANT_ROOM, data => {
       const { roomCode, timestamp } = data;
@@ -53,6 +65,9 @@ const EventListener = socket => {
   const removeEventListener = () => {
     socket.off(actions.USER_JOINED);
     socket.off(actions.USER_LEFT);
+    socket.off(actions.NONEXISTANT_ROOM);
+    socket.off(actions.MEMBER_LIST);
+    socket.off(actions.ROOM_CREATED);
 
     console.log('Removed event listeners');
   };

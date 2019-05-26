@@ -1,3 +1,4 @@
+import makeRoomCode from "../dist/utils/roomCodeGenerator";
 import getRooms from "./getClientRooms";
 import RoomStore from "./RoomStore";
 
@@ -17,6 +18,48 @@ const roomHandler = (io, client) => {
     if (roomId.length === ROOMCODE_LENGTH) {
       io.to(roomId).emit("USER_LEFT", { nickname, timestamp: new Date() });
     }
+  };
+
+  /**
+   * Creates a new room, adds the client to it and returns the room code.
+   * @param   {string} nickname Client's nickname
+   * @returns {string}          Code of the newly created room.
+   */
+  const createRoom = nickname => {
+    // Randomize a four-character string.
+    let roomCode = makeRoomCode();
+    let count = 0;
+    const MAX_ITERATIONS = 1000;
+
+    // Reroll the roomcode until one that doesn't exist is found.
+    while (RoomStore.getRoom(roomCode)) {
+      console.log(
+        `Generated room code ${roomCode} already exists. Trying a new one.`
+      );
+      roomCode = makeRoomCode;
+      count += 1;
+
+      // Forfeit if we didn't find an available room code in a reasonable amount of tries.
+      if (count >= MAX_ITERATIONS) {
+        console.log(`Could not create a room after trying for so long.`);
+        return;
+      }
+    }
+
+    // Join the Socket.io room.
+    client.join(roomCode);
+
+    // Create a user and room.
+    const user = new User(client.id, nickname);
+    const room = new Room(roomCode);
+
+    // Add the user to the room and room to the store.
+    room.addMember(user);
+    RoomStore.addRoom(room);
+
+    console.log(`Created new room with code ${roomCode}`);
+    client.emit("ROOM_CREATED", { roomCode, timestamp: new Date() });
+    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date(), self: true });
   };
 
   /**
@@ -62,7 +105,7 @@ const roomHandler = (io, client) => {
       .emit("USER_JOINED", { nickname, timestamp: new Date() });
 
     // Tell the client they joined.
-    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date() });
+    client.emit("USER_JOINED", { nickname: "You", timestamp: new Date(), self: true });
 
     // Notify client that they arrived and who else is in the room
     client.emit("MEMBER_LIST", {
@@ -107,6 +150,7 @@ const roomHandler = (io, client) => {
   };
 
   return {
+    createRoom,
     joinRoom,
     leaveRooms
   };

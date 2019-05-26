@@ -52,8 +52,8 @@ const useComms = () => {
   /**
    * Creates a new room.
    */
-  const createRoom = () => {
-    socket.emit(actions.CREATE_ROOM, 'lol');
+  const createRoom = nickname => {
+    socket.emit(actions.CREATE_ROOM, { nickname });
   };
 
   return { start, createRoom, joinRoom };
