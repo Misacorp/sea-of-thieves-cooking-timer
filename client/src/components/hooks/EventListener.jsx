@@ -9,23 +9,25 @@ import { publish } from '../MessageCenter';
 const EventListener = socket => {
   /**
    * Initializes event listeners.
-   * @param {function} addEvent Function that adds events to the event queue.
    */
-  const startEventListener = addEvent => {
+  const startEventListener = () => {
     // Someone joined the room.
     socket.on(actions.USER_JOINED, data => {
-      console.log('📩 USER_JOINED', data);
-
       const { nickname, timestamp } = data;
-      publish(actions.ROOM_CREATED, { nickname, timestamp });
+      publish(actions.USER_JOINED, {
+        type: actions.USER_JOINED,
+        id: uuid(),
+        nickname,
+        timestamp,
+      });
     });
 
     // User themself joined a room.
     socket.on(actions.MEMBER_LIST, data => {
       const { timestamp, members } = data;
-      addEvent({
-        id: uuid(),
+      publish(actions.MEMBER_LIST, {
         type: actions.MEMBER_LIST,
+        id: uuid(),
         timestamp,
         members,
       });
@@ -36,25 +38,29 @@ const EventListener = socket => {
       console.log('📩 USER_LEFT', data);
 
       const { nickname, timestamp } = data;
-      addEvent({ id: uuid(), type: actions.USER_LEFT, timestamp, nickname });
+      publish(actions.USER_LEFT, {
+        type: actions.USER_LEFT,
+        id: uuid(),
+        nickname,
+        timestamp,
+      });
     });
 
     // Room was created.
     socket.on(actions.ROOM_CREATED, data => {
       const { roomCode } = data;
-      console.log(`Room ${roomCode} was created and you are now a member`);
-
       publish(actions.ROOM_CREATED, roomCode);
+      console.log(`Room ${roomCode} was created and you are now a member`);
     });
 
     // Client tried to join a room that doesn't exist.
     socket.on(actions.NONEXISTANT_ROOM, data => {
       const { roomCode, timestamp } = data;
-      addEvent({
-        id: uuid(),
+      publish(actions.NONEXISTANT_ROOM, {
         type: actions.NONEXISTANT_ROOM,
-        timestamp,
+        id: uuid(),
         roomCode,
+        timestamp,
       });
     });
   };

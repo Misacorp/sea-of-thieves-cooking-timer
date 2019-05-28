@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
-import { filter } from 'rxjs/operators';
 
 import Button from './Generic/Button';
 import Input from './Generic/Input';
 import Divider from './Generic/Divider';
 
-import MessageCenter from './MessageCenter';
+import useSubscription from './hooks/useSubscription';
 import useComms from './hooks/useComms';
 import OnlineContext from './contexts/OnlineContext';
 import { USER_JOINED, ROOM_CREATED } from './actions/actionTypes';
-import EventContext from './contexts/EventContext';
 
 const roomCodeLength = 4;
 let initialNickname = '';
@@ -37,30 +35,24 @@ if (process.env.NODE_ENV === 'development') {
 const RoomSelectBase = ({ className }) => {
   const { setOnline } = useContext(OnlineContext);
 
-  // Use MessageCenter to subscribe to ROOM_CREATED event.
-  const subscription = useRef();
-  const subscribedTopics = [ROOM_CREATED, USER_JOINED];
-  subscription.current = MessageCenter.pipe(
-    filter(({ topic }) => subscribedTopics.includes(topic)),
-  ).subscribe(({ topic, data }) => {
-    // Separately handle events here.
-    switch (topic) {
-      case ROOM_CREATED:
-        console.log('Room created', data);
-        setOnline('ONLINE');
-        break;
-      case USER_JOINED:
-        console.log('Joined room', data);
-        setOnline('ONLINE'); // This code duplication is redundant right now. Remove it if it remains so in the future.
-        break;
-      default:
-        throw new Error('RoomSelect is listening to an unnecessary event. ');
-    }
-  });
-
+  // Subscribe to events relating to creating or joining a room.
+  const { subscription, subscribeTo } = useSubscription();
   useEffect(() => {
-    return () => subscription.current.unsubscribe();
-  });
+    subscribeTo({
+      [ROOM_CREATED]: data => {
+        console.log('[RoomSelect] ROOM_CREATED callback data:', data);
+        setOnline('ONLINE');
+      },
+      [USER_JOINED]: data => {
+        console.log('[RoomSelect] USER_JOINED callback data:', data);
+        setOnline('ONLINE');
+      },
+    });
+
+    // Unsubscribe on dismount (actually happens at the end of an update cycle right now, but seems to work).
+    const { current } = subscription;
+    return () => current.unsubscribe();
+  }, [subscribeTo, setOnline, subscription]);
 
   /**
    * Allow the user to set a nickname

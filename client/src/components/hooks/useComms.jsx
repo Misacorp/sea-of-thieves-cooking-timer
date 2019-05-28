@@ -1,8 +1,7 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import io from 'socket.io-client';
 
 import * as actions from '../actions/actionTypes';
-import EventContext from '../contexts/EventContext';
 import EventListener from './EventListener';
 
 // Connect to the socket
@@ -22,14 +21,10 @@ const { startEventListener } = EventListener(socket);
  * This can help with stale state: https://github.com/facebook/react/issues/15041
  */
 const useComms = () => {
-  // Using EventContext
-  const eventContext = useContext(EventContext);
-  const { addEvent } = eventContext;
-
   // Start an event listener that handles incoming events.
   useEffect(() => {
     console.log('useComms registering event listeners');
-    startEventListener(addEvent);
+    startEventListener();
   }, []);
 
   /**
