@@ -68,8 +68,20 @@ const EventListener = socket => {
       publish(actions.TIMER_SYNC, {
         type: actions.TIMER_SYNC,
         id: uuid(),
-        timers,
         timestamp: new Date().toString(),
+        timers,
+      });
+    });
+
+    // Generic message
+    socket.on(actions.GENERIC_MESSAGE, data => {
+      const { message } = data;
+
+      publish(actions.GENERIC_MESSAGE, {
+        type: actions.GENERIC_MESSAGE,
+        id: uuid(),
+        timestamp: new Date().toString(),
+        message,
       });
     });
   };

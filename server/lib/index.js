@@ -1,6 +1,7 @@
 import http from "http";
 import socketIo from "socket.io";
 
+import getRooms from './getClientRooms';
 import createRoomHandler from "./roomHandler";
 
 const server = http.createServer();
@@ -44,6 +45,11 @@ io.on("connection", client => {
   client.on('START', data => {
     const { id, food } = data;
     console.log(`Client wants to start timer ${id} with ${food}`);
+
+    // Get the client's room code
+    const roomCode = getRooms(client)[0];
+    console.log(roomCode);
+    io.in(roomCode).emit('GENERIC_MESSAGE', { message: `Someone wants to start ${id}` });
   });
 
   /**

@@ -50,6 +50,8 @@ const roomHandler = (io, client) => {
       }
     }
 
+    leaveRooms();
+
     // Join the Socket.io room.
     client.join(roomCode);
 

@@ -8,6 +8,7 @@ import {
   MEMBER_LIST,
   NONEXISTANT_ROOM,
   TIMER_SYNC,
+  GENERIC_MESSAGE,
 } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
@@ -50,6 +51,9 @@ const MessageDisplayBase = ({ className }) => {
       handleMessage(data);
     },
     [TIMER_SYNC]: data => {
+      handleMessage(data);
+    },
+    [GENERIC_MESSAGE]: data => {
       handleMessage(data);
     },
   });

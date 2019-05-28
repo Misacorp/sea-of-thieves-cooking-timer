@@ -2,10 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { TIMER_SYNC } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
+import useComms from '../hooks/useComms';
+
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import Timer from './Timer';
 
 const TimerGrid = () => {
+  const { start } = useComms();
+
   // Store an array of timers we will later render into components.
   const [timers, setTimers] = useState([]);
 
@@ -47,7 +51,7 @@ const TimerGrid = () => {
   return (
     <FourByFourGrid>
       {timers.map(timer => (
-        <Timer key={timer.id} />
+        <Timer key={timer.id} start={start} id={timer.id} />
       ))}
     </FourByFourGrid>
   );

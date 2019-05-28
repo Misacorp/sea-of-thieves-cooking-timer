@@ -26,4 +26,8 @@ messageTemplates[actions.TIMER_SYNC] = ({ timers }) => {
   return `Received ${timers.length} timers`;
 };
 
+messageTemplates[actions.GENERIC_MESSAGE] = ({ message }) => {
+  return message;
+};
+
 export default messageTemplates;

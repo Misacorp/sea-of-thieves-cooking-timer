@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
 
 import foods from '../../types/foods';
 import TimerButtonGrid from '../Generic/Grids/TimerButtonGrid';
@@ -9,10 +8,7 @@ import FoodSelectButton from './FoodSelectButton';
 
 import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
-const NewTimerBase = ({ className }) => {
-  // Give the timer a unique unchanging ID throughout the session.
-  const id = uuid();
-
+const NewTimerBase = ({ id, start, className }) => {
   // Keep track of the food being cooked.
   const [food, setFood] = useState(null);
 
@@ -92,12 +88,12 @@ const NewTimerBase = ({ className }) => {
 
   return (
     <TimerButtonGrid className={className}>
-      <FoodSelectButton onClick={startTimer('FISH')}>Fish</FoodSelectButton>
-      <FoodSelectButton onClick={startTimer('TROPHY_FISH')}>
+      <FoodSelectButton onClick={start(id, 'FISH')}>Fish</FoodSelectButton>
+      <FoodSelectButton onClick={start(id, 'TROPHY_FISH')}>
         Trophy Fish
       </FoodSelectButton>
-      <FoodSelectButton onClick={startTimer('MEAT')}>Meat</FoodSelectButton>
-      <FoodSelectButton onClick={startTimer('MONSTER_MEAT')}>
+      <FoodSelectButton onClick={start(id, 'MEAT')}>Meat</FoodSelectButton>
+      <FoodSelectButton onClick={start(id, 'MONSTER_MEAT')}>
         Monster meat
       </FoodSelectButton>
     </TimerButtonGrid>
@@ -106,6 +102,8 @@ const NewTimerBase = ({ className }) => {
 
 NewTimerBase.propTypes = {
   className: PropTypes.string,
+  id: PropTypes.string,
+  start: PropTypes.func,
 };
 
 const NewTimer = styled(NewTimerBase)`
