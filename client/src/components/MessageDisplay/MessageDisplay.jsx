@@ -7,6 +7,7 @@ import {
   USER_LEFT,
   MEMBER_LIST,
   NONEXISTANT_ROOM,
+  TIMER_SYNC,
 } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
@@ -46,6 +47,9 @@ const MessageDisplayBase = ({ className }) => {
       handleMessage(data);
     },
     [NONEXISTANT_ROOM]: data => {
+      handleMessage(data);
+    },
+    [TIMER_SYNC]: data => {
       handleMessage(data);
     },
   });

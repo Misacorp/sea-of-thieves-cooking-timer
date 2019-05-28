@@ -1,9 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
 
-import Socket from '../contexts/SocketContext';
 import foods from '../../types/foods';
 import TimerButtonGrid from '../Generic/Grids/TimerButtonGrid';
 import FoodSelectButton from './FoodSelectButton';
@@ -13,9 +12,6 @@ import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 const NewTimerBase = ({ className }) => {
   // Give the timer a unique unchanging ID throughout the session.
   const id = uuid();
-
-  // Connect to the context's socket
-  const socket = useContext(Socket);
 
   // Keep track of the food being cooked.
   const [food, setFood] = useState(null);
@@ -35,13 +31,10 @@ const NewTimerBase = ({ className }) => {
     setRunning(true);
   };
 
-  const start = newFood => () => {
+  const startTimer = newFood => () => {
     if (Object.keys(foods).includes(newFood)) {
-      if (socket) {
-        socket.emit('start', { id, food: newFood });
-      } else {
-        localStart({ food: newFood, date: new Date() });
-      }
+      console.log(`Timer ${id} wants to start.`);
+      // start(id, newFood);
     }
   };
 
@@ -56,14 +49,6 @@ const NewTimerBase = ({ className }) => {
 
     const audio = new Audio(audioFile);
     audio.play();
-  };
-
-  const stop = () => {
-    // Tell the server to stop the timer.
-    if (socket) {
-      socket.emit('stop', { id });
-    }
-    localStop();
   };
 
   /**
@@ -86,7 +71,7 @@ const NewTimerBase = ({ className }) => {
 
       // Stop the timer if we reach 0
       if (timeLeft <= 0) {
-        stop();
+        localStop();
       }
 
       return Math.round(timeLeft);
@@ -94,25 +79,6 @@ const NewTimerBase = ({ className }) => {
 
     return 0;
   };
-
-  /**
-   * Listen to messages from the server.
-   */
-  if (socket) {
-    socket.on('start', data => {
-      // Set this timer with the values in data
-      if (data.id === id) {
-        localStart();
-      }
-    });
-
-    // Stop a timer when the server tells us to.
-    socket.on('stop', data => {
-      if (data.id === id) {
-        localStop();
-      }
-    });
-  }
 
   if (food) {
     // If a food is set, the timer is either RUNNING or PAUSED.
@@ -126,12 +92,12 @@ const NewTimerBase = ({ className }) => {
 
   return (
     <TimerButtonGrid className={className}>
-      <FoodSelectButton onClick={start('FISH')}>Fish</FoodSelectButton>
-      <FoodSelectButton onClick={start('TROPHY_FISH')}>
+      <FoodSelectButton onClick={startTimer('FISH')}>Fish</FoodSelectButton>
+      <FoodSelectButton onClick={startTimer('TROPHY_FISH')}>
         Trophy Fish
       </FoodSelectButton>
-      <FoodSelectButton onClick={start('MEAT')}>Meat</FoodSelectButton>
-      <FoodSelectButton onClick={start('MONSTER_MEAT')}>
+      <FoodSelectButton onClick={startTimer('MEAT')}>Meat</FoodSelectButton>
+      <FoodSelectButton onClick={startTimer('MONSTER_MEAT')}>
         Monster meat
       </FoodSelectButton>
     </TimerButtonGrid>

@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { START, STOP, PAUSE } from '../actions/actions';
-import EventContext from '../contexts/EventContext';
+import { TIMER_SYNC } from '../actions/actions';
+import useSubscription from '../hooks/useSubscription';
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import Timer from './Timer';
 
-// List of events this component subscribes to (and handles).
-const subscribedEvents = [START, STOP, PAUSE];
-
 const TimerGrid = () => {
-  // Listen for changes in the event queue
-  const { events, popEvent } = useContext(EventContext);
-  useEffect(() => {
-    // console.log('🖥 TimerGrid detected changes in the event queue', events);
+  // Store an array of timers we will later render into components.
+  const [timers, setTimers] = useState([]);
 
-    // Add a message if the event is one that warrants a message.
-    if (events.length > 0 && subscribedEvents.includes(events[0].type)) {
-      console.log('🕓', events[0]);
-      popEvent();
-    }
-  }, [events, popEvent]);
+  // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
+  const subscriptionSettings = useRef({
+    [TIMER_SYNC]: data => {
+      console.log('🕙 Timers:', data.timers);
+      setTimers(data.timers);
+    },
+  });
+  // Subscribe to the events above.
+  useSubscription(subscriptionSettings.current);
 
   // Give this component an internal date that refreshes each timer.
   const [, setDate] = useState(new Date());
@@ -41,12 +39,16 @@ const TimerGrid = () => {
     };
   }, []); // Only run on 'mount' and 'unmount'.
 
+  // If server hasn't sent us timers yet.
+  if (timers.length !== 4) {
+    return <p>No timers</p>;
+  }
+
   return (
     <FourByFourGrid>
-      <Timer />
-      <Timer />
-      <Timer />
-      <Timer />
+      {timers.map(timer => (
+        <Timer key={timer.id} />
+      ))}
     </FourByFourGrid>
   );
 };

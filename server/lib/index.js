@@ -39,6 +39,14 @@ io.on("connection", client => {
   });
 
   /**
+   * Handle timer start.
+   */
+  client.on('START', data => {
+    const { id, food } = data;
+    console.log(`Client wants to start timer ${id} with ${food}`);
+  });
+
+  /**
    * Handle disconnecting clients.
    */
   client.on("disconnecting", data => {

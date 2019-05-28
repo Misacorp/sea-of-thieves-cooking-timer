@@ -61,6 +61,17 @@ const EventListener = socket => {
         timestamp,
       });
     });
+
+    // Server sent timers.
+    socket.on(actions.TIMER_SYNC, data => {
+      const { timers } = data;
+      publish(actions.TIMER_SYNC, {
+        type: actions.TIMER_SYNC,
+        id: uuid(),
+        timers,
+        timestamp: new Date().toString(),
+      });
+    });
   };
 
   const removeEventListener = () => {

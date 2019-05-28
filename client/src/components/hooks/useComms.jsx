@@ -28,11 +28,13 @@ const useComms = () => {
   }, []);
 
   /**
-   * Starts a timer with the given id.
-   * @param {string} id Id of timer to start.
+   * Starts a timer with the given id and food.
+   * @param {string} id   Id of timer to start.
+   * @param {string} food Food indicating timer duration.
    */
-  const start = id => {
-    console.log(actions.START, id);
+  const start = (id, food) => {
+    console.log(actions.START, id, food);
+    socket.emit(actions.START, { id, food });
   };
 
   /**
