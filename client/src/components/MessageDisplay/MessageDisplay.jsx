@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -20,44 +20,37 @@ const MessageDisplayBase = ({ className }) => {
   // Store messages in state.
   const [messages, setMessages] = useState([]);
 
-  // Subscribe to events that warrant a message.
-  const { subscription, subscribeTo } = useSubscription();
-  useEffect(() => {
-    // Build human-readable messages out of data that is received.
-    const handleMessage = data => {
-      const { id, type, timestamp, ...otherData } = data;
+  // Build human-readable messages out of data that is received.
+  const handleMessage = data => {
+    const { id, type, timestamp, ...otherData } = data;
 
-      // Set the message content via messageTemplates.
-      const content = messageTemplates[type](otherData);
-      const newMessage = new Message({ id, timestamp, content });
+    // Set the message content via messageTemplates.
+    const content = messageTemplates[type](otherData);
+    const newMessage = new Message({ id, timestamp, content });
 
-      setMessages(prevMessages => {
-        const newMessages = [...prevMessages, newMessage];
-        return newMessages;
-      });
-    };
-
-    subscribeTo({
-      [USER_JOINED]: data => {
-        handleMessage(data);
-      },
-      [USER_LEFT]: data => {
-        handleMessage(data);
-      },
-      [MEMBER_LIST]: data => {
-        handleMessage(data);
-      },
-      [NONEXISTANT_ROOM]: data => {
-        handleMessage(data);
-      },
+    setMessages(prevMessages => {
+      const newMessages = [...prevMessages, newMessage];
+      return newMessages;
     });
+  };
 
-    // Unsubscribe on dismount (actually happens at the end of an update cycle right now, but seems to work).
-    const { current } = subscription;
-    return () => {
-      current.unsubscribe();
-    };
-  }, [subscribeTo, subscription]);
+  // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
+  const subscriptionSettings = useRef({
+    [USER_JOINED]: data => {
+      handleMessage(data);
+    },
+    [USER_LEFT]: data => {
+      handleMessage(data);
+    },
+    [MEMBER_LIST]: data => {
+      handleMessage(data);
+    },
+    [NONEXISTANT_ROOM]: data => {
+      handleMessage(data);
+    },
+  });
+  // Subscribe to the events above.
+  useSubscription(subscriptionSettings.current);
 
   return (
     <div className={className}>

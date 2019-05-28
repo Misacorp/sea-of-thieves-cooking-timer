@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
@@ -35,24 +35,17 @@ if (process.env.NODE_ENV === 'development') {
 const RoomSelectBase = ({ className }) => {
   const { setOnline } = useContext(OnlineContext);
 
-  // Subscribe to events relating to creating or joining a room.
-  const { subscription, subscribeTo } = useSubscription();
-  useEffect(() => {
-    subscribeTo({
-      [ROOM_CREATED]: data => {
-        console.log('[RoomSelect] ROOM_CREATED callback data:', data);
-        setOnline('ONLINE');
-      },
-      [USER_JOINED]: data => {
-        console.log('[RoomSelect] USER_JOINED callback data:', data);
-        setOnline('ONLINE');
-      },
-    });
-
-    // Unsubscribe on dismount (actually happens at the end of an update cycle right now, but seems to work).
-    const { current } = subscription;
-    return () => current.unsubscribe();
-  }, [subscribeTo, setOnline, subscription]);
+  // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
+  const subscriptionSettings = useRef({
+    [ROOM_CREATED]: () => {
+      setOnline('ONLINE');
+    },
+    [USER_JOINED]: () => {
+      setOnline('ONLINE');
+    },
+  });
+  // Subscribe to the events above.
+  useSubscription(subscriptionSettings.current);
 
   /**
    * Allow the user to set a nickname

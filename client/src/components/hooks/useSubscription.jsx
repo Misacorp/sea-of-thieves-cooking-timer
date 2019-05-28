@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { filter } from 'rxjs/operators';
 
 import MessageCenter from '../MessageCenter';
@@ -8,12 +8,13 @@ import MessageCenter from '../MessageCenter';
  * Provides components with a subscription thingy.
  * @param {object} subs Object where keys are topics and values are their callback functions.
  */
-const useSubscription = () => {
+const useSubscription = subs => {
   const subscription = useRef();
 
-  const subscribeTo = subs => {
+  useEffect(() => {
     const topics = Object.keys(subs);
-    console.log('[useSubscription] subscribing to', topics);
+
+    console.log('✅ [sub]', topics);
 
     subscription.current = MessageCenter.pipe(
       filter(({ topic }) => topics.includes(topic)),
@@ -21,9 +22,14 @@ const useSubscription = () => {
       // Call the topic's callback with the received data.
       subs[topic](data);
     });
-  };
 
-  return { subscription, subscribeTo };
+    return () => {
+      console.log('❌ [unsub]', topics);
+      subscription.current.unsubscribe();
+    };
+  }, [subs]);
+
+  return subscription;
 };
 
 export default useSubscription;
