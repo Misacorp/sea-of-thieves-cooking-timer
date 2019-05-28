@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { uniqueNamesGenerator } from 'unique-names-generator';
@@ -10,7 +10,7 @@ import Divider from './Generic/Divider';
 import useSubscription from './hooks/useSubscription';
 import useComms from './hooks/useComms';
 import OnlineContext from './contexts/OnlineContext';
-import { USER_JOINED, ROOM_CREATED } from './actions/actionTypes';
+import { USER_JOINED, ROOM_CREATED } from './actions/actions';
 
 const roomCodeLength = 4;
 let initialNickname = '';

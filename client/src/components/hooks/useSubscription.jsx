@@ -3,6 +3,8 @@ import { filter } from 'rxjs/operators';
 
 import MessageCenter from '../MessageCenter';
 
+const debug = false;
+
 /**
  * Custom hook.
  * Provides components with a subscription thingy.
@@ -14,7 +16,7 @@ const useSubscription = subs => {
   useEffect(() => {
     const topics = Object.keys(subs);
 
-    console.log('✅ [sub]', topics);
+    if (debug) console.log('✅ [sub]', topics);
 
     subscription.current = MessageCenter.pipe(
       filter(({ topic }) => topics.includes(topic)),
@@ -24,7 +26,7 @@ const useSubscription = subs => {
     });
 
     return () => {
-      console.log('❌ [unsub]', topics);
+      if (debug) console.log('❌ [unsub]', topics);
       subscription.current.unsubscribe();
     };
   }, [subs]);

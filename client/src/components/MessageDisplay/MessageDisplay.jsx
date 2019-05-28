@@ -7,7 +7,7 @@ import {
   USER_LEFT,
   MEMBER_LIST,
   NONEXISTANT_ROOM,
-} from '../actions/actionTypes';
+} from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
 import messageTemplates from '../../types/messageTemplates';

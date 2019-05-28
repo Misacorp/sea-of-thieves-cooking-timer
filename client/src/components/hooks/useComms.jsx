@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import io from 'socket.io-client';
 
-import * as actions from '../actions/actionTypes';
+import * as actions from '../actions/actions';
 import EventListener from './EventListener';
 
 // Connect to the socket

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { START, STOP, PAUSE } from '../actions/actionTypes';
+import { START, STOP, PAUSE } from '../actions/actions';
 import EventContext from '../contexts/EventContext';
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import Timer from './Timer';

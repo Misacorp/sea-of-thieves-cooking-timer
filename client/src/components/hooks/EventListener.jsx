@@ -1,5 +1,5 @@
 import uuid from 'uuid/v4';
-import * as actions from '../actions/actionTypes';
+import * as actions from '../actions/actions';
 import { publish } from '../MessageCenter';
 
 /**
@@ -35,8 +35,6 @@ const EventListener = socket => {
 
     // Someone else left the room.
     socket.on(actions.USER_LEFT, data => {
-      console.log('📩 USER_LEFT', data);
-
       const { nickname, timestamp } = data;
       publish(actions.USER_LEFT, {
         type: actions.USER_LEFT,
@@ -50,7 +48,7 @@ const EventListener = socket => {
     socket.on(actions.ROOM_CREATED, data => {
       const { roomCode } = data;
       publish(actions.ROOM_CREATED, roomCode);
-      console.log(`Room ${roomCode} was created and you are now a member`);
+      console.log(`🚪 Room code: ${roomCode}`);
     });
 
     // Client tried to join a room that doesn't exist.

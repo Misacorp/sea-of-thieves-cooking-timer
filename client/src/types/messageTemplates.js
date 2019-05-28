@@ -1,4 +1,4 @@
-import * as actions from '../components/actions/actionTypes';
+import * as actions from '../components/actions/actions';
 
 /**
  * Templates for various types of messages.
@@ -19,7 +19,7 @@ messageTemplates[actions.USER_LEFT] = ({ nickname }) => {
 };
 
 messageTemplates[actions.NONEXISTANT_ROOM] = ({ roomCode }) => {
-  return `Room ${roomCode} doesn't exist. Create it?`;
+  return `Room ${roomCode} doesn't exist`;
 };
 
 export default messageTemplates;

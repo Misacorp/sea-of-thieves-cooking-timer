@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 import Socket from '../contexts/SocketContext';
 import foods from '../../types/foods';
 import TimerButtonGrid from '../Generic/Grids/TimerButtonGrid';
-import FoodSelectButton from '../FoodSelectButton';
+import FoodSelectButton from './FoodSelectButton';
 
 import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
