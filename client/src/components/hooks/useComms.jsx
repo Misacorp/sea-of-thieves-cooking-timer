@@ -1,19 +1,7 @@
-import { useEffect } from 'react';
-import io from 'socket.io-client';
+import { useContext } from 'react';
 
+import ConnectionContext from '../contexts/ConnectionContext';
 import * as actions from '../actions/actions';
-import EventListener from './EventListener';
-
-// Connect to the socket
-const serverUrl =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:1338'
-    : '__heroku_address_here__';
-
-const socket = io(serverUrl);
-
-console.log('Initializing an event listener');
-const { startEventListener } = EventListener(socket);
 
 /**
  * Custom hook.
@@ -21,11 +9,9 @@ const { startEventListener } = EventListener(socket);
  * This can help with stale state: https://github.com/facebook/react/issues/15041
  */
 const useComms = () => {
-  // Start an event listener that handles incoming events.
-  useEffect(() => {
-    console.log('useComms registering event listeners');
-    startEventListener();
-  }, []);
+  // Get the socket from our context
+  const { connection } = useContext(ConnectionContext);
+  const { socket } = connection;
 
   /**
    * Starts a timer with the given id and food.
@@ -50,7 +36,12 @@ const useComms = () => {
    * Creates a new room.
    */
   const createRoom = nickname => {
-    socket.emit(actions.CREATE_ROOM, { nickname });
+    if (socket) {
+      console.log('Sending CREATE_ROOM to server');
+      socket.emit(actions.CREATE_ROOM, { nickname });
+    } else {
+      console.log('No socket!', socket);
+    }
   };
 
   return { start, createRoom, joinRoom };

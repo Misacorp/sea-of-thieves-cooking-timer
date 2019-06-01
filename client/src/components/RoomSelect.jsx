@@ -1,16 +1,14 @@
-import React, { useState, useContext, useRef } from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import React, { useContext, useRef, useState } from 'react';
+import styled from 'styled-components';
 import { uniqueNamesGenerator } from 'unique-names-generator';
-
+import { ROOM_CREATED, USER_JOINED } from './actions/actions';
+import ConnectionContext from './contexts/ConnectionContext';
 import Button from './Generic/Button';
-import Input from './Generic/Input';
 import Divider from './Generic/Divider';
-
-import useSubscription from './hooks/useSubscription';
+import Input from './Generic/Input';
 import useComms from './hooks/useComms';
-import OnlineContext from './contexts/OnlineContext';
-import { USER_JOINED, ROOM_CREATED } from './actions/actions';
+import useSubscription from './hooks/useSubscription';
 
 const roomCodeLength = 4;
 let initialNickname = '';
@@ -33,15 +31,15 @@ if (process.env.NODE_ENV === 'development') {
  *   - Join that room
  */
 const RoomSelectBase = ({ className }) => {
-  const { setOnline } = useContext(OnlineContext);
+  const { dispatch } = useContext(ConnectionContext);
 
   // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
   const subscriptionSettings = useRef({
     [ROOM_CREATED]: () => {
-      setOnline('ONLINE');
+      dispatch({ type: 'ONLINE' });
     },
     [USER_JOINED]: () => {
-      setOnline('ONLINE');
+      dispatch({ type: 'ONLINE' });
     },
   });
   // Subscribe to the events above.

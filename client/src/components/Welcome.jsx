@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-import OnlineContext from './contexts/OnlineContext';
+import ConnectionContext from './contexts/ConnectionContext';
 import RoomSelect from './RoomSelect';
 import Button from './Generic/Button';
 
@@ -9,16 +9,15 @@ import Button from './Generic/Button';
  * Displays option to use the timers offline or online.
  */
 const Welcome = () => {
-  const { setOnline } = useContext(OnlineContext);
+  const { dispatch } = useContext(ConnectionContext);
   const [setupState, setSetupState] = useState('ONLINE_SELECT');
 
   const goOffline = () => {
-    console.log('Selected offline');
-    setOnline('OFFLINE');
+    dispatch({ type: 'OFFLINE' });
   };
 
   const goOnline = () => {
-    console.log('Selected online');
+    dispatch({ type: 'ONLINE_SETUP' });
     setSetupState('ROOM_SELECT');
   };
 
