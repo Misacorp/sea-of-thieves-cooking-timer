@@ -2,21 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+import useComms from '../hooks/useComms';
 import Running from './TimerStates/Running';
 import Stopped from './TimerStates/Stopped';
 import Select from './TimerStates/Select';
 
 import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
-const NewTimerBase = ({
-  id,
-  start,
-  stop,
-  startDate,
-  state,
-  duration,
-  className,
-}) => {
+const NewTimerBase = ({ id, startDate, state, duration, className }) => {
+  const { start, reset } = useComms();
+
   /**
    * Plays a sound effect.
    */
@@ -44,6 +39,9 @@ const NewTimerBase = ({
     return Math.max(0, Math.round(timeLeft));
   };
 
+  /**
+   * If timer is running
+   */
   const timeLeft = getTimeLeft();
   if (state === 'RUNNING' && timeLeft > 0) {
     return (
@@ -51,15 +49,16 @@ const NewTimerBase = ({
     );
   }
 
+  /**
+   * If timer is stopped (has just finished and needs to be reset)
+   */
   if (state === 'STOPPED' || (timeLeft <= 0 && state === 'RUNNING')) {
-    return (
-      <Stopped
-        stop={() => console.log('Stopping timer')}
-        className={className}
-      />
-    );
+    return <Stopped reset={reset(id)} className={className} />;
   }
 
+  /**
+   * If timer is idle.
+   */
   if (state === 'SELECT') {
     return <Select start={start} id={id} className={className} />;
   }
@@ -70,8 +69,6 @@ const NewTimerBase = ({
 NewTimerBase.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
-  start: PropTypes.func,
-  stop: PropTypes.func,
   startDate: PropTypes.string,
   state: PropTypes.string,
   duration: PropTypes.number,

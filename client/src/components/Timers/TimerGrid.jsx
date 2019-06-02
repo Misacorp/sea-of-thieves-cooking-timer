@@ -2,14 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { TIMER_SYNC } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
-import useComms from '../hooks/useComms';
 
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import OnlineTimer from './OnlineTimer';
 
 const TimerGrid = () => {
-  const { start } = useComms();
-
   // Store an array of timers we will later render into components.
   const [timers, setTimers] = useState([]);
 
@@ -36,7 +33,7 @@ const TimerGrid = () => {
    * Runs on mount and clears itself on unmount.
    */
   useEffect(() => {
-    const timerID = setInterval(() => tick(), 1000);
+    const timerID = setInterval(() => tick(), 250);
 
     return function cleanup() {
       clearInterval(timerID);
@@ -53,7 +50,6 @@ const TimerGrid = () => {
       {timers.map(timer => (
         <OnlineTimer
           key={timer.id}
-          start={start}
           id={timer.id}
           startDate={timer.startDate}
           duration={timer.duration}

@@ -7,11 +7,11 @@ const Button = styled.button`
   background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const Stopped = ({ stop, className }) => {
+const Stopped = ({ reset, className }) => {
   return (
     <div className={className}>
       <p>Timer has stopped</p>
-      <Button type="button" onClick={stop}>
+      <Button type="button" onClick={reset}>
         OK
       </Button>
     </div>
@@ -19,7 +19,7 @@ const Stopped = ({ stop, className }) => {
 };
 
 Stopped.propTypes = {
-  stop: PropTypes.func,
+  reset: PropTypes.func,
   className: PropTypes.string,
 };
 

@@ -19,8 +19,11 @@ const useComms = () => {
    * @param {string} food Food indicating timer duration.
    */
   const start = (id, food) => () => {
-    console.log(actions.START, { id, food });
     socket.emit(actions.START, { id, food });
+  };
+
+  const reset = id => () => {
+    socket.emit(actions.RESET, { id });
   };
 
   /**
@@ -37,14 +40,13 @@ const useComms = () => {
    */
   const createRoom = nickname => {
     if (socket) {
-      console.log('Sending CREATE_ROOM to server');
       socket.emit(actions.CREATE_ROOM, { nickname });
     } else {
       console.log('No socket!', socket);
     }
   };
 
-  return { start, createRoom, joinRoom };
+  return { start, reset, createRoom, joinRoom };
 };
 
 export default useComms;

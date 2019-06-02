@@ -65,6 +65,33 @@ io.on("connection", client => {
       io.in(roomCode).emit("GENERIC_MESSAGE", { message: e.message });
     }
   });
+
+  /**
+   * Handle timer reset
+   */
+  client.on("RESET", data => {
+    const { id } = data;
+    console.log(`Client wants to stop timer ${id}`);
+
+    // Get the client's room
+    const roomCode = getRooms(client)[0];
+    const room = RoomStore.rooms[roomCode];
+
+    // Start the correct timer
+    try {
+      const timer = room.getTimer(id);
+      timer.reset();
+
+      io.in(roomCode).emit("TIMER_SYNC", {
+        timestamp: new Date(),
+        timers: room.timers
+      });
+    } catch (e) {
+      console.error(e);
+      io.in(roomCode).emit("GENERIC_MESSAGE", { message: e.message });
+    }
+  });
+
   /**
    * Handle disconnecting clients.
    */

@@ -39,6 +39,13 @@ class Timer {
     }
     throw new TypeError(`Cannot start a timer with food ${food}`);
   }
+
+  /**
+   * Resets a timer
+   */
+  reset() {
+    this.state = 'SELECT';
+  }
 }
 
 export default Timer;
