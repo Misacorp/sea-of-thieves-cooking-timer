@@ -12,9 +12,10 @@ const NewTimerBase = ({ id, start, className }) => {
   // Keep track of the food being cooked.
   const [food, setFood] = useState(null);
 
+  // Is the timer running?
   const [running, setRunning] = useState(false);
 
-  // Asks the server to start the timer with the given food
+  // When was the timer started?
   const [startDate, setStartDate] = useState(null);
 
   /**

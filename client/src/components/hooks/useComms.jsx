@@ -19,7 +19,7 @@ const useComms = () => {
    * @param {string} food Food indicating timer duration.
    */
   const start = (id, food) => () => {
-    console.log(actions.START, id, food);
+    console.log(actions.START, { id, food });
     socket.emit(actions.START, { id, food });
   };
 

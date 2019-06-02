@@ -1,7 +1,8 @@
 import http from "http";
 import socketIo from "socket.io";
 
-import getRooms from './getClientRooms';
+import getRooms from "./getClientRooms";
+import RoomStore from "./RoomStore";
 import createRoomHandler from "./roomHandler";
 
 const server = http.createServer();
@@ -35,39 +36,42 @@ io.on("connection", client => {
    * Handle leaving rooms.
    */
   client.on("LEAVE_ROOM", () => {
-    console.log('Client leaving room', client.id)
+    console.log("Client leaving room", client.id);
     roomHandler.leaveRooms();
   });
 
   /**
    * Handle timer start.
    */
-  client.on('START', data => {
+  client.on("START", data => {
     const { id, food } = data;
     console.log(`Client wants to start timer ${id} with ${food}`);
 
-    // Get the client's room code
+    // Get the client's room
     const roomCode = getRooms(client)[0];
-    console.log(roomCode);
-    io.in(roomCode).emit('GENERIC_MESSAGE', { message: `Someone wants to start ${id}` });
-  });
+    const room = RoomStore.rooms[roomCode];
 
+    // Start the correct timer
+    try {
+      const timer = room.getTimer(id);
+      timer.start(food);
+
+      io.in(roomCode).emit("TIMER_SYNC", {
+        timestamp: new Date(),
+        timers: room.timers
+      });
+    } catch (e) {
+      console.error(e);
+      io.in(roomCode).emit("GENERIC_MESSAGE", { message: e.message });
+    }
+  });
   /**
    * Handle disconnecting clients.
    */
   client.on("disconnecting", data => {
-    console.log('Client disconnecting', client.id);
+    console.log("Client disconnecting", client.id);
     roomHandler.leaveRooms();
     console.log("Client disconnected");
-  });
-
-  /**
-   * Starts a given timer.
-   */
-  client.on("start", data => {
-    const { id, food } = data;
-    console.log(`Starting timer ${id} with ${food}`);
-    client.emit("start", { date: new Date(), id: data.id, food: data.food });
   });
 
   /**
