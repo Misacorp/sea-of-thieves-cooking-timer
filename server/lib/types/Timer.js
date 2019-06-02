@@ -1,3 +1,5 @@
+const DEV = true;
+
 /**
  * Foods that can be cooked and their durations.
  */
@@ -19,7 +21,7 @@ const foods = {
 class Timer {
   constructor(id) {
     this.id = id;
-    this.state;
+    this.state = 'SELECT';
     this.startDate;
     this.duration;
   }
@@ -32,6 +34,7 @@ class Timer {
       this.state = 'RUNNING';
       this.startDate = new Date();
       this.duration = foods[food].duration;
+      if (DEV) this.duration *= 0.5;
       return this;
     }
     throw new TypeError(`Cannot start a timer with food ${food}`);

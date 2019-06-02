@@ -5,7 +5,7 @@ import useSubscription from '../hooks/useSubscription';
 import useComms from '../hooks/useComms';
 
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
-import Timer from './Timer';
+import OnlineTimer from './OnlineTimer';
 
 const TimerGrid = () => {
   const { start } = useComms();
@@ -36,7 +36,7 @@ const TimerGrid = () => {
    * Runs on mount and clears itself on unmount.
    */
   useEffect(() => {
-    const timerID = setInterval(() => tick(), 100);
+    const timerID = setInterval(() => tick(), 1000);
 
     return function cleanup() {
       clearInterval(timerID);
@@ -51,7 +51,14 @@ const TimerGrid = () => {
   return (
     <FourByFourGrid>
       {timers.map(timer => (
-        <Timer key={timer.id} start={start} id={timer.id} />
+        <OnlineTimer
+          key={timer.id}
+          start={start}
+          id={timer.id}
+          startDate={timer.startDate}
+          duration={timer.duration}
+          state={timer.state}
+        />
       ))}
     </FourByFourGrid>
   );

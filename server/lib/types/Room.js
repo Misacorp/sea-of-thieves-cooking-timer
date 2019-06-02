@@ -18,7 +18,6 @@ class Room {
   }
 
   addTimer(timer) {
-    console.log(`Adding timer to room ${this.code}`, timer);
     this.timers.push(timer);
   }
 
@@ -30,7 +29,6 @@ class Room {
     for (let i = 0; i < iterations; i += 1) {
       const timer = this.timers[i];
       if (timer.id === id) {
-        console.log("Found the right timer!", timer);
         return timer;
       }
     }
