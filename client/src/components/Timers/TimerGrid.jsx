@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { TIMER_SYNC } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
+import useComms from '../hooks/useComms';
 
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import OnlineTimer from './OnlineTimer';
@@ -28,12 +29,19 @@ const TimerGrid = () => {
     setDate(new Date()); // This refreshes the component state and triggers a re-render (?)
   };
 
+  const { requestTimers } = useComms();
   /**
    * Set up an internal interval to call tick()
    * Runs on mount and clears itself on unmount.
    */
   useEffect(() => {
     const timerID = setInterval(() => tick(), 250);
+
+    // If no timers are present, request them.
+    if (timers.length < 1) {
+      console.log('No timers. Requesting them.');
+      requestTimers();
+    }
 
     return function cleanup() {
       clearInterval(timerID);

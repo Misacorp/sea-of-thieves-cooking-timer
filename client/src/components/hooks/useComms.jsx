@@ -46,7 +46,11 @@ const useComms = () => {
     }
   };
 
-  return { start, reset, createRoom, joinRoom };
+  const requestTimers = () => {
+    socket.emit(actions.REQUEST_TIMERS);
+  };
+
+  return { start, reset, createRoom, joinRoom, requestTimers };
 };
 
 export default useComms;

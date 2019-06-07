@@ -1,4 +1,4 @@
-import React, { useRef, useReducer } from 'react';
+import React, { useRef, useCallback, useReducer } from 'react';
 
 import ConnectionContext from './contexts/ConnectionContext';
 import { createSocket, startListening } from '../services/socketHandler';
@@ -8,6 +8,7 @@ import Welcome from './Welcome';
 import AppControls from './AppControls';
 import MessageDisplay from './MessageDisplay/MessageDisplay';
 import TimerGrid from './Timers/TimerGrid';
+import fakeSocket from '../services/fakeSocket';
 
 const initialState = {
   state: 'SETUP',
@@ -20,10 +21,6 @@ const initialState = {
 const Main = () => {
   // Create an empty socket and a mock socket.
   const socket = useRef();
-  const fakeSocket = {
-    on: data => console.log('fakeSocket on:', data),
-    emit: data => console.log('fakeSocket emit:', data),
-  };
 
   // Changes connection type and sets the communication object accordingly (socket vs. mock socket).
   const connectionReducer = (state, action) => {
@@ -34,7 +31,17 @@ const Main = () => {
 
       // The user wants to be offline.
       case 'OFFLINE':
-        return { state: 'OFFLINE', socket: fakeSocket };
+        // Initialize the fake socket
+        /**
+         * fakeSocket.init() should happen after fakeSocket is set into the state.
+         * TimerGrid is mounted after socket inits so it never gets the 'TIMER_SYNC' event.
+         * Alternatively TimerGrid should ask for timers once it mounts.
+         */
+        fakeSocket.init();
+        if (socket.current === undefined) {
+          socket.current = fakeSocket;
+        }
+        return { state: 'OFFLINE', socket: socket.current };
 
       // The user wants to go online and is selecting a room to join (or create).
       case 'ONLINE_SETUP':
@@ -61,7 +68,13 @@ const Main = () => {
     }
   };
 
-  const [connection, dispatch] = useReducer(connectionReducer, initialState);
+  // Memoize the callback so React doesn't have to check if it has changed UNLESS socket has changed.
+  const memoizedConnectionReducer = useCallback(connectionReducer, [socket]);
+
+  const [connection, dispatch] = useReducer(
+    memoizedConnectionReducer,
+    initialState,
+  );
   const connectionValue = { connection, dispatch }; // Provide this to context consumers.
   const { state } = connection;
 
