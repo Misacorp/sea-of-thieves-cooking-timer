@@ -32,9 +32,9 @@ class Timer {
   start(food) {
     if (Object.keys(foods).includes(food)) {
       this.state = 'RUNNING';
-      this.startDate = new Date();
+      this.startDate = new Date().toString();
       this.duration = foods[food].duration;
-      if (DEV) this.duration *= 0.5;
+      if (DEV) this.duration *= 0.05;
       return this;
     }
     throw new TypeError(`Cannot start a timer with food ${food}`);

@@ -9,7 +9,7 @@ import Select from './TimerStates/Select';
 
 import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
-const NewTimerBase = ({ id, startDate, state, duration, className }) => {
+const OnlineTimer = ({ id, startDate, state, duration, className }) => {
   const { start, reset } = useComms();
 
   /**
@@ -30,11 +30,7 @@ const NewTimerBase = ({ id, startDate, state, duration, className }) => {
     const timeElapsed = currentTime - startTime;
 
     // Speed times up while in development
-    let modifiedDuration = duration;
-    if (process.env.NODE_ENV === 'development') {
-      modifiedDuration *= 0.05;
-    }
-    const timeLeft = modifiedDuration - timeElapsed / 1000;
+    const timeLeft = duration - timeElapsed / 1000;
 
     return Math.max(0, Math.round(timeLeft));
   };
@@ -66,7 +62,7 @@ const NewTimerBase = ({ id, startDate, state, duration, className }) => {
   return <p>Unknown state</p>;
 };
 
-NewTimerBase.propTypes = {
+OnlineTimer.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   startDate: PropTypes.string,
@@ -74,7 +70,7 @@ NewTimerBase.propTypes = {
   duration: PropTypes.number,
 };
 
-const NewTimer = styled(NewTimerBase)`
+const NewTimer = styled(OnlineTimer)`
   height: calc(100% - 0.5rem);
   width: calc(100% - 0.5rem);
   padding: 0.1rem;
