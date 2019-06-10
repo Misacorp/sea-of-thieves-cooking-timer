@@ -111,6 +111,8 @@ io.on("connection", client => {
   });
 });
 
-server.listen(1338);
+
+const PORT = process.env.PORT || 1338;
+server.listen(PORT);
 
 // https://medium.com/dailyjs/combining-react-with-socket-io-for-real-time-goodness-d26168429a34
