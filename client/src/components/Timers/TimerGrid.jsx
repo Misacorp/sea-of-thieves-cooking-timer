@@ -64,6 +64,7 @@ const TimerGrid = () => {
           id={timer.id}
           startDate={timer.startDate}
           duration={timer.duration}
+          foodName={timer.foodName}
           state={timer.state}
         />
       ))}

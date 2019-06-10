@@ -9,7 +9,14 @@ import Select from './TimerStates/Select';
 
 import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
-const OnlineTimer = ({ id, startDate, state, duration, className }) => {
+const OnlineTimer = ({
+  id,
+  startDate,
+  state,
+  duration,
+  foodName,
+  className,
+}) => {
   const { start, reset } = useComms();
   const [soundHasPlayed, setSoundHasPlayed] = useState(false);
 
@@ -51,7 +58,7 @@ const OnlineTimer = ({ id, startDate, state, duration, className }) => {
 
   if (state === 'RUNNING' && timeLeft > 0) {
     return (
-      <Running food="something" timeLeft={timeLeft} className={className} />
+      <Running food={foodName} timeLeft={timeLeft} className={className} />
     );
   }
 
@@ -78,6 +85,7 @@ OnlineTimer.propTypes = {
   startDate: PropTypes.string,
   state: PropTypes.string,
   duration: PropTypes.number,
+  foodName: PropTypes.string,
 };
 
 const NewTimer = styled(OnlineTimer)`
