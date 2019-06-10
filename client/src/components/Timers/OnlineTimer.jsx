@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -11,6 +11,12 @@ import audioFile from '../../assets/sound/annoying-vuvuzela-tone.mp3';
 
 const OnlineTimer = ({ id, startDate, state, duration, className }) => {
   const { start, reset } = useComms();
+  const [soundHasPlayed, setSoundHasPlayed] = useState(false);
+
+  // When a new start date is given, reset sound so that it can be played.
+  useEffect(() => {
+    setSoundHasPlayed(false);
+  }, [startDate]);
 
   /**
    * Plays a sound effect.
@@ -18,6 +24,7 @@ const OnlineTimer = ({ id, startDate, state, duration, className }) => {
   const playSound = () => {
     const audio = new Audio(audioFile);
     audio.play();
+    setSoundHasPlayed(true);
   };
 
   /**
@@ -35,10 +42,13 @@ const OnlineTimer = ({ id, startDate, state, duration, className }) => {
     return Math.max(0, Math.round(timeLeft));
   };
 
-  /**
-   * If timer is running
-   */
   const timeLeft = getTimeLeft();
+
+  // Play sound if time has run out
+  if (timeLeft <= 0 && !soundHasPlayed) {
+    playSound();
+  }
+
   if (state === 'RUNNING' && timeLeft > 0) {
     return (
       <Running food="something" timeLeft={timeLeft} className={className} />
@@ -56,7 +66,7 @@ const OnlineTimer = ({ id, startDate, state, duration, className }) => {
    * If timer is idle.
    */
   if (state === 'SELECT') {
-    return <Select start={start} id={id} className={className} />;
+    return <Select start={food => start(id, food)} className={className} />;
   }
 
   return <p>Unknown state</p>;

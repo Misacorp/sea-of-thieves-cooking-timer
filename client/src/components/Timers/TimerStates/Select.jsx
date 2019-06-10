@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import TimerButtonGrid from '../../Generic/Grids/TimerButtonGrid';
 import FoodSelectButton from '../FoodSelectButton';
 
-const Select = ({ id, start, className }) => {
+const Select = ({ start, className }) => {
   return (
     <TimerButtonGrid className={className}>
-      <FoodSelectButton onClick={start(id, 'FISH')}>Fish</FoodSelectButton>
-      <FoodSelectButton onClick={start(id, 'TROPHY_FISH')}>
+      <FoodSelectButton onClick={start('FISH')}>Fish</FoodSelectButton>
+      <FoodSelectButton onClick={start('TROPHY_FISH')}>
         Trophy Fish
       </FoodSelectButton>
-      <FoodSelectButton onClick={start(id, 'MEAT')}>Meat</FoodSelectButton>
-      <FoodSelectButton onClick={start(id, 'MONSTER_MEAT')}>
+      <FoodSelectButton onClick={start('MEAT')}>Meat</FoodSelectButton>
+      <FoodSelectButton onClick={start('MONSTER_MEAT')}>
         Monster meat
       </FoodSelectButton>
     </TimerButtonGrid>
@@ -22,7 +22,6 @@ const Select = ({ id, start, className }) => {
 Select.propTypes = {
   start: PropTypes.func,
   className: PropTypes.string,
-  id: PropTypes.string,
 };
 
 export default Select;

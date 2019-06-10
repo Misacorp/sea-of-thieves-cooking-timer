@@ -9,7 +9,7 @@ const createSocket = () => {
   const serverUrl =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:1338'
-      : '__heroku_address_here__';
+      : 'https://sea-of-thieves-cooking-timer.herokuapp.com';
 
   const socket = io(serverUrl);
 
