@@ -19,7 +19,7 @@ let initialRoomCode = '';
  */
 if (process.env.NODE_ENV === 'development') {
   initialNickname = uniqueNamesGenerator('-', true);
-  initialRoomCode = '0000';
+  initialRoomCode = '';
 }
 
 /**
@@ -35,11 +35,12 @@ const RoomSelectBase = ({ className }) => {
 
   // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
   const subscriptionSettings = useRef({
-    [ROOM_CREATED]: () => {
-      dispatch({ type: 'ONLINE' });
+    [ROOM_CREATED]: roomCode => {
+      dispatch({ type: 'ONLINE', roomCode });
     },
-    [USER_JOINED]: () => {
-      dispatch({ type: 'ONLINE' });
+    [USER_JOINED]: data => {
+      const { roomCode } = data;
+      dispatch({ type: 'ONLINE', roomCode });
     },
   });
   // Subscribe to the events above.

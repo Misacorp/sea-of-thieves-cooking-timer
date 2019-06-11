@@ -51,7 +51,7 @@ const MessageDisplayBase = ({ className }) => {
       handleMessage(data);
     },
     [TIMER_SYNC]: data => {
-      handleMessage(data);
+      if (data.message) handleMessage(data);
     },
     [GENERIC_MESSAGE]: data => {
       handleMessage(data);

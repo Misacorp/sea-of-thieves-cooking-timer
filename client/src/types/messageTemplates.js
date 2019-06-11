@@ -22,8 +22,8 @@ messageTemplates[actions.NONEXISTANT_ROOM] = ({ roomCode }) => {
   return `Room ${roomCode} doesn't exist`;
 };
 
-messageTemplates[actions.TIMER_SYNC] = ({ timers }) => {
-  return `Received ${timers.length} timers`;
+messageTemplates[actions.TIMER_SYNC] = ({ message }) => {
+  return message;
 };
 
 messageTemplates[actions.GENERIC_MESSAGE] = ({ message }) => {

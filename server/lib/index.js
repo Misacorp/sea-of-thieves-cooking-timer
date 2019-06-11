@@ -56,9 +56,13 @@ io.on("connection", client => {
       const timer = room.getTimer(id);
       timer.start(food);
 
+      const { nickname } = room.getMemberById(client.id);
+      const foodName = timer.foodName.toLowerCase();
+
       io.in(roomCode).emit("TIMER_SYNC", {
         timestamp: new Date(),
-        timers: room.timers
+        timers: room.timers,
+        message: `${nickname} started cooking ${foodName}`,
       });
     } catch (e) {
       console.error(e);
@@ -77,14 +81,18 @@ io.on("connection", client => {
     const roomCode = getRooms(client)[0];
     const room = RoomStore.rooms[roomCode];
 
-    // Start the correct timer
+    // Reset the correct timer
     try {
       const timer = room.getTimer(id);
+      const foodName = timer.foodName.toLowerCase(); // Get food name before resetting it.
       timer.reset();
+
+      const { nickname } = room.getMemberById(client.id);
 
       io.in(roomCode).emit("TIMER_SYNC", {
         timestamp: new Date(),
-        timers: room.timers
+        timers: room.timers,
+        message: `${nickname} reset ${foodName}`,
       });
     } catch (e) {
       console.error(e);

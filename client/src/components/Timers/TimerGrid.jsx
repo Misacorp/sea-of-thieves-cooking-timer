@@ -7,8 +7,6 @@ import useComms from '../hooks/useComms';
 import FourByFourGrid from '../Generic/Grids/FourByFourGrid';
 import OnlineTimer from './OnlineTimer';
 
-const DEBUG = false;
-
 const TimerGrid = () => {
   // Store an array of timers we will later render into components.
   const [timers, setTimers] = useState([]);
@@ -17,7 +15,6 @@ const TimerGrid = () => {
   // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
   const subscriptionSettings = useRef({
     [TIMER_SYNC]: data => {
-      if (DEBUG) console.log('🕙 Timers:', data.timers);
       setTimers(data.timers);
     },
   });
@@ -42,7 +39,6 @@ const TimerGrid = () => {
 
     // If no timers are present, request them.
     if (timerCount < 1) {
-      console.log('No timers. Requesting them.');
       requestTimers();
     }
 

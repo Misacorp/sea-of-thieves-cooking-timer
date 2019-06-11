@@ -19,12 +19,13 @@ const createSocket = () => {
 const startListening = socket => {
   // Someone joined the room.
   socket.on(actions.USER_JOINED, data => {
-    const { nickname, timestamp } = data;
+    const { nickname, timestamp, roomCode } = data;
     publish(actions.USER_JOINED, {
       type: actions.USER_JOINED,
       id: uuid(),
       nickname,
       timestamp,
+      roomCode,
     });
   });
 
@@ -54,7 +55,7 @@ const startListening = socket => {
   socket.on(actions.ROOM_CREATED, data => {
     const { roomCode } = data;
     publish(actions.ROOM_CREATED, roomCode);
-    console.log(`🚪 Room code: ${roomCode}`);
+    // console.log(`🚪 Room code: ${roomCode}`);
   });
 
   // Client tried to join a room that doesn't exist.
@@ -70,12 +71,13 @@ const startListening = socket => {
 
   // Server sent timers.
   socket.on(actions.TIMER_SYNC, data => {
-    const { timers } = data;
+    const { timers, message } = data;
     publish(actions.TIMER_SYNC, {
       type: actions.TIMER_SYNC,
       id: uuid(),
       timestamp: new Date().toString(),
       timers,
+      message,
     });
   });
 

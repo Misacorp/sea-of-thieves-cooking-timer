@@ -132,7 +132,8 @@ const roomHandler = (io, client) => {
     client.emit("USER_JOINED", {
       nickname: "You",
       timestamp: new Date(),
-      self: true
+      self: true,
+      roomCode
     });
 
     // Notify client that they arrived and who else is in the room

@@ -8,11 +8,13 @@ import Welcome from './Welcome';
 import AppControls from './AppControls';
 import MessageDisplay from './MessageDisplay/MessageDisplay';
 import TimerGrid from './Timers/TimerGrid';
+import RoomCodeDisplay from './RoomCodeDisplay';
 import fakeSocket from '../services/fakeSocket';
 
 const initialState = {
   state: 'SETUP',
   socket: null,
+  roomCode: undefined,
 };
 
 /**
@@ -56,8 +58,9 @@ const Main = () => {
         return { state: 'ONLINE_SETUP', socket: socket.current };
 
       // The user is finally online and in a room.
-      case 'ONLINE':
-        return { ...state, state: 'ONLINE' };
+      case 'ONLINE': {
+        return { ...state, state: 'ONLINE', roomCode: action.roomCode };
+      }
 
       default:
         throw new Error(
@@ -78,15 +81,22 @@ const Main = () => {
   const connectionValue = { connection, dispatch }; // Provide this to context consumers.
   const { state } = connection;
 
+  const OfflineContent = <TimerGrid />;
+  const OnlineContent = (
+    <>
+      <RoomCodeDisplay />
+      <TimerGrid />
+    </>
+  );
+
   return (
     <ConnectionContext.Provider value={connectionValue}>
-      <React.Fragment>
-        <Header />
-        {(state === 'SETUP' || state === 'ONLINE_SETUP') && <Welcome />}
-        {(state === 'OFFLINE' || state === 'ONLINE') && <TimerGrid />}
-        <MessageDisplay />
-        <AppControls />
-      </React.Fragment>
+      <Header />
+      {(state === 'SETUP' || state === 'ONLINE_SETUP') && <Welcome />}
+      {state === 'OFFLINE' && OfflineContent}
+      {state === 'ONLINE' && OnlineContent}
+      <MessageDisplay />
+      <AppControls />
     </ConnectionContext.Provider>
   );
 };

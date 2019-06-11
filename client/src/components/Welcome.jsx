@@ -13,7 +13,6 @@ const Welcome = () => {
   const [setupState, setSetupState] = useState('ONLINE_SELECT');
 
   const goOffline = () => {
-    console.log('[Welcome] going offline');
     dispatch({ type: 'OFFLINE' });
   };
 
