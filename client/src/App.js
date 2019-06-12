@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 import { ThemeProvider } from 'styled-components';
 import WebFont from 'webfontloader';
@@ -17,10 +18,12 @@ WebFont.load({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <React.Fragment>
+      <>
         <GlobalStyles />
-        <Main />
-      </React.Fragment>
+        <BrowserRouter basename="/">
+          <Main />
+        </BrowserRouter>
+      </>
     </ThemeProvider>
   );
 }

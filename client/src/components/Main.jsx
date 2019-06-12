@@ -1,11 +1,15 @@
 import React, { useRef, useCallback, useReducer } from 'react';
+import { Switch, Route } from 'react-router-dom';
 
 import ConnectionContext from './contexts/ConnectionContext';
 import { createSocket, startListening } from '../services/socketHandler';
 
 import Header from './Header';
-import Welcome from './Welcome';
 import AppControls from './AppControls';
+
+import Welcome from './Welcome';
+import Offline from './Offline';
+import RoomSelect from './RoomSelect';
 import MessageDisplay from './MessageDisplay/MessageDisplay';
 import TimerGrid from './Timers/TimerGrid';
 import RoomCodeDisplay from './RoomCodeDisplay';
@@ -34,13 +38,8 @@ const Main = () => {
       // The user wants to be offline.
       case 'OFFLINE':
         // Initialize the fake socket
-        /**
-         * fakeSocket.init() should happen after fakeSocket is set into the state.
-         * TimerGrid is mounted after socket inits so it never gets the 'TIMER_SYNC' event.
-         * Alternatively TimerGrid should ask for timers once it mounts.
-         */
-        fakeSocket.init();
         if (socket.current === undefined) {
+          fakeSocket.init();
           socket.current = fakeSocket;
         }
         return { state: 'OFFLINE', socket: socket.current };
@@ -90,14 +89,19 @@ const Main = () => {
   );
 
   return (
-    <ConnectionContext.Provider value={connectionValue}>
+    <>
       <Header />
-      {(state === 'SETUP' || state === 'ONLINE_SETUP') && <Welcome />}
+      <Switch>
+        <Route exact path="/offline" component={Offline} />
+        <Route exact path="/online" component={RoomSelect} />
+        <Route path="/" component={Welcome} />
+      </Switch>
+      {/* {(state === 'SETUP' || state === 'ONLINE_SETUP') && <Welcome />}
       {state === 'OFFLINE' && OfflineContent}
-      {state === 'ONLINE' && OnlineContent}
+      {state === 'ONLINE' && OnlineContent} */}
       <MessageDisplay />
       <AppControls />
-    </ConnectionContext.Provider>
+    </>
   );
 };
 

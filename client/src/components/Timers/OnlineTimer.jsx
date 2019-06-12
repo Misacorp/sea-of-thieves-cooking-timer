@@ -30,6 +30,7 @@ const OnlineTimer = ({
    */
   const playSound = () => {
     const audio = new Audio(audioFile);
+    audio.volume = 0.15;
     audio.play();
     setSoundHasPlayed(true);
   };

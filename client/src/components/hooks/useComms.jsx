@@ -10,8 +10,7 @@ import * as actions from '../actions/actions';
  */
 const useComms = () => {
   // Get the socket from our context
-  const { connection } = useContext(ConnectionContext);
-  const { socket } = connection;
+  const { socket } = useContext(ConnectionContext);
 
   /**
    * Starts a timer with the given id and food.
