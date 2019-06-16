@@ -7,9 +7,7 @@ import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 
-const Online = props => {
-  console.log('Online', props);
-
+const Online = () => {
   // Create an empty socket and a mock socket.
   const socket = useRef();
 
