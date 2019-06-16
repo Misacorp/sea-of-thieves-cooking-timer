@@ -11,6 +11,8 @@ import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 
 const OnlineRoom = props => {
+  console.log('OnlineRoom props', props);
+
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, READY
 
   // If a room does not exist, use a subscription to the NONEXISTANT_ROOM event to redirect the user back to selecting a room.

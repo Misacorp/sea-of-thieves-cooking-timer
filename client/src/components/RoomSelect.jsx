@@ -1,8 +1,8 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { uniqueNamesGenerator } from 'unique-names-generator';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import { ROOM_CREATED, USER_JOINED } from './actions/actions';
 import ConnectionContext from './contexts/ConnectionContext';
@@ -11,6 +11,8 @@ import Divider from './Generic/Divider';
 import Input from './Generic/Input';
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
+
+import { ONLINE_ROOT } from '../types/routes';
 
 const roomCodeLength = 4;
 let initialNickname = '';
@@ -86,6 +88,35 @@ const RoomSelectBase = ({ className }) => {
       createRoom(nickname);
     }
   };
+
+  // Subscribe to relevant events.
+  const { activeRoomCode, setActiveRoomCode } = useContext(ConnectionContext);
+  const subscriptionSettings = useRef({
+    [ROOM_CREATED]: createdRoomCode => {
+      console.log('ROOM_CREATED:', createdRoomCode);
+      // Redirect the user to the page that makes them join this room.
+      setActiveRoomCode(createdRoomCode);
+      return <p>{createdRoomCode}</p>;
+    },
+    [USER_JOINED]: data => {
+      console.log(data);
+    },
+  });
+  // Subscribe to the events above.
+  useSubscription(subscriptionSettings.current);
+
+  // When the activeRoomCode changes to a valid one, redirect the user to an OnlineRoom component.
+  const [status, setStatus] = useState('INIT');
+  useEffect(() => {
+    if (activeRoomCode && activeRoomCode.length === roomCodeLength) {
+      console.log('Active room code is valid. Redirecting user...');
+      setStatus('ROOM_ACTIVE');
+    }
+  }, [activeRoomCode]);
+
+  if (status === 'ROOM_ACTIVE') {
+    return <Redirect to={`${ONLINE_ROOT}/${activeRoomCode}`} />;
+  }
 
   return (
     <div className={className}>

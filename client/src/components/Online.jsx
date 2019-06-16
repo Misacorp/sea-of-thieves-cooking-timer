@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import ConnectionContext from './contexts/ConnectionContext';
@@ -8,6 +8,8 @@ import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 
 const Online = () => {
+  const [activeRoomCode, setActiveRoomCode] = useState(null);
+
   // Create an empty socket and a mock socket.
   const socket = useRef();
 
@@ -26,9 +28,8 @@ const Online = () => {
 
   const connection = {
     socket: socket.current,
-    roomCode: null,
-    setRoomCode: roomCode =>
-      console.log('Mock function to set room code to', roomCode),
+    activeRoomCode,
+    setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
 
   return (
