@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { uniqueNamesGenerator } from 'unique-names-generator';
 import { Redirect, Link } from 'react-router-dom';
 
 import { ROOM_CREATED, USER_JOINED } from './actions/actions';
@@ -15,16 +14,6 @@ import useSubscription from './hooks/useSubscription';
 import { ONLINE_ROOT } from '../types/routes';
 
 const roomCodeLength = 4;
-let initialNickname = '';
-let initialRoomCode = '';
-
-/**
- * Auto-populate fields in development for faster testing
- */
-if (process.env.NODE_ENV === 'development') {
-  initialNickname = uniqueNamesGenerator('-', true);
-  initialRoomCode = '';
-}
 
 /**
  * Displays a form where a user can
@@ -35,10 +24,17 @@ if (process.env.NODE_ENV === 'development') {
  *   - Join that room
  */
 const RoomSelectBase = ({ className }) => {
+  const {
+    nickname,
+    setNickname,
+    activeRoomCode,
+    setActiveRoomCode,
+  } = useContext(ConnectionContext);
+
   /**
    * Allow the user to set a nickname
    */
-  const [nickname, setNickname] = useState(initialNickname);
+
   const handleNicknameChange = event => {
     const newName = event.target.value;
     setNickname(newName);
@@ -59,7 +55,7 @@ const RoomSelectBase = ({ className }) => {
   /**
    * Allow the user to set a room code
    */
-  const [roomCode, setRoomCode] = useState(initialRoomCode);
+  const [roomCode, setRoomCode] = useState('');
   const handleRoomCodeChange = event => {
     let newRoomCode = event.target.value;
 
@@ -73,8 +69,9 @@ const RoomSelectBase = ({ className }) => {
   /**
    * Validate roomCode.
    */
-  const roomCodeIsValid = () => {
-    return roomCode.length === roomCodeLength;
+  const roomCodeIsValid = roomCodeParam => {
+    const roomCodeToCheck = roomCodeParam || roomCode;
+    return roomCodeToCheck.length === roomCodeLength;
   };
 
   // Use our custom useComms hook to communicate with the server.
@@ -90,13 +87,10 @@ const RoomSelectBase = ({ className }) => {
   };
 
   // Subscribe to relevant events.
-  const { activeRoomCode, setActiveRoomCode } = useContext(ConnectionContext);
   const subscriptionSettings = useRef({
     [ROOM_CREATED]: createdRoomCode => {
-      console.log('ROOM_CREATED:', createdRoomCode);
       // Redirect the user to the page that makes them join this room.
       setActiveRoomCode(createdRoomCode);
-      return <p>{createdRoomCode}</p>;
     },
     [USER_JOINED]: data => {
       console.log(data);
@@ -105,11 +99,10 @@ const RoomSelectBase = ({ className }) => {
   // Subscribe to the events above.
   useSubscription(subscriptionSettings.current);
 
-  // When the activeRoomCode changes to a valid one, redirect the user to an OnlineRoom component.
+  // If there is an active room code, redirect the user to an OnlineRoom component.
   const [status, setStatus] = useState('INIT');
   useEffect(() => {
-    if (activeRoomCode && activeRoomCode.length === roomCodeLength) {
-      console.log('Active room code is valid. Redirecting user...');
+    if (activeRoomCode && roomCodeIsValid(activeRoomCode)) {
       setStatus('ROOM_ACTIVE');
     }
   }, [activeRoomCode]);
@@ -118,6 +111,7 @@ const RoomSelectBase = ({ className }) => {
     return <Redirect to={`${ONLINE_ROOT}/${activeRoomCode}`} />;
   }
 
+  // Otherwise display the Room Select form
   return (
     <div className={className}>
       <Input

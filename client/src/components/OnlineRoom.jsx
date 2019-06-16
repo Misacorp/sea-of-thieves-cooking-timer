@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import { NONEXISTANT_ROOM, USER_JOINED } from './actions/actions';
 
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
+import ConnectionContext from './contexts/ConnectionContext';
 
 const OnlineRoom = props => {
   console.log('OnlineRoom props', props);
@@ -35,9 +36,10 @@ const OnlineRoom = props => {
   } = props;
 
   // Attempt to join the room
+  const { nickname } = useContext(ConnectionContext);
   const { joinRoom } = useComms();
   useEffect(() => {
-    joinRoom(roomCode, 'TestaajaHemmo');
+    joinRoom(roomCode, nickname);
   }, [joinRoom, roomCode]);
 
   if (status === 'INIT') {

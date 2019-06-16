@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { uniqueNamesGenerator } from 'unique-names-generator';
 
 import ConnectionContext from './contexts/ConnectionContext';
 import RoomSelect from './RoomSelect';
@@ -7,8 +8,17 @@ import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 
+/**
+ * Auto-populate fields in development for faster testing
+ */
+let initialNickname = '';
+if (process.env.NODE_ENV === 'development') {
+  initialNickname = uniqueNamesGenerator('-', true);
+}
+
 const Online = () => {
   const [activeRoomCode, setActiveRoomCode] = useState(null);
+  const [nickname, setNickname] = useState(initialNickname);
 
   // Create an empty socket and a mock socket.
   const socket = useRef();
@@ -28,6 +38,8 @@ const Online = () => {
 
   const connection = {
     socket: socket.current,
+    nickname,
+    setNickname: newNickname => setNickname(newNickname),
     activeRoomCode,
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
