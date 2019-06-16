@@ -43,6 +43,7 @@ const Button = styled(ButtonBase)`
 
   &:disabled {
     background-color: ${({ theme }) => theme.palette.disabled.main};
+    pointer-events: none;
   }
 `;
 

@@ -9,11 +9,13 @@ import AppControls from './AppControls';
 
 import Welcome from './Welcome';
 import Offline from './Offline';
+import Online from './Online';
 import RoomSelect from './RoomSelect';
 import MessageDisplay from './MessageDisplay/MessageDisplay';
 import TimerGrid from './Timers/TimerGrid';
 import RoomCodeDisplay from './RoomCodeDisplay';
 import fakeSocket from '../services/fakeSocket';
+import * as routes from '../types/routes';
 
 const initialState = {
   state: 'SETUP',
@@ -92,13 +94,15 @@ const Main = () => {
     <>
       <Header />
       <Switch>
-        <Route exact path="/offline" component={Offline} />
-        <Route exact path="/online" component={RoomSelect} />
-        <Route path="/" component={Welcome} />
+        <Route exact path={routes.OFFLINE} component={Offline} />
+        <Route path={routes.ONLINE_ROOT} component={Online} />
+        <Route path={routes.ROOT} component={Welcome} />
       </Switch>
+
       {/* {(state === 'SETUP' || state === 'ONLINE_SETUP') && <Welcome />}
       {state === 'OFFLINE' && OfflineContent}
       {state === 'ONLINE' && OnlineContent} */}
+
       <MessageDisplay />
       <AppControls />
     </>

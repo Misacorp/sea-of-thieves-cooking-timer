@@ -6,7 +6,7 @@ import ConnectionContext from './contexts/ConnectionContext';
 
 const RoomCodeDisplayBase = ({ className }) => {
   // Get the room code from ConnectionContext
-  const { connection } = useContext(ConnectionContext);
+  const connection = useContext(ConnectionContext);
   const { roomCode } = connection;
 
   return <p className={className}>Room {roomCode}</p>;

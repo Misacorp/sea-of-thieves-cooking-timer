@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useCallback } from 'react';
 
 import ConnectionContext from '../contexts/ConnectionContext';
 import * as actions from '../actions/actions';
@@ -11,6 +11,9 @@ import * as actions from '../actions/actions';
 const useComms = () => {
   // Get the socket from our context
   const { socket } = useContext(ConnectionContext);
+  if (!socket) {
+    throw new Error('Socket not defined');
+  }
 
   /**
    * Starts a timer with the given id and food.
@@ -30,9 +33,12 @@ const useComms = () => {
    * @param {string} roomCode Room to join.
    * @param {string} nickname Client nickname
    */
-  const joinRoom = (roomCode, nickname) => {
-    socket.emit(actions.JOIN_ROOM, { roomCode, nickname });
-  };
+  const joinRoom = useCallback(
+    (roomCode, nickname) => {
+      socket.emit(actions.JOIN_ROOM, { roomCode, nickname });
+    },
+    [socket],
+  );
 
   /**
    * Creates a new room.

@@ -30,7 +30,12 @@ const OnlineTimer = ({
    */
   const playSound = () => {
     const audio = new Audio(audioFile);
-    audio.volume = 0.15;
+
+    // Don't break developers' ears.
+    if (process.env.NODE_ENV !== 'production') {
+      audio.volume = 0.15;
+    }
+
     audio.play();
     setSoundHasPlayed(true);
   };

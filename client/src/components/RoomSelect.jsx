@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { uniqueNamesGenerator } from 'unique-names-generator';
+import { Link } from 'react-router-dom';
+
 import { ROOM_CREATED, USER_JOINED } from './actions/actions';
 import ConnectionContext from './contexts/ConnectionContext';
 import Button from './Generic/Button';
@@ -31,21 +33,6 @@ if (process.env.NODE_ENV === 'development') {
  *   - Join that room
  */
 const RoomSelectBase = ({ className }) => {
-  const { dispatch } = useContext(ConnectionContext);
-
-  // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
-  const subscriptionSettings = useRef({
-    [ROOM_CREATED]: roomCode => {
-      dispatch({ type: 'ONLINE', roomCode });
-    },
-    [USER_JOINED]: data => {
-      const { roomCode } = data;
-      dispatch({ type: 'ONLINE', roomCode });
-    },
-  });
-  // Subscribe to the events above.
-  useSubscription(subscriptionSettings.current);
-
   /**
    * Allow the user to set a nickname
    */
@@ -89,25 +76,25 @@ const RoomSelectBase = ({ className }) => {
   };
 
   // Use our custom useComms hook to communicate with the server.
-  const { createRoom, joinRoom } = useComms();
+  // const { createRoom, joinRoom } = useComms();
 
   /**
    * Pass create room event to its action handler.
    */
-  const handleCreateRoom = () => {
-    if (nicknameIsValid()) {
-      createRoom(nickname);
-    }
-  };
+  // const handleCreateRoom = () => {
+  //   if (nicknameIsValid()) {
+  //     createRoom(nickname);
+  //   }
+  // };
 
   /**
    * Pass join room eventd to its action handler.
    */
-  const handleJoinRoom = () => {
-    if (nicknameIsValid() && roomCodeIsValid()) {
-      joinRoom(roomCode, nickname);
-    }
-  };
+  // const handleJoinRoom = () => {
+  //   if (nicknameIsValid() && roomCodeIsValid()) {
+  //     joinRoom(roomCode, nickname);
+  //   }
+  // };
 
   return (
     <div className={className}>
@@ -123,13 +110,11 @@ const RoomSelectBase = ({ className }) => {
 
       {nicknameIsValid() && (
         <React.Fragment>
-          <Button
-            variant="main"
-            onClick={handleCreateRoom}
-            disabled={!nicknameIsValid()}
-          >
-            Create room
-          </Button>
+          <Link to="/online/__roomcode_created__">
+            <Button variant="main" disabled={!nicknameIsValid()}>
+              Create room
+            </Button>
+          </Link>
 
           <Divider>OR</Divider>
 
@@ -140,13 +125,11 @@ const RoomSelectBase = ({ className }) => {
             placeholder="Room code"
             aria-label="Room code"
           />
-          <Button
-            variant="main"
-            onClick={handleJoinRoom}
-            disabled={!roomCodeIsValid()}
-          >
-            Join room
-          </Button>
+          <Link to="/online/__roomcode_joined__">
+            <Button variant="main" disabled={!roomCodeIsValid()}>
+              Join room
+            </Button>
+          </Link>
         </React.Fragment>
       )}
     </div>
