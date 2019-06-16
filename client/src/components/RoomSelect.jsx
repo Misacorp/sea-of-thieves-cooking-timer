@@ -76,25 +76,16 @@ const RoomSelectBase = ({ className }) => {
   };
 
   // Use our custom useComms hook to communicate with the server.
-  // const { createRoom, joinRoom } = useComms();
+  const { createRoom } = useComms();
 
   /**
    * Pass create room event to its action handler.
    */
-  // const handleCreateRoom = () => {
-  //   if (nicknameIsValid()) {
-  //     createRoom(nickname);
-  //   }
-  // };
-
-  /**
-   * Pass join room eventd to its action handler.
-   */
-  // const handleJoinRoom = () => {
-  //   if (nicknameIsValid() && roomCodeIsValid()) {
-  //     joinRoom(roomCode, nickname);
-  //   }
-  // };
+  const handleCreateRoom = () => {
+    if (nicknameIsValid()) {
+      createRoom(nickname);
+    }
+  };
 
   return (
     <div className={className}>
@@ -110,11 +101,13 @@ const RoomSelectBase = ({ className }) => {
 
       {nicknameIsValid() && (
         <React.Fragment>
-          <Link to="/online/__roomcode_created__">
-            <Button variant="main" disabled={!nicknameIsValid()}>
-              Create room
-            </Button>
-          </Link>
+          <Button
+            variant="main"
+            disabled={!nicknameIsValid()}
+            onClick={handleCreateRoom}
+          >
+            Create room
+          </Button>
 
           <Divider>OR</Divider>
 
@@ -125,7 +118,7 @@ const RoomSelectBase = ({ className }) => {
             placeholder="Room code"
             aria-label="Room code"
           />
-          <Link to="/online/__roomcode_joined__">
+          <Link to={`/online/${roomCode}`}>
             <Button variant="main" disabled={!roomCodeIsValid()}>
               Join room
             </Button>

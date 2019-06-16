@@ -13,6 +13,7 @@ const EventListener = socket => {
   const startEventListener = () => {
     // Someone joined the room.
     socket.on(actions.USER_JOINED, data => {
+      console.log(data);
       const { nickname, timestamp } = data;
       publish(actions.USER_JOINED, {
         type: actions.USER_JOINED,
@@ -46,6 +47,7 @@ const EventListener = socket => {
 
     // Room was created.
     socket.on(actions.ROOM_CREATED, data => {
+      console.log(data);
       const { roomCode } = data;
       publish(actions.ROOM_CREATED, roomCode);
       console.log(`🚪 Room code: ${roomCode}`);

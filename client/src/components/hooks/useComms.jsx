@@ -43,13 +43,16 @@ const useComms = () => {
   /**
    * Creates a new room.
    */
-  const createRoom = nickname => {
-    if (socket) {
-      socket.emit(actions.CREATE_ROOM, { nickname });
-    } else {
-      console.log('No socket!', socket);
-    }
-  };
+  const createRoom = useCallback(
+    nickname => {
+      if (socket) {
+        socket.emit(actions.CREATE_ROOM, { nickname });
+      } else {
+        console.log('No socket!', socket);
+      }
+    },
+    [socket],
+  );
 
   const requestTimers = () => {
     socket.emit(actions.REQUEST_TIMERS);

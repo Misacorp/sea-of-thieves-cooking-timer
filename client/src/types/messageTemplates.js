@@ -5,8 +5,9 @@ import * as actions from '../components/actions/actions';
  */
 const messageTemplates = {};
 
-messageTemplates[actions.USER_JOINED] = ({ nickname }) => {
-  return `${nickname} joined`;
+messageTemplates[actions.USER_JOINED] = data => {
+  const { nickname, roomCode } = data;
+  return `${nickname} joined room ${roomCode}`;
 };
 
 messageTemplates[actions.MEMBER_LIST] = ({ members }) => {

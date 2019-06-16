@@ -1,12 +1,15 @@
-import uuid from 'uuid/v4';
+import uuid from "uuid/v4";
 
 import makeRoomCode from "../dist/utils/roomCodeGenerator";
 import getRooms from "./getClientRooms";
 import RoomStore from "./RoomStore";
 
+import emitSelfJoined from "./messages/emitSelfJoined";
+import emitTimerSync from "./messages/emitTimerSync";
+
 import User from "./types/User";
 import Room from "./types/Room";
-import Timer from './types/Timer';
+import Timer from "./types/Timer";
 
 const ROOMCODE_LENGTH = 4;
 const TIMER_AMOUNT = 4;
@@ -74,16 +77,8 @@ const roomHandler = (io, client) => {
     console.log(`Created new room with code ${roomCode}`);
     client.emit("ROOM_CREATED", { roomCode, timestamp: new Date() });
 
-    client.emit("USER_JOINED", {
-      nickname: "You",
-      timestamp: new Date(),
-      self: true
-    });
-    
-    client.emit("TIMER_SYNC", {
-      timestamp: new Date(),
-      timers: room.timers
-    });
+    emitSelfJoined(client, roomCode);
+    emitTimerSync(client, room);
   };
 
   /**
@@ -129,12 +124,7 @@ const roomHandler = (io, client) => {
       .emit("USER_JOINED", { nickname, timestamp: new Date() });
 
     // Tell the client they joined.
-    client.emit("USER_JOINED", {
-      nickname: "You",
-      timestamp: new Date(),
-      self: true,
-      roomCode
-    });
+    emitSelfJoined(client, roomCode);
 
     // Notify client that they arrived and who else is in the room
     client.emit("MEMBER_LIST", {
@@ -143,10 +133,7 @@ const roomHandler = (io, client) => {
     });
 
     // Transmit room timer data to client.
-    client.emit("TIMER_SYNC", {
-      timestamp: new Date(),
-      timers: room.timers
-    });
+    emitTimerSync(client, room);
   };
 
   /**
