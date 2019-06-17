@@ -68,16 +68,12 @@ const roomHandler = (io, client) => {
       room.addTimer(timer);
     }
 
-    // Add the user to the room and room to the store.
-    room.addMember(user);
-    console.log(room);
-
+    // Add the Room to the store.
     RoomStore.addRoom(room);
 
     console.log(`Created new room with code ${roomCode}`);
-    client.emit("ROOM_CREATED", { roomCode, timestamp: new Date() });
 
-    emitSelfJoined(client, roomCode);
+    client.emit("ROOM_CREATED", { roomCode, timestamp: new Date() });
     emitTimerSync(client, room);
   };
 
@@ -121,7 +117,7 @@ const roomHandler = (io, client) => {
     // Notify other room members of the new arrival
     client
       .to(roomCode)
-      .emit("USER_JOINED", { nickname, timestamp: new Date() });
+      .emit("USER_JOINED", { nickname, roomCode, timestamp: new Date() });
 
     // Tell the client they joined.
     emitSelfJoined(client, roomCode);

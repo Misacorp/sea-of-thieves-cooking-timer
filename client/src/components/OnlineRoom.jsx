@@ -40,7 +40,7 @@ const OnlineRoom = props => {
   const { joinRoom } = useComms();
   useEffect(() => {
     joinRoom(roomCode, nickname);
-  }, [joinRoom, roomCode]);
+  }, [joinRoom, roomCode, nickname]);
 
   if (status === 'INIT') {
     return <p>Joining room...</p>;

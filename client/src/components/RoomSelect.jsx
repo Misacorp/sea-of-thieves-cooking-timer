@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Redirect, Link } from 'react-router-dom';
@@ -69,10 +75,13 @@ const RoomSelectBase = ({ className }) => {
   /**
    * Validate roomCode.
    */
-  const roomCodeIsValid = roomCodeParam => {
-    const roomCodeToCheck = roomCodeParam || roomCode;
-    return roomCodeToCheck.length === roomCodeLength;
-  };
+  const roomCodeIsValid = useCallback(
+    roomCodeParam => {
+      const roomCodeToCheck = roomCodeParam || roomCode;
+      return roomCodeToCheck.length === roomCodeLength;
+    },
+    [roomCode],
+  );
 
   // Use our custom useComms hook to communicate with the server.
   const { createRoom } = useComms();
@@ -89,7 +98,6 @@ const RoomSelectBase = ({ className }) => {
   // Subscribe to relevant events.
   const subscriptionSettings = useRef({
     [ROOM_CREATED]: createdRoomCode => {
-      // Redirect the user to the page that makes them join this room.
       setActiveRoomCode(createdRoomCode);
     },
     [USER_JOINED]: data => {
@@ -105,7 +113,7 @@ const RoomSelectBase = ({ className }) => {
     if (activeRoomCode && roomCodeIsValid(activeRoomCode)) {
       setStatus('ROOM_ACTIVE');
     }
-  }, [activeRoomCode]);
+  }, [activeRoomCode, roomCodeIsValid]);
 
   if (status === 'ROOM_ACTIVE') {
     return <Redirect to={`${ONLINE_ROOT}/${activeRoomCode}`} />;
