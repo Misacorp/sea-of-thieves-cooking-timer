@@ -11,7 +11,7 @@ const io = socketIo(server);
 io.on("connection", client => {
   // Debug client list
   const clients = io.sockets.clients();
-  console.log("Clients:", Object.keys(clients.connected));
+  console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
 
   // Initialize a roomHandler
   const roomHandler = createRoomHandler(io, client);
@@ -49,7 +49,9 @@ io.on("connection", client => {
 
     // Get the client's room
     const roomCode = getRooms(client)[0];
-    const room = RoomStore.rooms[roomCode];
+    const room = RoomStore.getRoom(roomCode);
+
+    console.log(roomCode, room);
 
     // Start the correct timer
     try {

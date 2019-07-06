@@ -10,6 +10,7 @@ class RoomStore {
   }
 
   getRoom(code) {
+    console.log(`[RoomStore] getRoom(${code}):`, this.rooms);
     return this.rooms[code];
   }
 
@@ -21,12 +22,17 @@ class RoomStore {
       this.rooms[code] = room;
       if (debug) console.log(`[RoomStore] Added ${code} to rooms:`, this.rooms);
     } else {
-      if (debug) console.log(`[RoomStore] Room ${code} already exists. Rooms:`, this.rooms);
+      if (debug)
+        console.log(
+          `[RoomStore] Room ${code} already exists. Rooms:`,
+          this.rooms
+        );
     }
     return Object.keys(this.rooms).length;
-  };
+  }
 
   deleteRoom(roomCode) {
+    console.log(`[RoomStore] Deleting room ${roomCode}`);
     delete this.rooms[roomCode];
   }
 }

@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { ROOT } from '../types/routes';
 
 const HeaderContent = ({ className }) => {
   return (
     <div className={className}>
-      <h1>Cooking Timer</h1>
+      <Link to={ROOT}>
+        <h1>Cooking Timer</h1>
+      </Link>
     </div>
   );
 };

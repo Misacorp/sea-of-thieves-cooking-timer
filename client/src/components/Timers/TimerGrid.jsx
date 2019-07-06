@@ -45,7 +45,7 @@ const TimerGrid = () => {
     return function cleanup() {
       clearInterval(timerID);
     };
-  }, [timerCount, requestTimers]); // Only run on 'mount' and 'unmount'.
+  }, [timerCount, requestTimers]);
 
   // If server hasn't sent us timers yet.
   if (timers.length !== 4) {

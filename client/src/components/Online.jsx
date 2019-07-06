@@ -16,6 +16,11 @@ if (process.env.NODE_ENV === 'development') {
   initialNickname = uniqueNamesGenerator('-', true);
 }
 
+/**
+ * User has selected to go Online. This component handles things from there on:
+ * - Username selection
+ * - Create or join room
+ */
 const Online = () => {
   const [activeRoomCode, setActiveRoomCode] = useState(null);
   const [nickname, setNickname] = useState(initialNickname);
@@ -33,6 +38,7 @@ const Online = () => {
     startListening(socket.current);
   }
   if (!socket.current) {
+    console.log('Weird case of no socket whatsoever');
     return null;
   }
 
