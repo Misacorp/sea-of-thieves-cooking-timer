@@ -9,3 +9,4 @@ This application is still heavily in development. Visit the latest version here:
 This is where I dump ideas in order to clear my head. Check the [Issues page](https://github.com/Misacorp/sea-of-thieves-cooking-timer/issues) for a broader view of what remains to be done.
 
 - Create a room cleanup loop on the server. Check for rooms that have been inactive for __ minutes and destroy them.
+- User is not removed from the room when they refresh the page. Their nickname still appears in MEMBER_LIST.

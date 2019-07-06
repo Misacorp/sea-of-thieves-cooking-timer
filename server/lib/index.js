@@ -2,6 +2,7 @@ import http from "http";
 import socketIo from "socket.io";
 
 import getRooms from "./getClientRooms";
+import leaveRooms from "./handlers/leaveRooms";
 import RoomStore from "./RoomStore";
 import createRoomHandler from "./roomHandler";
 
@@ -20,8 +21,7 @@ io.on("connection", client => {
    * Handle creating a room.
    */
   client.on("CREATE_ROOM", data => {
-    const { nickname } = data;
-    roomHandler.createRoom(nickname);
+    roomHandler.createRoom(data);
   });
 
   /**
@@ -37,7 +37,7 @@ io.on("connection", client => {
    */
   client.on("LEAVE_ROOM", () => {
     console.log("Client leaving room", client.id);
-    roomHandler.leaveRooms();
+    leaveRooms(client);
   });
 
   /**
@@ -64,7 +64,7 @@ io.on("connection", client => {
       io.in(roomCode).emit("TIMER_SYNC", {
         timestamp: new Date(),
         timers: room.timers,
-        message: `${nickname} started cooking ${foodName}`,
+        message: `${nickname} started cooking ${foodName}`
       });
     } catch (e) {
       console.error(e);
@@ -94,7 +94,7 @@ io.on("connection", client => {
       io.in(roomCode).emit("TIMER_SYNC", {
         timestamp: new Date(),
         timers: room.timers,
-        message: `${nickname} reset ${foodName}`,
+        message: `${nickname} reset ${foodName}`
       });
     } catch (e) {
       console.error(e);
@@ -107,7 +107,7 @@ io.on("connection", client => {
    */
   client.on("disconnecting", data => {
     console.log("Client disconnecting", client.id);
-    roomHandler.leaveRooms();
+    leaveRooms(client);
     console.log("Client disconnected");
   });
 
@@ -120,7 +120,6 @@ io.on("connection", client => {
     client.emit("stop", { id });
   });
 });
-
 
 const PORT = process.env.PORT || 1338;
 server.listen(PORT);
