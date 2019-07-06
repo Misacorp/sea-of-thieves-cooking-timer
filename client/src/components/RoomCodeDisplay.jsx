@@ -7,9 +7,9 @@ import ConnectionContext from './contexts/ConnectionContext';
 const RoomCodeDisplayBase = ({ className }) => {
   // Get the room code from ConnectionContext
   const connection = useContext(ConnectionContext);
-  const { roomCode } = connection;
+  const { activeRoomCode } = connection;
 
-  return <p className={className}>Room {roomCode}</p>;
+  return <p className={className}>Room {activeRoomCode}</p>;
 };
 
 RoomCodeDisplayBase.propTypes = {

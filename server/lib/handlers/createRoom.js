@@ -1,8 +1,7 @@
 import uuid from "uuid/v4";
 
-import emitTimerSync from "../messages/emitTimerSync";
+import emitRoomCreated from "../messages/emitRoomCreated";
 import makeRoomCode from "../utils/roomCodeGenerator";
-import leaveRooms from "./leaveRooms";
 
 import RoomStore from "../RoomStore";
 import Room from "../types/Room";
@@ -13,6 +12,7 @@ import { TIMER_AMOUNT } from "../constants";
 /**
  * Creates a new room
  * Client is NOT automatically added to the room
+ *
  */
 const createRoom = client => {
   // Randomize a four-character string.
@@ -49,8 +49,7 @@ const createRoom = client => {
 
   console.log(`Created new room with code ${roomCode}`);
 
-  client.emit("ROOM_CREATED", { roomCode, timestamp: new Date() });
-  emitTimerSync(client, room);
+  emitRoomCreated(client, roomCode);
 
   return roomCode;
 };

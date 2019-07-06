@@ -10,7 +10,6 @@ class RoomStore {
   }
 
   getRoom(code) {
-    console.log(`[RoomStore] getRoom(${code}):`, this.rooms);
     return this.rooms[code];
   }
 
@@ -32,7 +31,7 @@ class RoomStore {
   }
 
   deleteRoom(roomCode) {
-    console.log(`[RoomStore] Deleting room ${roomCode}`);
+    if (debug) console.log(`[RoomStore] Deleting room ${roomCode}`);
     delete this.rooms[roomCode];
   }
 }

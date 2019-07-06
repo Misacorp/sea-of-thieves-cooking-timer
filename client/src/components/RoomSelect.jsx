@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Redirect, Link } from 'react-router-dom';
 
-import { ROOM_CREATED, USER_JOINED } from './actions/actions';
+import { ROOM_CREATED } from './actions/actions';
 import ConnectionContext from './contexts/ConnectionContext';
 import Button from './Generic/Button';
 import Divider from './Generic/Divider';
@@ -99,9 +99,6 @@ const RoomSelectBase = ({ className }) => {
   const subscriptionSettings = useRef({
     [ROOM_CREATED]: createdRoomCode => {
       setActiveRoomCode(createdRoomCode);
-    },
-    [USER_JOINED]: data => {
-      console.log(data);
     },
   });
   // Subscribe to the events above.

@@ -4,7 +4,10 @@ import socketIo from "socket.io";
 import getRooms from "./getClientRooms";
 import leaveRooms from "./handlers/leaveRooms";
 import RoomStore from "./RoomStore";
-import createRoomHandler from "./roomHandler";
+
+import createRoom from "./handlers/createRoom";
+import joinRoom from "./handlers/joinRoom";
+import emitTimerSync from "./messages/emitTimerSync";
 
 const server = http.createServer();
 const io = socketIo(server);
@@ -14,22 +17,22 @@ io.on("connection", client => {
   const clients = io.sockets.clients();
   console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
 
-  // Initialize a roomHandler
-  const roomHandler = createRoomHandler(io, client);
-
   /**
    * Handle creating a room.
    */
-  client.on("CREATE_ROOM", data => {
-    roomHandler.createRoom(data);
+  client.on("CREATE_ROOM", () => {
+    createRoom(client);
   });
 
   /**
    * Handle joining rooms.
    */
   client.on("JOIN_ROOM", data => {
-    const { nickname, roomCode } = data;
-    roomHandler.joinRoom(roomCode, nickname);
+    joinRoom(client, data);
+  });
+
+  client.on("REQUEST_TIMERS", () => {
+    emitTimerSync(client);
   });
 
   /**
@@ -105,16 +108,15 @@ io.on("connection", client => {
   /**
    * Handle disconnecting clients.
    */
-  client.on("disconnecting", data => {
-    console.log("Client disconnecting", client.id);
+  client.on("disconnecting", () => {
     leaveRooms(client);
-    console.log("Client disconnected");
+    console.log("Client disconnected", client.id);
   });
 
   /**
    * Stops a given timer.
    */
-  client.on("stop", data => {
+  client.on("STOP", data => {
     const { id } = data;
     console.log(`Stopping timer ${id}`);
     client.emit("stop", { id });

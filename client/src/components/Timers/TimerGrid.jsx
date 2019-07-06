@@ -15,6 +15,7 @@ const TimerGrid = () => {
   // Store our subscription settings in a ref. We don't want to change these over the course of the component's lifetime.
   const subscriptionSettings = useRef({
     [TIMER_SYNC]: data => {
+      console.log(data);
       setTimers(data.timers);
     },
   });
@@ -39,6 +40,7 @@ const TimerGrid = () => {
 
     // If no timers are present, request them.
     if (timerCount < 1) {
+      console.log(`[TimerGrid] No timers!`);
       requestTimers();
     }
 

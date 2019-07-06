@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import RoomCodeDisplay from './RoomCodeDisplay';
 import TimerGrid from './Timers/TimerGrid';
 import { ONLINE_ROOT } from '../types/routes';
-import { NONEXISTANT_ROOM, USER_JOINED } from './actions/actions';
+import { NONEXISTANT_ROOM, USER_JOINED, MEMBER_LIST } from './actions/actions';
 
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
@@ -13,13 +13,19 @@ import ConnectionContext from './contexts/ConnectionContext';
 
 const OnlineRoom = props => {
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, READY
+  const { nickname, setActiveRoomCode } = useContext(ConnectionContext);
 
   // If a room does not exist, use a subscription to the NONEXISTANT_ROOM event to redirect the user back to selecting a room.
   const subscriptionSettings = useRef({
     [NONEXISTANT_ROOM]: () => {
       setStatus('NONEXISTANT_ROOM');
     },
-    [USER_JOINED]: () => {
+    [USER_JOINED]: data => {
+      console.log(data);
+      setActiveRoomCode(data.roomCode);
+    },
+    [MEMBER_LIST]: data => {
+      console.log(data);
       setStatus('READY');
     },
   });
@@ -34,7 +40,6 @@ const OnlineRoom = props => {
   } = props;
 
   // Attempt to join the room
-  const { nickname } = useContext(ConnectionContext);
   const { joinRoom } = useComms();
   useEffect(() => {
     joinRoom(roomCode, nickname);
