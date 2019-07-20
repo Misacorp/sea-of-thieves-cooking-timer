@@ -11,6 +11,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "rxjs": "^6.5.2",
+    "sea-of-thieves-cooking-timer-server": "file:../server",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.2.0",
     "unique-names-generator": "^2.0.2",
