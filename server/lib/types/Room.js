@@ -3,6 +3,7 @@ class Room {
     this.code = code;
     this.members = {}; // id: { nickname: ___ }
     this.timers = [];
+    this.abandonedSince = null;
   }
 
   getMemberNames() {
@@ -15,6 +16,17 @@ class Room {
 
   addMember(user) {
     this.members[user.id] = user;
+    this.abandonedSince = null;
+  }
+
+  removeMember(id) {
+    delete this.members[id];
+
+    // If the last member was removed, set abandonedSince to a date.
+    const memberCount = Object.keys(this.members).length;
+    if (memberCount < 1) {
+      this.abandonedSince = new Date();
+    }
   }
 
   addTimer(timer) {

@@ -8,14 +8,22 @@ import RoomStore from "./RoomStore";
 import createRoom from "./handlers/createRoom";
 import joinRoom from "./handlers/joinRoom";
 import emitTimerSync from "./messages/emitTimerSync";
+import roomCleaner from './roomCleaner';
 
 const server = http.createServer();
 const io = socketIo(server);
 
+// Register a room cleaner to remove unused rooms
+const myRoomCleaner = roomCleaner(RoomStore);
+myRoomCleaner.start();
+
+/**
+ * Handle or delegate messages from clients.
+ */
 io.on("connection", client => {
   // Debug client list
-  const clients = io.sockets.clients();
-  console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
+  // const clients = io.sockets.clients();
+  // console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
 
   /**
    * Handle creating a room.
@@ -39,7 +47,6 @@ io.on("connection", client => {
    * Handle leaving rooms.
    */
   client.on("LEAVE_ROOM", () => {
-    console.log("Client leaving room", client.id);
     leaveRooms(client);
   });
 
@@ -48,13 +55,10 @@ io.on("connection", client => {
    */
   client.on("START", data => {
     const { id, food } = data;
-    console.log(`Client wants to start timer ${id} with ${food}`);
 
     // Get the client's room
     const roomCode = getRooms(client)[0];
     const room = RoomStore.getRoom(roomCode);
-
-    console.log(roomCode, room);
 
     // Start the correct timer
     try {
@@ -80,7 +84,6 @@ io.on("connection", client => {
    */
   client.on("RESET", data => {
     const { id } = data;
-    console.log(`Client wants to stop timer ${id}`);
 
     // Get the client's room
     const roomCode = getRooms(client)[0];
@@ -118,7 +121,6 @@ io.on("connection", client => {
    */
   client.on("STOP", data => {
     const { id } = data;
-    console.log(`Stopping timer ${id}`);
     client.emit("stop", { id });
   });
 });
