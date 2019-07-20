@@ -1,4 +1,2 @@
-const ROOMCODE_LENGTH = 4;
-const TIMER_AMOUNT = 4;
-
-export { ROOMCODE_LENGTH, TIMER_AMOUNT };
+export const ROOMCODE_LENGTH = 4;
+export const TIMER_AMOUNT = 4;

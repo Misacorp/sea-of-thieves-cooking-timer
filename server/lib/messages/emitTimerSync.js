@@ -17,7 +17,7 @@ const getRoom = client => {
 const emitTimerSync = (client, optionalRoom) => {
   const room = optionalRoom || getRoom(client);
 
-  console.log(`[emitTimerSync] room ${room.code}. Timers:`, room.timers);
+  // console.log(`[emitTimerSync] room ${room.code}. Timers:`, room.timers);
 
   client.emit("TIMER_SYNC", {
     timestamp: new Date(),

@@ -1,3 +1,5 @@
+import RoomStore from "./RoomStore";
+
 /**
  * Returns an array of all room IDs the given client is in.
  * @returns {array} All room codes the client is in.

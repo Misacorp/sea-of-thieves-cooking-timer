@@ -42,6 +42,7 @@ const OnlineRoom = props => {
   // Attempt to join the room
   const { joinRoom } = useComms();
   useEffect(() => {
+    console.log(`Trying to join room ${roomCode} from URL.`);
     joinRoom(roomCode, nickname);
   }, [joinRoom, roomCode, nickname]);
 
