@@ -12,20 +12,21 @@ import useSubscription from './hooks/useSubscription';
 import ConnectionContext from './contexts/ConnectionContext';
 
 const OnlineRoom = props => {
-  const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, READY
+  const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, NO_NICKNAME, READY
   const { nickname, setActiveRoomCode } = useContext(ConnectionContext);
+  const nicknameValid = nickname && nickname.length > 0;
 
-  // If a room does not exist, use a subscription to the NONEXISTANT_ROOM event to redirect the user back to selecting a room.
   const subscriptionSettings = useRef({
+    // If a room does not exist, use a subscription to the NONEXISTANT_ROOM event to redirect the user back to selecting a room.
     [NONEXISTANT_ROOM]: () => {
       setStatus('NONEXISTANT_ROOM');
     },
+    // On a successful join, update the active room code
     [USER_JOINED]: data => {
-      console.log(data);
       setActiveRoomCode(data.roomCode);
     },
-    [MEMBER_LIST]: data => {
-      console.log(data);
+    // When the MEMBER_LIST event is received, the room is ready.
+    [MEMBER_LIST]: () => {
       setStatus('READY');
     },
   });
@@ -42,15 +43,19 @@ const OnlineRoom = props => {
   // Attempt to join the room
   const { joinRoom } = useComms();
   useEffect(() => {
-    console.log(`Trying to join room ${roomCode} from URL.`);
-    joinRoom(roomCode, nickname);
-  }, [joinRoom, roomCode, nickname]);
+    if (nicknameValid) {
+      joinRoom(roomCode, nickname);
+    } else {
+      // Don't join if no nickname is set
+      setStatus('NO_NICKNAME');
+    }
+  }, [joinRoom, roomCode, nickname, nicknameValid]);
 
   if (status === 'INIT') {
     return <p>Joining room...</p>;
   }
 
-  if (status === 'NONEXISTANT_ROOM') {
+  if (status === 'NONEXISTANT_ROOM' || status === 'NO_NICKNAME') {
     return <Redirect to={ONLINE_ROOT} />;
   }
 

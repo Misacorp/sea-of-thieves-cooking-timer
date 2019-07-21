@@ -45,10 +45,11 @@ const joinRoom = (client, { roomCode, nickname }) => {
 
   // Tell the client they joined and give them a list of other members in the room.
   emitSelfJoined(client, roomCode);
-  emitMemberList(client, room);
-
   // Transmit room timer data to client.
   emitTimerSync(client, room);
+  // Transmit list of members
+  emitMemberList(client, room);
+
 };
 
 export default joinRoom;
