@@ -10,6 +10,7 @@ import { NONEXISTANT_ROOM, USER_JOINED, MEMBER_LIST } from './actions/actions';
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 import ConnectionContext from './contexts/ConnectionContext';
+import { set as saveToLocalStorage } from '../services/localStorageHandler';
 
 const OnlineRoom = props => {
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, NO_NICKNAME, READY
@@ -44,6 +45,8 @@ const OnlineRoom = props => {
   const { joinRoom } = useComms();
   useEffect(() => {
     if (nicknameValid) {
+      // Save valid nickname to localstorage in case of client disconnects
+      saveToLocalStorage({ nickname });
       joinRoom(roomCode, nickname);
     } else {
       // Don't join if no nickname is set

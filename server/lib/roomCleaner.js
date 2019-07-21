@@ -10,8 +10,6 @@ const roomCleaner = RoomStore => {
     start: () => {
       // Run every minute
       cron.schedule("* * * * *", () => {
-        console.log("Checking for empty rooms past the expiry date");
-
         const rooms = RoomStore.getRooms();
         const roomsArray = Object.keys(rooms);
 

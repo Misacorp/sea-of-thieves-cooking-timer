@@ -7,12 +7,14 @@ import RoomSelect from './RoomSelect';
 import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
+import { get as getFromLocalStorage } from '../services/localStorageHandler';
 
 /**
  * Auto-populate fields in development for faster testing
  */
-let initialNickname = '';
-if (process.env.NODE_ENV === 'development') {
+const useDebugValues = false;
+let initialNickname = getFromLocalStorage('nickname') || '';
+if (process.env.NODE_ENV === 'development' && useDebugValues) {
   initialNickname = uniqueNamesGenerator('-', true);
 }
 
