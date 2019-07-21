@@ -11,3 +11,9 @@ This is where I dump ideas in order to clear my head. Check the [Issues page](ht
 - (Possibly fixed?) TIMER_SYNC is emitted twice when joining an existing room: when a client joins and when they request for timers. The latter happens because TimerGrid does not catch the timers paired with the USER_JOINED event. Rework TimerGrid so that it catches the timers and doesn't have to ask for them a second time.
 - Navigating within the app should disconnect the user from the room they were in.
 - Save nickname to local storage
+
+## Deployment
+
+To deploy the server, run `git subtree push --prefix server heroku master` in the project root.
+
+To deploy the client, run `npm run deploy` in the client directory.
