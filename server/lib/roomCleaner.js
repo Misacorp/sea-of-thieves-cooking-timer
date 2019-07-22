@@ -1,6 +1,6 @@
 import cron from "node-cron";
 
-import { ROOM_LIFETIME } from "./constants";
+import { ROOM_LIFETIME, COLORS } from "./constants";
 
 /**
  * Runs a scheduled service that deletes long abandoned rooms.
@@ -34,11 +34,10 @@ const roomCleaner = RoomStore => {
           }
         });
 
-        console.log(
-          `[RoomCleaner] Found ${
-            roomsArray.length
-          } rooms of which ${abandoned} were abandoned. Deleted ${deleted} of them that had been abandoned for over ${ROOM_LIFETIME} seconds`
-        );
+        console.log(`[RoomCleaner] Lifetime: ${ROOM_LIFETIME}s`);
+        console.log(`  Rooms: ${roomsArray.length || '-'}`);
+        console.log(`  ${COLORS.YELLOW}Abandoned: ${abandoned || '-'}`);
+        console.log(`  ${COLORS.RED}Deleted: ${deleted || '-'}${COLORS.RESET}`);
       });
     }
   };

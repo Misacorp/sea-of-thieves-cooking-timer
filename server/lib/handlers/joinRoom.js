@@ -4,8 +4,8 @@ import User from "../types/User";
 import emitSelfJoined from "../messages/emitSelfJoined";
 import emitTimerSync from "../messages/emitTimerSync";
 import emitMemberList from "../messages/emitMemberList";
-
 import leaveRooms from "./leaveRooms";
+import { COLORS } from '../constants';
 
 /**
  * Adds a client to a room and notifies participants of their arrival.
@@ -18,14 +18,12 @@ const joinRoom = (client, { roomCode, nickname }) => {
   // Halt if the desired room doesn't exist!
   if (!room) {
     console.log(
-      `Client ${client.id} tried to join nonexisting room ${roomCode}.`
+      `${COLORS.YELLOW}${nickname} tried to join nonexisting room ${roomCode}. ${COLORS.RESET}(${client.id})`
     );
 
     client.emit("NONEXISTANT_ROOM", { timestamp: new Date(), roomCode });
     return;
   }
-
-  console.log(`${nickname} is joining room ${roomCode}`);
 
   // Clients can only be in one room at a single time.
   // Leave all rooms the client is currently in.
@@ -50,6 +48,7 @@ const joinRoom = (client, { roomCode, nickname }) => {
   // Transmit list of members
   emitMemberList(client, room);
 
+  console.log(`${COLORS.GREEN}> ${nickname} joined room ${roomCode}. ${COLORS.RESET}(${client.id})`);
 };
 
 export default joinRoom;

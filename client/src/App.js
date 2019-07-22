@@ -15,12 +15,19 @@ WebFont.load({
   },
 });
 
+const devBasename = '/';
+const prodBasename = '/sea-of-thieves-cooking-timer';
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyles />
-        <BrowserRouter basename="/">
+        <BrowserRouter
+          basename={
+            process.env.NODE_ENV === 'development' ? devBasename : prodBasename
+          }
+        >
           <Main />
         </BrowserRouter>
       </>

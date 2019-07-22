@@ -8,7 +8,8 @@ import RoomStore from "./RoomStore";
 import createRoom from "./handlers/createRoom";
 import joinRoom from "./handlers/joinRoom";
 import emitTimerSync from "./messages/emitTimerSync";
-import roomCleaner from './roomCleaner';
+import roomCleaner from "./roomCleaner";
+import { COLORS } from './constants';
 
 const server = http.createServer();
 const io = socketIo(server);
@@ -24,6 +25,7 @@ io.on("connection", client => {
   // Debug client list
   // const clients = io.sockets.clients();
   // console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
+  console.log(`${COLORS.GREEN}> Client connected. ${COLORS.RESET}(${client.conn.id})`);
 
   /**
    * Handle creating a room.
@@ -113,7 +115,7 @@ io.on("connection", client => {
    */
   client.on("disconnecting", () => {
     leaveRooms(client);
-    console.log("Client disconnected", client.id);
+    console.log(`${COLORS.RED}< Client disconnected. ${COLORS.RESET}(${client.id})`);
   });
 
   /**
