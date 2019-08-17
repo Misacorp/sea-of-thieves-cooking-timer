@@ -1,4 +1,4 @@
-const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const CHARACTERS = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
 const charactersLength = CHARACTERS.length;
 
 const makeRoomCode = (length = 4) => {
