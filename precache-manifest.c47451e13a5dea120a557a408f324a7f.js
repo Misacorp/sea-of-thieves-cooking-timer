@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "04c77d1c6fa2b49c3e46f2de72c033f7",
+    "revision": "b9feb55b20a0b0a9adf74a514ea7f0c3",
     "url": "/sea-of-thieves-cooking-timer/index.html"
   },
   {
