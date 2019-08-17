@@ -15,7 +15,7 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": "error",
-    "ignoreComments": true,
+    "ignoreComments": 1,
     "max-len": ["error", 160]
   },
   "env": {

@@ -43,6 +43,10 @@ const OnlineRoom = props => {
 
   // Attempt to join the room
   const { joinRoom } = useComms();
+  const { socket } = useContext(ConnectionContext);
+  const { connected } = socket;
+  console.log(connected);
+
   useEffect(() => {
     if (nicknameValid) {
       // Save valid nickname to localstorage in case of client disconnects

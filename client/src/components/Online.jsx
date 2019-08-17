@@ -40,10 +40,6 @@ const Online = () => {
     // Initialize event listeners on the socket.
     startListening(socket.current);
   }
-  if (!socket.current) {
-    console.log('Weird case of no socket whatsoever');
-    return null;
-  }
 
   const connection = {
     socket: socket.current,
@@ -52,9 +48,6 @@ const Online = () => {
     activeRoomCode,
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
-
-  const { connected } = socket.current;
-  console.log(connected);
 
   return (
     <ConnectionContext.Provider value={connection}>
@@ -65,7 +58,7 @@ const Online = () => {
         />
         <Route path="/" component={RoomSelect} />
       </Switch>
-      <OnlineIndicator/>
+      <OnlineIndicator />
     </ConnectionContext.Provider>
   );
 };

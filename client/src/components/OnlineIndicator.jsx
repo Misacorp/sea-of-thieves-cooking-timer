@@ -1,15 +1,28 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import ConnectionContext from './contexts/ConnectionContext.jsx';
+import ConnectionContext from './contexts/ConnectionContext';
 
 const Structure = ({ className }) => {
   const { socket } = useContext(ConnectionContext);
-  const { connected } = socket;
 
-  return <div className={className}>Connected: {connected ? '✔' : '❌'}</div>;
-}
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  /**
+   * Poll connection status periodically.
+   */
+  useEffect(() => {
+    const timerID = setInterval(() => {
+      setIsConnected(socket.connected);
+    }, 1000);
+
+    return function cleanup() {
+      clearInterval(timerID);
+    };
+  });
+
+  return <div className={className}>Connected: {isConnected ? '✔' : '❌'}</div>;
+};
 
 const OnlineIndicator = styled(Structure)`
   position: absolute;
@@ -19,8 +32,8 @@ const OnlineIndicator = styled(Structure)`
   text-align: center;
 `;
 
-OnlineIndicator.propTypes = {
+Structure.propTypes = {
   className: PropTypes.string,
-}
+};
 
 export default OnlineIndicator;
