@@ -8,6 +8,7 @@ import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 import { get as getFromLocalStorage } from '../services/localStorageHandler';
+import OnlineIndicator from './OnlineIndicator';
 
 /**
  * Auto-populate fields in development for faster testing
@@ -52,6 +53,9 @@ const Online = () => {
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
 
+  const { connected } = socket.current;
+  console.log(connected);
+
   return (
     <ConnectionContext.Provider value={connection}>
       <Switch>
@@ -61,6 +65,7 @@ const Online = () => {
         />
         <Route path="/" component={RoomSelect} />
       </Switch>
+      <OnlineIndicator/>
     </ConnectionContext.Provider>
   );
 };

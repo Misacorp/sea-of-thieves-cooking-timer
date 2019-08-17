@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const AppControlsContent = ({ className }) => {
+
   return (
     <div className={className}>
-      <div>App Controls here</div>
+      <div>App controls here</div>
     </div>
   );
 };
