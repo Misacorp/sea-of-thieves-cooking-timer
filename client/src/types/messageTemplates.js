@@ -31,4 +31,12 @@ messageTemplates[actions.GENERIC_MESSAGE] = ({ message }) => {
   return message;
 };
 
+messageTemplates[actions.INT_CONNECTION_ESTABLISHED] = () => {
+  return 'Connection estabished';
+};
+
+messageTemplates[actions.INT_CONNECTION_DROPPED] = () => {
+  return 'Connection dropped';
+};
+
 export default messageTemplates;

@@ -8,7 +8,9 @@ import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 import { get as getFromLocalStorage } from '../services/localStorageHandler';
+import AppControls from './AppControls';
 import OnlineIndicator from './OnlineIndicator';
+import connectionPoller from './hooks/connectionPoller';
 
 /**
  * Auto-populate fields in development for faster testing
@@ -39,6 +41,10 @@ const Online = () => {
 
     // Initialize event listeners on the socket.
     startListening(socket.current);
+
+    // Start polling for changes in connectivity
+    const poller = connectionPoller();
+    poller.init(socket.current);
   }
 
   const connection = {
@@ -58,7 +64,10 @@ const Online = () => {
         />
         <Route path="/" component={RoomSelect} />
       </Switch>
-      <OnlineIndicator />
+
+      <AppControls>
+        <OnlineIndicator />
+      </AppControls>
     </ConnectionContext.Provider>
   );
 };

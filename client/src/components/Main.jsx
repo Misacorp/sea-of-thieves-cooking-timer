@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Header from './Header';
-import AppControls from './AppControls';
 
 import Welcome from './Welcome';
 import Offline from './Offline';
@@ -23,7 +22,6 @@ const Main = () => {
         <Route path={routes.ROOT} component={Welcome} />
       </Switch>
       <MessageDisplay />
-      <AppControls />
     </>
   );
 };

@@ -2,16 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const AppControlsContent = ({ className }) => {
-
-  return (
-    <div className={className}>
-      <div>App controls here</div>
-    </div>
-  );
+const AppControlsContent = ({ children, className }) => {
+  return <div className={className}>{children}</div>;
 };
 
 AppControlsContent.propTypes = {
+  children: PropTypes.node,
   className: PropTypes.string,
 };
 

@@ -1,34 +1,31 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import ConnectionContext from './contexts/ConnectionContext';
+import useSubscription from './hooks/useSubscription';
+import {
+  INT_CONNECTION_DROPPED,
+  INT_CONNECTION_ESTABLISHED,
+} from './actions/actions';
 
 const Structure = ({ className }) => {
-  const { socket } = useContext(ConnectionContext);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  /**
-   * Poll connection status periodically.
-   */
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      setIsConnected(socket.connected);
-    }, 1000);
-
-    return function cleanup() {
-      clearInterval(timerID);
-    };
+  const subscriptionSettings = useRef({
+    [INT_CONNECTION_ESTABLISHED]: () => {
+      setIsConnected(true);
+    },
+    [INT_CONNECTION_DROPPED]: () => {
+      setIsConnected(false);
+    },
   });
+  // Subscribe to the events above.
+  useSubscription(subscriptionSettings.current);
 
   return <div className={className}>Connected: {isConnected ? '✔' : '❌'}</div>;
 };
 
 const OnlineIndicator = styled(Structure)`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 2.5rem;
   text-align: center;
 `;
 
