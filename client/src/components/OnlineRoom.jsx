@@ -18,39 +18,12 @@ import useSubscription from './hooks/useSubscription';
 import ConnectionContext from './contexts/ConnectionContext';
 import { set as saveToLocalStorage } from '../services/localStorageHandler';
 
-let joining = false;
-
 const OnlineRoom = props => {
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, NO_NICKNAME, READY
-  const { nickname, setActiveRoomCode } = useContext(ConnectionContext);
+  const { socket, nickname, setActiveRoomCode } = useContext(ConnectionContext);
+  const [connected, setConnected] = useState(socket.connected);
   const nicknameValid = nickname && nickname.length > 0;
   const { joinRoom } = useComms();
-
-  // Get Room Code from the URL.
-  const {
-    match: {
-      params: { roomCode },
-    },
-  } = props;
-
-  // Attempt to join a room
-  const attemptToJoinRoom = () => {
-    if (joining === false && status === 'INIT') {
-      joining = true;
-
-      if (nicknameValid) {
-        // Save valid nickname to localstorage in case of client disconnects
-        saveToLocalStorage({ nickname });
-        joinRoom(roomCode, nickname);
-      } else {
-        // Don't join if no nickname is set
-        setStatus('NO_NICKNAME');
-      }
-    }
-  };
-
-  // Attempt to join the room
-  // useEffect(attemptToJoinRoom, [joinRoom, roomCode, nickname, nicknameValid]);
 
   const subscriptionSettings = useRef({
     // If a room does not exist, use a subscription to the NONEXISTANT_ROOM event to redirect the user back to selecting a room.
@@ -64,21 +37,51 @@ const OnlineRoom = props => {
     // When the MEMBER_LIST event is received, the room is ready.
     [MEMBER_LIST]: () => {
       setStatus('READY');
-      joining = false;
     },
     [INT_CONNECTION_ESTABLISHED]: () => {
-      console.log(
-        'Attempting to join room after connection established message',
-      );
-      attemptToJoinRoom();
-      console.log(status);
+      console.log('Connected');
+      setConnected(true);
     },
     [INT_CONNECTION_DROPPED]: () => {
       // Gray out areas or something?
+      console.log('Disconnected');
+      setConnected(false);
     },
   });
   // Subscribe to the events above.
   useSubscription(subscriptionSettings.current);
+
+  useEffect(() => {
+    // Are we connected
+    console.log(`Connected: ${connected}`);
+
+    // What is the status?
+    console.log(`Status: ${status}`);
+
+    // Attempt to join room
+    if (connected && status === 'INIT') {
+      if (nicknameValid) {
+        // Get Room Code from the URL.
+        const {
+          match: {
+            params: { roomCode },
+          },
+        } = props;
+
+        // Save valid nickname to localstorage in case of client disconnects
+        saveToLocalStorage({ nickname });
+        joinRoom(roomCode, nickname);
+      } else {
+        // Don't join if no nickname is set
+        setStatus('NO_NICKNAME');
+      }
+    }
+  }, [connected, status, joinRoom, nickname, nicknameValid, props]);
+
+  // useEffect(attemptToJoinRoom);
+
+  // Attempt to join the room
+  // useEffect(attemptToJoinRoom, [joinRoom, roomCode, nickname, nicknameValid]);
 
   if (status === 'INIT') {
     return <p>Joining room...</p>;

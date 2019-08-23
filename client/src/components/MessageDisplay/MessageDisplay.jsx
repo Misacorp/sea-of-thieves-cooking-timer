@@ -11,6 +11,7 @@ import {
   GENERIC_MESSAGE,
   INT_CONNECTION_DROPPED,
   INT_CONNECTION_ESTABLISHED,
+  INT_CONNECTION_REESTABLISHED,
 } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
@@ -66,6 +67,9 @@ const MessageDisplayBase = ({ className }) => {
       handleMessage(data);
     },
     [INT_CONNECTION_ESTABLISHED]: data => {
+      handleMessage(data);
+    },
+    [INT_CONNECTION_REESTABLISHED]: data => {
       handleMessage(data);
     },
   });

@@ -10,7 +10,7 @@ import * as routes from '../types/routes';
 import { get as getFromLocalStorage } from '../services/localStorageHandler';
 import AppControls from './AppControls';
 import OnlineIndicator from './OnlineIndicator';
-import connectionPoller from './hooks/connectionPoller';
+import connectionPoller from '../services/connectionPoller';
 
 /**
  * Auto-populate fields in development for faster testing
@@ -54,6 +54,8 @@ const Online = () => {
     activeRoomCode,
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
+
+  console.log(connection.socket.connected);
 
   return (
     <ConnectionContext.Provider value={connection}>

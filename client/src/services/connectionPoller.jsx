@@ -1,10 +1,11 @@
 import uuid from 'uuid/v4';
 
-import { publish } from '../MessageCenter';
+import { publish } from '../components/MessageCenter';
 import {
   INT_CONNECTION_DROPPED,
   INT_CONNECTION_ESTABLISHED,
-} from '../actions/actions';
+  INT_CONNECTION_REESTABLISHED,
+} from '../components/actions/actions';
 
 /**
  * Actively polls the socket connection, and publishes messages when the connection changes.
@@ -12,6 +13,7 @@ import {
 const connectionPoller = () => {
   let timerID;
   let isConnected = false;
+  let previouslyConnected = false;
 
   // Reset timer.
   const reset = () => clearInterval(timerID);
@@ -30,11 +32,22 @@ const connectionPoller = () => {
       if (connected !== isConnected) {
         // Connection (re-)established
         if (connected) {
-          publish(INT_CONNECTION_ESTABLISHED, {
-            type: INT_CONNECTION_ESTABLISHED,
-            id: uuid(),
-            timestamp: new Date(),
-          });
+          // First connection
+          if (!previouslyConnected) {
+            publish(INT_CONNECTION_ESTABLISHED, {
+              type: INT_CONNECTION_ESTABLISHED,
+              id: uuid(),
+              timestamp: new Date(),
+            });
+            previouslyConnected = true;
+          } else {
+            // Re-establishment of previous connection
+            publish(INT_CONNECTION_REESTABLISHED, {
+              type: INT_CONNECTION_REESTABLISHED,
+              id: uuid(),
+              timestamp: new Date(),
+            });
+          }
         } else {
           // Connection dropped
           publish(INT_CONNECTION_DROPPED, {

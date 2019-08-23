@@ -6,6 +6,7 @@ import useSubscription from './hooks/useSubscription';
 import {
   INT_CONNECTION_DROPPED,
   INT_CONNECTION_ESTABLISHED,
+  INT_CONNECTION_REESTABLISHED,
 } from './actions/actions';
 
 const Structure = ({ className }) => {
@@ -13,6 +14,9 @@ const Structure = ({ className }) => {
 
   const subscriptionSettings = useRef({
     [INT_CONNECTION_ESTABLISHED]: () => {
+      setIsConnected(true);
+    },
+    [INT_CONNECTION_REESTABLISHED]: () => {
       setIsConnected(true);
     },
     [INT_CONNECTION_DROPPED]: () => {
