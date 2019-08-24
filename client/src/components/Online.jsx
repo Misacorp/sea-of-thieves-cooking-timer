@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { uniqueNamesGenerator } from 'unique-names-generator';
 
@@ -55,7 +55,9 @@ const Online = () => {
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
 
-  console.log(connection.socket.connected);
+  useEffect(() => {
+    console.log(`>> activeRoomCode changed to ${activeRoomCode}.`);
+  }, [activeRoomCode]);
 
   return (
     <ConnectionContext.Provider value={connection}>
