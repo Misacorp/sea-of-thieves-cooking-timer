@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import Header from './Header';
 import AppControls from './AppControls';
+import Graphic from './Graphic/Graphic';
 
 import Welcome from './Welcome';
 import Offline from './Offline';
@@ -16,6 +17,7 @@ import * as routes from '../types/routes';
 const Main = () => {
   return (
     <>
+      <Graphic />
       <Header />
       <Switch>
         <Route exact path={routes.OFFLINE} component={Offline} />
