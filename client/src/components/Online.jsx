@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { uniqueNamesGenerator } from 'unique-names-generator';
 
@@ -8,7 +8,9 @@ import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
 import { get as getFromLocalStorage } from '../services/localStorageHandler';
+import AppControls from './AppControls';
 import OnlineIndicator from './OnlineIndicator';
+import connectionPoller from '../services/connectionPoller';
 
 /**
  * Auto-populate fields in development for faster testing
@@ -39,6 +41,10 @@ const Online = () => {
 
     // Initialize event listeners on the socket.
     startListening(socket.current);
+
+    // Start polling for changes in connectivity
+    const poller = connectionPoller();
+    poller.init(socket.current);
   }
 
   const connection = {
@@ -49,6 +55,10 @@ const Online = () => {
     setActiveRoomCode: roomCode => setActiveRoomCode(roomCode),
   };
 
+  useEffect(() => {
+    console.log(`>> activeRoomCode changed to ${activeRoomCode}.`);
+  }, [activeRoomCode]);
+
   return (
     <ConnectionContext.Provider value={connection}>
       <Switch>
@@ -58,7 +68,10 @@ const Online = () => {
         />
         <Route path="/" component={RoomSelect} />
       </Switch>
-      <OnlineIndicator />
+
+      <AppControls>
+        <OnlineIndicator />
+      </AppControls>
     </ConnectionContext.Provider>
   );
 };

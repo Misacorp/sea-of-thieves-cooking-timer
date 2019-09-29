@@ -9,6 +9,9 @@ import {
   NONEXISTANT_ROOM,
   TIMER_SYNC,
   GENERIC_MESSAGE,
+  INT_CONNECTION_DROPPED,
+  INT_CONNECTION_ESTABLISHED,
+  INT_CONNECTION_REESTABLISHED,
 } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
@@ -28,7 +31,11 @@ const MessageDisplayBase = ({ className }) => {
 
     // Set the message content via messageTemplates.
     const content = messageTemplates[type](otherData);
-    const newMessage = new Message({ id, timestamp, content });
+    const newMessage = new Message({
+      id,
+      timestamp: timestamp.toString(), // Some timestamps are JSON encoded, others aren't.
+      content,
+    });
 
     setMessages(prevMessages => {
       const newMessages = [...prevMessages, newMessage];
@@ -54,6 +61,15 @@ const MessageDisplayBase = ({ className }) => {
       if (data.message) handleMessage(data);
     },
     [GENERIC_MESSAGE]: data => {
+      handleMessage(data);
+    },
+    [INT_CONNECTION_DROPPED]: data => {
+      handleMessage(data);
+    },
+    [INT_CONNECTION_ESTABLISHED]: data => {
+      handleMessage(data);
+    },
+    [INT_CONNECTION_REESTABLISHED]: data => {
       handleMessage(data);
     },
   });
