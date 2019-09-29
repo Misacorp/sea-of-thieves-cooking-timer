@@ -9,7 +9,7 @@ import createRoom from "./handlers/createRoom";
 import joinRoom from "./handlers/joinRoom";
 import emitTimerSync from "./messages/emitTimerSync";
 import roomCleaner from "./roomCleaner";
-import { COLORS } from './constants';
+import { COLORS } from "./constants";
 
 const server = http.createServer();
 const io = socketIo(server);
@@ -25,7 +25,9 @@ io.on("connection", client => {
   // Debug client list
   // const clients = io.sockets.clients();
   // console.log("[NEW CONNECTION] Clients:", Object.keys(clients.connected));
-  console.log(`${COLORS.GREEN}> Client connected. ${COLORS.RESET}(${client.conn.id})`);
+  console.log(
+    `${COLORS.GREEN}> Client connected. ${COLORS.RESET}(${client.conn.id})`
+  );
 
   /**
    * Handle creating a room.
@@ -41,15 +43,18 @@ io.on("connection", client => {
     joinRoom(client, data);
   });
 
-  client.on("REQUEST_TIMERS", () => {
-    emitTimerSync(client);
-  });
-
   /**
    * Handle leaving rooms.
    */
   client.on("LEAVE_ROOM", () => {
     leaveRooms(client);
+  });
+
+  /**
+   * Handle clients requesting timers for rooms they are in.
+   */
+  client.on("REQUEST_TIMERS", () => {
+    emitTimerSync(client);
   });
 
   /**
@@ -114,16 +119,10 @@ io.on("connection", client => {
    * Handle disconnecting clients.
    */
   client.on("disconnecting", () => {
-    leaveRooms(client);
-    console.log(`${COLORS.RED}< Client disconnected. ${COLORS.RESET}(${client.id})`);
-  });
-
-  /**
-   * Stops a given timer.
-   */
-  client.on("STOP", data => {
-    const { id } = data;
-    client.emit("stop", { id });
+    leaveRooms(client); // Remove client from rooms they were in.
+    console.log(
+      `${COLORS.RED}< Client disconnected. ${COLORS.RESET}(${client.id})`
+    );
   });
 });
 

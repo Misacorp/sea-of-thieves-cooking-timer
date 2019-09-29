@@ -10,10 +10,10 @@ const GraphicStructure = ({ className }) => {
 };
 
 const Graphic = styled(GraphicStructure)`
-  ${({ location }) => {
+  ${({ location, theme }) => {
     const { pathname } = location;
 
-    const bgColor = getBackgroundColor(pathname);
+    const bgColor = getBackgroundColor(pathname, theme);
 
     return css`
       background-color: ${bgColor};
@@ -25,6 +25,8 @@ const Graphic = styled(GraphicStructure)`
       z-index: -1;
       user-select: none;
       pointer-events: none;
+      min-height: 100vh;
+      box-sizing: border-box;
     `;
   }}
 `;

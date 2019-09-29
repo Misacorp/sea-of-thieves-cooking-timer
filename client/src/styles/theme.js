@@ -1,7 +1,29 @@
-const baseFonts = ['Roboto', 'Arial', 'sans-serif'];
+const baseFonts = ['Manjari', 'Open Sans', 'Roboto', 'Arial', 'sans-serif'];
 
 export default {
   palette: {
+    blue: {
+      100: '#F2F9FF',
+      200: '#CDDFEE',
+      300: '#B4CCE1',
+      400: '#95B2CC',
+      500: '#7998B2',
+      600: '#557B9B',
+      700: '#3C6282',
+      800: '#2A4A67',
+      900: '#274056',
+    },
+    yellow: {
+      100: '#FFF9E9',
+      200: '#FFF1CB',
+      300: '#FFE29A',
+      400: '#FFD365',
+      500: '#F7B31C',
+      600: '#D49200',
+      700: '#9E6D00',
+      800: '#745000',
+      900: '#4D3500',
+    },
     primary: {
       main: '#efd71f',
       light: '#fff8bf',
@@ -42,17 +64,5 @@ export default {
   transition: {
     duration: '0.2s',
     timingFunction: 'ease-out',
-  },
-  appDrawer: {
-    width: {
-      mobile: {
-        open: '90vw',
-        closed: '0',
-      },
-      desktop: {
-        open: '240px',
-        closed: '0',
-      },
-    },
   },
 };

@@ -1,10 +1,17 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
+  html {
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     font-family: ${({ theme }) => theme.typography.base.fontFamily};
     color: ${({ theme }) => theme.palette.typography.light};
     background-color: #1A1A1A;
+    min-height: 100vh;
+    font-size: 14pt;
   }
 
   h1, h2, h3, h4, h5, h6 {

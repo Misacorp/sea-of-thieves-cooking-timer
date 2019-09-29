@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
+import { ReactComponent as BackIcon } from '../assets/icons/home.svg';
 import { ROOT } from '../types/routes';
 
 const HeaderContent = ({ className }) => {
   return (
     <div className={className}>
       <Link to={ROOT}>
-        <h1>Cooking Timer</h1>
+        <BackIcon fill="white" />
       </Link>
     </div>
   );
@@ -19,14 +21,17 @@ HeaderContent.propTypes = {
 };
 
 const Header = styled(HeaderContent)`
-  height: 50px;
-  background-color: ${({ theme }) => theme.palette.primary.main};
-  color: black;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
 
-  h1 {
+  ${Link} {
+    display: inline-block;
     margin: 0;
-    padding: 0.5rem 0.25rem;
-    text-align: center;
+    padding: 1rem;
+    box-sizing: border-box;
   }
 `;
 

@@ -11,7 +11,7 @@ import Main from './components/Main';
 
 WebFont.load({
   google: {
-    families: ['Montserrat:500,600,800', 'serif'],
+    families: ['Manjari:100,400,700', 'serif'],
   },
 });
 

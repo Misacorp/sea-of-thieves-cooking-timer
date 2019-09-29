@@ -20,13 +20,14 @@ LinkButtonBase.propTypes = {
 };
 
 const LinkButton = styled(LinkButtonBase)`
-  display: ${({ variant }) => (variant === 'inline' ? 'inline-block' : 'block')}
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  display: ${({ variant }) =>
+    variant === 'inline' ? 'inline-block' : 'block'};
+  background-color: ${({ theme }) => theme.palette.yellow[300]};
   color: ${({ theme }) => theme.palette.typography.dark};
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  margin-left: ${({ variant }) => (variant === 'inline' ? '0.5rem' : 'auto')}
-  margin-right: ${({ variant }) => (variant === 'inline' ? '0.5rem' : 'auto')}
+  margin-left: ${({ variant }) => (variant === 'inline' ? '0.5rem' : 'auto')};
+  margin-right: ${({ variant }) => (variant === 'inline' ? '0.5rem' : 'auto')};
   padding: 0.5rem 1rem;
   text-decoration: none;
 
