@@ -11,7 +11,7 @@ import { Redirect, Link } from 'react-router-dom';
 
 import { ROOM_CREATED } from './actions/actions';
 import ConnectionContext from './contexts/ConnectionContext';
-import Button from './Generic/Button';
+import Button from './Generic/Buttons/Button';
 import Divider from './Generic/Divider';
 import Input from './Generic/Input';
 import useComms from './hooks/useComms';
