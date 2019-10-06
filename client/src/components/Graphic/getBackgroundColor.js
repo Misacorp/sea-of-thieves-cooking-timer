@@ -15,7 +15,7 @@ const getBackgroundColor = (pathname, theme) => {
     case routes.OFFLINE:
       return '#725752';
     case routes.ONLINE_ROOT:
-      return '#96C0B7';
+      return theme.palette.blue[700];
     default:
       return '#D4DFC7';
   }

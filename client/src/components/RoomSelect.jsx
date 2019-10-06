@@ -7,13 +7,16 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
-import { ROOM_CREATED } from './actions/actions';
-import ConnectionContext from './contexts/ConnectionContext';
 import Button from './Generic/Buttons/Button';
 import Divider from './Generic/Divider';
 import Input from './Generic/Input';
+import LinkButton from './Generic/Buttons/LinkButton';
+import Row from './Generic/Containers/Row';
+
+import { ROOM_CREATED } from './actions/actions';
+import ConnectionContext from './contexts/ConnectionContext';
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 
@@ -130,14 +133,16 @@ const RoomSelectBase = ({ className }) => {
       />
 
       {nicknameIsValid() && (
-        <React.Fragment>
-          <Button
-            variant="main"
-            disabled={!nicknameIsValid()}
-            onClick={handleCreateRoom}
-          >
-            Create room
-          </Button>
+        <>
+          <Row center>
+            <Button
+              variant="inline"
+              disabled={!nicknameIsValid()}
+              onClick={handleCreateRoom}
+            >
+              Create crew
+            </Button>
+          </Row>
 
           <Divider>OR</Divider>
 
@@ -145,15 +150,20 @@ const RoomSelectBase = ({ className }) => {
             type="text"
             onChange={handleRoomCodeChange}
             value={roomCode}
-            placeholder="Room code"
-            aria-label="Room code"
+            placeholder="Crew code"
+            aria-label="Crew code"
           />
-          <Link to={`/online/${roomCode}`}>
-            <Button variant="main" disabled={!roomCodeIsValid()}>
-              Join room
-            </Button>
-          </Link>
-        </React.Fragment>
+
+          <Row center>
+            <LinkButton
+              to={`/online/${roomCode}`}
+              variant="inline"
+              disabled={!roomCodeIsValid()}
+            >
+              Join crew
+            </LinkButton>
+          </Row>
+        </>
       )}
     </div>
   );
