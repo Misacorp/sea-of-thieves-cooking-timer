@@ -57,7 +57,7 @@ export default {
       fontFamily: baseFonts.join(','),
     },
     title: {
-      fontFamily: ['Montserrat', ...baseFonts].join(','),
+      fontFamily: [...baseFonts].join(','),
     },
   },
   emoji: '🥥',

@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { ReactComponent as BackIcon } from '../assets/icons/home.svg';
 import { ROOT } from '../types/routes';
 
-const HeaderContent = ({ className }) => {
+const HeaderContent = ({ location, className }) => {
+  if (location.pathname === ROOT) {
+    return null;
+  }
+
   return (
     <div className={className}>
       <Link to={ROOT}>
@@ -17,6 +21,9 @@ const HeaderContent = ({ className }) => {
 };
 
 HeaderContent.propTypes = {
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
   className: PropTypes.string,
 };
 
@@ -25,7 +32,9 @@ const Header = styled(HeaderContent)`
   display: block;
   width: 100%;
   padding: 0;
-  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
 
   ${Link} {
     display: inline-block;
@@ -35,4 +44,4 @@ const Header = styled(HeaderContent)`
   }
 `;
 
-export default Header;
+export default withRouter(Header);

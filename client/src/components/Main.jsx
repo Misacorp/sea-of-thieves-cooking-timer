@@ -39,6 +39,7 @@ const Main = styled(MainStructure)`
   position: relative;
   height: 100%;
   width: 100%;
+  min-height: 100vh;
 `;
 
 export default Main;
