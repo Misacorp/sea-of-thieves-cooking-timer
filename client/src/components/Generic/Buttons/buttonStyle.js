@@ -1,6 +1,23 @@
-import { css } from 'styled-components';
+import { css, keyframes } from 'styled-components';
+
+const spring = keyframes`
+  0% {
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(.4,0,.4,1);
+  }
+  
+  50% {
+    transform: scale(1.15, 0.75) translateY(0.5rem);
+    animation-timing-function: cubic-bezier(0.4,0,.4,1);
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+  }
+`;
 
 export default css`
+  box-sizing: border-box;
   display: ${({ variant }) =>
     variant === 'inline' ? 'inline-block' : 'block'};
   margin-left: ${({ variant }) => (variant === 'inline' ? '0.5rem' : 'auto')};
@@ -19,6 +36,13 @@ export default css`
   font-size: 1.5rem;
   letter-spacing: 0.08em;
   line-height: 1em;
+  transition-property: background-color border-color;
+  transition-duration: ${({ theme }) => theme.transition.duration};
+  transition-timing-function: ${({ theme }) => theme.transition.timingFunction};
+
+  border-width: 4px;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.palette.yellow[300]};
 
   background-color: ${({ theme }) => theme.palette.yellow[300]};
   color: ${({ theme }) => theme.palette.blue[700]};
@@ -26,5 +50,20 @@ export default css`
   &:disabled {
     background-color: ${({ theme }) => theme.palette.disabled.main};
     pointer-events: none;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: ${({ theme }) => theme.palette.yellow[300]};
+    border-color: ${({ theme }) => theme.palette.yellow[500]};
+  }
+
+  &:focus,
+  &:active {
+    animation-name: ${spring};
+    animation-iteration-count: 1;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;
+    outline: none;
   }
 `;
