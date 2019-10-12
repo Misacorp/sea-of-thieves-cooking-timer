@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -19,8 +19,10 @@ const InputStructure = ({
   className,
 }) => {
   const [focused, setFocused] = useState(false);
+  const inputRef = createRef();
 
   const handleFocus = isFocused => () => {
+    inputRef.current.scrollIntoView();
     setFocused(isFocused);
   };
 
@@ -39,6 +41,7 @@ const InputStructure = ({
         required={required}
         onFocus={handleFocus(true)}
         onBlur={handleFocus(false)}
+        ref={inputRef}
       />
       <InputBottomBorder />
     </div>
