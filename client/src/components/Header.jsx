@@ -29,8 +29,7 @@ HeaderContent.propTypes = {
 
 const Header = styled(HeaderContent)`
   background-color: transparent;
-  display: block;
-  width: 100%;
+  display: inline-block;
   padding: 0;
   position: absolute;
   top: 0;

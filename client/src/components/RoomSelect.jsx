@@ -11,7 +11,7 @@ import { Redirect } from 'react-router-dom';
 
 import Button from './Generic/Buttons/Button';
 import Divider from './Generic/Divider';
-import Input from './Generic/Input';
+import Input from './Generic/Input/Input';
 import LinkButton from './Generic/Buttons/LinkButton';
 import Row from './Generic/Containers/Row';
 
@@ -122,15 +122,18 @@ const RoomSelectBase = ({ className }) => {
   // Otherwise display the Room Select form
   return (
     <div className={className}>
-      <Input
-        type="text"
-        onChange={handleNicknameChange}
-        value={nickname}
-        placeholder="My name is..."
-        aria-label="Nickname"
-        aria-required="true"
-        style={{ marginBottom: '4rem' }}
-      />
+      <Row center>
+        <Input
+          id="nickname"
+          name="nickname"
+          onChange={handleNicknameChange}
+          value={nickname}
+          placeholder="My name is..."
+          required
+          label="Nickname"
+          variant="inline"
+        />
+      </Row>
 
       {nicknameIsValid() && (
         <>
@@ -146,13 +149,17 @@ const RoomSelectBase = ({ className }) => {
 
           <Divider>OR</Divider>
 
-          <Input
-            type="text"
-            onChange={handleRoomCodeChange}
-            value={roomCode}
-            placeholder="Crew code"
-            aria-label="Crew code"
-          />
+          <Row center>
+            <Input
+              id="crew_code"
+              name="crew_code"
+              onChange={handleRoomCodeChange}
+              value={roomCode}
+              placeholder="Crew code"
+              label="Crew code"
+              variant="inline"
+            />
+          </Row>
 
           <Row center>
             <LinkButton
@@ -173,6 +180,15 @@ RoomSelectBase.propTypes = {
   className: PropTypes.string,
 };
 
-const RoomSelect = styled(RoomSelectBase)``;
+const RoomSelect = styled(RoomSelectBase)`
+  position: absolute;
+  bottom: 3rem;
+  left: 0;
+  right: 0;
+
+  ${Input} {
+    max-width: 300px;
+  }
+`;
 
 export default RoomSelect;
