@@ -21,6 +21,7 @@ import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 
 import { ONLINE_ROOT } from '../types/routes';
+import { NICKNAME_MAX_LENGTH } from '../constants/config';
 
 const roomCodeLength = 4;
 
@@ -41,12 +42,14 @@ const RoomSelectBase = ({ className }) => {
   } = useContext(ConnectionContext);
 
   /**
-   * Allow the user to set a nickname
+   * Allow the user to set a nickname.
+   * A maximum length is enforced.
    */
-
   const handleNicknameChange = event => {
     const newName = event.target.value;
-    setNickname(newName);
+    if (newName.length < NICKNAME_MAX_LENGTH) {
+      setNickname(newName);
+    }
   };
 
   /**
@@ -57,7 +60,7 @@ const RoomSelectBase = ({ className }) => {
     return (
       typeof nickname === 'string' &&
       nickname.length >= 3 &&
-      nickname.length <= 32
+      nickname.length <= NICKNAME_MAX_LENGTH
     );
   };
 
