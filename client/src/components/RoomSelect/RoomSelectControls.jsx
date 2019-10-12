@@ -10,20 +10,20 @@ import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
 import ls from 'local-storage';
 
-import Button from './Generic/Buttons/Button';
-import Input from './Generic/Input/Input';
-import LinkButton from './Generic/Buttons/LinkButton';
-import Row from './Generic/Containers/Row';
-import AdjacentRadioGroup from './Generic/Radio/AdjacentRadioGroup';
-import Radio from './Generic/Radio/Radio';
+import Button from '../Generic/Buttons/Button';
+import Input from '../Generic/Input/Input';
+import LinkButton from '../Generic/Buttons/LinkButton';
+import Row from '../Generic/Containers/Row';
+import AdjacentRadioGroup from '../Generic/Radio/AdjacentRadioGroup';
+import Radio from '../Generic/Radio/Radio';
 
-import { ROOM_CREATED } from './actions/actions';
-import ConnectionContext from './contexts/ConnectionContext';
-import useComms from './hooks/useComms';
-import useSubscription from './hooks/useSubscription';
+import { ROOM_CREATED } from '../actions/actions';
+import ConnectionContext from '../contexts/ConnectionContext';
+import useComms from '../hooks/useComms';
+import useSubscription from '../hooks/useSubscription';
 
-import { ONLINE_ROOT } from '../types/routes';
-import { NICKNAME_MAX_LENGTH, ROOM_CODE_LENGTH } from '../constants/config';
+import { ONLINE_ROOT } from '../../types/routes';
+import { NICKNAME_MAX_LENGTH, ROOM_CODE_LENGTH } from '../../constants/config';
 
 const lsKey = 'crewAction';
 
@@ -35,7 +35,7 @@ const lsKey = 'crewAction';
  *   - Enter a room code
  *   - Join that room
  */
-const RoomSelectBase = ({ className }) => {
+const RoomSelectControlsStructure = ({ className }) => {
   const {
     nickname,
     setNickname,
@@ -138,8 +138,6 @@ const RoomSelectBase = ({ className }) => {
   if (status === 'ROOM_ACTIVE') {
     return <Redirect to={`${ONLINE_ROOT}/${activeRoomCode}`} />;
   }
-
-  // Otherwise display the Room Select form
   return (
     <div className={className}>
       <Row center>
@@ -215,11 +213,7 @@ const RoomSelectBase = ({ className }) => {
   );
 };
 
-RoomSelectBase.propTypes = {
-  className: PropTypes.string,
-};
-
-const RoomSelect = styled(RoomSelectBase)`
+const RoomSelectControls = styled(RoomSelectControlsStructure)`
   position: absolute;
   bottom: 3rem;
   left: 0;
@@ -237,4 +231,8 @@ const RoomSelect = styled(RoomSelectBase)`
   }
 `;
 
-export default RoomSelect;
+RoomSelectControlsStructure.propTypes = {
+  className: PropTypes.string,
+};
+
+export default RoomSelectControls;

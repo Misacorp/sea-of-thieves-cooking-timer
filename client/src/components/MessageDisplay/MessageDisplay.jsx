@@ -9,9 +9,9 @@ import {
   NONEXISTANT_ROOM,
   TIMER_SYNC,
   GENERIC_MESSAGE,
-  INT_CONNECTION_DROPPED,
-  INT_CONNECTION_ESTABLISHED,
-  INT_CONNECTION_REESTABLISHED,
+  // INT_CONNECTION_DROPPED,
+  // INT_CONNECTION_ESTABLISHED,
+  // INT_CONNECTION_REESTABLISHED,
 } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import SingleMessage from './SingleMessage';
@@ -63,15 +63,15 @@ const MessageDisplayBase = ({ className }) => {
     [GENERIC_MESSAGE]: data => {
       handleMessage(data);
     },
-    [INT_CONNECTION_DROPPED]: data => {
-      handleMessage(data);
-    },
-    [INT_CONNECTION_ESTABLISHED]: data => {
-      handleMessage(data);
-    },
-    [INT_CONNECTION_REESTABLISHED]: data => {
-      handleMessage(data);
-    },
+    // [INT_CONNECTION_DROPPED]: data => {
+    //   handleMessage(data);
+    // },
+    // [INT_CONNECTION_ESTABLISHED]: data => {
+    //   handleMessage(data);
+    // },
+    // [INT_CONNECTION_REESTABLISHED]: data => {
+    //   handleMessage(data);
+    // },
   });
   // Subscribe to the events above.
   useSubscription(subscriptionSettings.current);

@@ -34,6 +34,7 @@ const Header = styled(HeaderContent)`
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 9;
 
   ${Link} {
     display: inline-block;

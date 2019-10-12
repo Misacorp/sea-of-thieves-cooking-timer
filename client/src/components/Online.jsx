@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import { uniqueNamesGenerator } from 'unique-names-generator';
 
 import ConnectionContext from './contexts/ConnectionContext';
-import RoomSelect from './RoomSelect';
+import RoomSelect from './RoomSelect/RoomSelect';
 import OnlineRoom from './OnlineRoom';
 import { createSocket, startListening } from '../services/socketHandler';
 import * as routes from '../types/routes';
