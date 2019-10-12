@@ -7,6 +7,7 @@ import { ONLINE_ROOT, OFFLINE } from '../../types/routes';
 import LinkButton from '../Generic/Buttons/LinkButton';
 import Radio from '../Generic/Radio/Radio';
 import Row from '../Generic/Containers/Row';
+import AdjacentRadioGroup from '../Generic/Radio/AdjacentRadioGroup';
 
 const lsKey = 'crewType';
 
@@ -32,20 +33,22 @@ const WelcomeStructure = ({ className }) => {
   return (
     <div className={className}>
       <Row center>
-        <Radio
-          align="right"
-          label={options[0]}
-          group="How would you like to cook?"
-          checked={selected === options[0]}
-          onChange={handleChange(0)}
-        />
-        <Radio
-          align="left"
-          label={options[1]}
-          group="How would you like to cook?"
-          checked={selected === options[1]}
-          onChange={handleChange(1)}
-        />
+        <AdjacentRadioGroup>
+          <Radio
+            align="right"
+            label={options[0]}
+            group="How would you like to cook?"
+            checked={selected === options[0]}
+            onChange={handleChange(0)}
+          />
+          <Radio
+            align="left"
+            label={options[1]}
+            group="How would you like to cook?"
+            checked={selected === options[1]}
+            onChange={handleChange(1)}
+          />
+        </AdjacentRadioGroup>
       </Row>
 
       <Row center>

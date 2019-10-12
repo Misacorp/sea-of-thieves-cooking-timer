@@ -8,12 +8,14 @@ import React, {
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
+import ls from 'local-storage';
 
 import Button from './Generic/Buttons/Button';
-import Divider from './Generic/Divider';
 import Input from './Generic/Input/Input';
 import LinkButton from './Generic/Buttons/LinkButton';
 import Row from './Generic/Containers/Row';
+import AdjacentRadioGroup from './Generic/Radio/AdjacentRadioGroup';
+import Radio from './Generic/Radio/Radio';
 
 import { ROOM_CREATED } from './actions/actions';
 import ConnectionContext from './contexts/ConnectionContext';
@@ -21,9 +23,9 @@ import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 
 import { ONLINE_ROOT } from '../types/routes';
-import { NICKNAME_MAX_LENGTH } from '../constants/config';
+import { NICKNAME_MAX_LENGTH, ROOM_CODE_LENGTH } from '../constants/config';
 
-const roomCodeLength = 4;
+const lsKey = 'crewAction';
 
 /**
  * Displays a form where a user can
@@ -40,6 +42,21 @@ const RoomSelectBase = ({ className }) => {
     activeRoomCode,
     setActiveRoomCode,
   } = useContext(ConnectionContext);
+
+  // Radio options
+  const options = ['Create', 'Join'];
+  const savedSelection = ls.get(lsKey);
+  const defaultSelection = options[savedSelection || 0];
+  const [selectedAction, selectAction] = useState(defaultSelection);
+
+  // Handle change of radio input.
+  const handleChange = useCallback(
+    newIndex => () => {
+      selectAction(options[newIndex]);
+      ls.set(lsKey, newIndex);
+    },
+    [selectAction, options],
+  );
 
   /**
    * Allow the user to set a nickname.
@@ -72,7 +89,7 @@ const RoomSelectBase = ({ className }) => {
     let newRoomCode = event.target.value;
 
     // Limit room code length
-    if (newRoomCode.length <= roomCodeLength) {
+    if (newRoomCode.length <= ROOM_CODE_LENGTH) {
       newRoomCode = newRoomCode.toUpperCase();
       setRoomCode(newRoomCode);
     }
@@ -84,7 +101,7 @@ const RoomSelectBase = ({ className }) => {
   const roomCodeIsValid = useCallback(
     roomCodeParam => {
       const roomCodeToCheck = roomCodeParam || roomCode;
-      return roomCodeToCheck.length === roomCodeLength;
+      return roomCodeToCheck.length === ROOM_CODE_LENGTH;
     },
     [roomCode],
   );
@@ -141,37 +158,56 @@ const RoomSelectBase = ({ className }) => {
       {nicknameIsValid() && (
         <>
           <Row center>
-            <Button
-              variant="inline"
-              disabled={!nicknameIsValid()}
-              onClick={handleCreateRoom}
-            >
-              Create crew
-            </Button>
+            <AdjacentRadioGroup>
+              <Radio
+                align="right"
+                label={options[0]}
+                group="Create or join a crew?"
+                checked={selectedAction === options[0]}
+                onChange={handleChange(0)}
+              />
+              <Radio
+                align="left"
+                label={options[1]}
+                group="Create or join a crew?"
+                checked={selectedAction === options[1]}
+                onChange={handleChange(1)}
+              />
+            </AdjacentRadioGroup>
           </Row>
 
-          <Divider>OR</Divider>
+          {selectedAction === options[1] && (
+            <Row center>
+              <Input
+                id="crew_code"
+                name="crew_code"
+                onChange={handleRoomCodeChange}
+                value={roomCode}
+                placeholder="Crew code"
+                label="Crew code"
+                variant="inline"
+              />
+            </Row>
+          )}
 
           <Row center>
-            <Input
-              id="crew_code"
-              name="crew_code"
-              onChange={handleRoomCodeChange}
-              value={roomCode}
-              placeholder="Crew code"
-              label="Crew code"
-              variant="inline"
-            />
-          </Row>
-
-          <Row center>
-            <LinkButton
-              to={`/online/${roomCode}`}
-              variant="inline"
-              disabled={!roomCodeIsValid()}
-            >
-              Join crew
-            </LinkButton>
+            {selectedAction === options[1] ? (
+              <LinkButton
+                to={`/online/${roomCode}`}
+                variant="inline"
+                disabled={!roomCodeIsValid()}
+              >
+                Go
+              </LinkButton>
+            ) : (
+              <Button
+                variant="inline"
+                disabled={!nicknameIsValid()}
+                onClick={handleCreateRoom}
+              >
+                Go
+              </Button>
+            )}
           </Row>
         </>
       )}
@@ -191,6 +227,13 @@ const RoomSelect = styled(RoomSelectBase)`
 
   ${Input} {
     max-width: 300px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  ${LinkButton}, ${Button} {
+    padding-left: 5rem;
+    padding-right: 5rem;
   }
 `;
 
