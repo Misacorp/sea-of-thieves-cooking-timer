@@ -19,8 +19,7 @@ AppControlsContent.propTypes = {
 
 const AppControls = styled(AppControlsContent)`
   height: 30px;
-  background-color: #efd71f;
-  color: black;
+  color: ${({ theme }) => theme.palette.typography.light};
 
   position: absolute;
   bottom: 0;

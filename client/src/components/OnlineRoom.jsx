@@ -21,27 +21,25 @@ import {
 import useComms from './hooks/useComms';
 import useSubscription from './hooks/useSubscription';
 import ConnectionContext from './contexts/ConnectionContext';
-import { set as saveToLocalStorage } from '../services/localStorageHandler';
 
 const OnlineRoom = props => {
-  const { joinRoom } = useComms();
   const { nickname, activeRoomCode, setActiveRoomCode } = useContext(
     ConnectionContext,
   );
+  const { joinRoom } = useComms();
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, NO_NICKNAME, READY
   const nicknameValid = nickname && nickname.length > 0;
+
+  console.log(nickname);
 
   const attemptToJoin = useCallback(
     code => {
       if (nicknameValid) {
-        // Save valid nickname to localstorage in case of client disconnects
-        saveToLocalStorage({ nickname });
-
         console.log(`Joining room ${code}`);
         joinRoom(code, nickname);
       } else {
         // Don't join if no nickname is set
-        console.log(`Can't join room. Nickname is not set.`);
+        console.log(`Can't join room. Nickname is not set.`, nickname);
         setStatus('NO_NICKNAME');
       }
     },
@@ -103,7 +101,7 @@ const OnlineRoom = props => {
     attemptToJoin(roomCode);
   }, [attemptToJoin, roomCode]);
 
-  console.log(`OnlineRoom rendering time. Status is ${status}`);
+  // console.log(`OnlineRoom rendering time. Status is ${status}`);
 
   if (status === 'INIT') {
     return <p>Joining room...</p>;

@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useContext,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Redirect } from 'react-router-dom';
 import ls from 'local-storage';
 
 import Button from '../Generic/Buttons/Button';
@@ -17,12 +10,12 @@ import Row from '../Generic/Containers/Row';
 import AdjacentRadioGroup from '../Generic/Radio/AdjacentRadioGroup';
 import Radio from '../Generic/Radio/Radio';
 
-import { ROOM_CREATED } from '../actions/actions';
 import ConnectionContext from '../contexts/ConnectionContext';
 import useComms from '../hooks/useComms';
-import useSubscription from '../hooks/useSubscription';
+import { set as saveToLocalStorage } from '../../services/localStorageHandler';
+import nicknameIsValid from './validateNickname';
+import roomCodeIsValid from './validateRoomCode';
 
-import { ONLINE_ROOT } from '../../types/routes';
 import { NICKNAME_MAX_LENGTH, ROOM_CODE_LENGTH } from '../../constants/config';
 
 const lsKey = 'crewAction';
@@ -36,12 +29,7 @@ const lsKey = 'crewAction';
  *   - Join that room
  */
 const RoomSelectControlsStructure = ({ className }) => {
-  const {
-    nickname,
-    setNickname,
-    activeRoomCode,
-    setActiveRoomCode,
-  } = useContext(ConnectionContext);
+  const { nickname, setNickname } = useContext(ConnectionContext);
 
   // Radio options
   const options = ['Create', 'Join'];
@@ -64,21 +52,14 @@ const RoomSelectControlsStructure = ({ className }) => {
    */
   const handleNicknameChange = event => {
     const newName = event.target.value;
-    if (newName.length < NICKNAME_MAX_LENGTH) {
+    if (newName.length <= NICKNAME_MAX_LENGTH) {
       setNickname(newName);
-    }
-  };
 
-  /**
-   * Validates a nickname.
-   * Used before creating or joining a room.
-   */
-  const nicknameIsValid = () => {
-    return (
-      typeof nickname === 'string' &&
-      nickname.length >= 3 &&
-      nickname.length <= NICKNAME_MAX_LENGTH
-    );
+      if (nicknameIsValid(newName)) {
+        // Save valid nickname to localstorage in case of client disconnects
+        saveToLocalStorage({ nickname: newName });
+      }
+    }
   };
 
   /**
@@ -95,17 +76,6 @@ const RoomSelectControlsStructure = ({ className }) => {
     }
   };
 
-  /**
-   * Validate roomCode.
-   */
-  const roomCodeIsValid = useCallback(
-    roomCodeParam => {
-      const roomCodeToCheck = roomCodeParam || roomCode;
-      return roomCodeToCheck.length === ROOM_CODE_LENGTH;
-    },
-    [roomCode],
-  );
-
   // Use our custom useComms hook to communicate with the server.
   const { createRoom } = useComms();
 
@@ -113,31 +83,11 @@ const RoomSelectControlsStructure = ({ className }) => {
    * Pass create room event to its action handler.
    */
   const handleCreateRoom = () => {
-    if (nicknameIsValid()) {
+    if (nicknameIsValid(nickname)) {
       createRoom(nickname);
     }
   };
 
-  // Subscribe to relevant events.
-  const subscriptionSettings = useRef({
-    [ROOM_CREATED]: createdRoomCode => {
-      setActiveRoomCode(createdRoomCode);
-    },
-  });
-  // Subscribe to the events above.
-  useSubscription(subscriptionSettings.current);
-
-  // If there is an active room code, redirect the user to an OnlineRoom component.
-  const [status, setStatus] = useState('INIT');
-  useEffect(() => {
-    if (activeRoomCode && roomCodeIsValid(activeRoomCode)) {
-      setStatus('ROOM_ACTIVE');
-    }
-  }, [activeRoomCode, roomCodeIsValid]);
-
-  if (status === 'ROOM_ACTIVE') {
-    return <Redirect to={`${ONLINE_ROOT}/${activeRoomCode}`} />;
-  }
   return (
     <div className={className}>
       <Row center>
@@ -153,7 +103,7 @@ const RoomSelectControlsStructure = ({ className }) => {
         />
       </Row>
 
-      {nicknameIsValid() && (
+      {nicknameIsValid(nickname) && (
         <>
           <Row center>
             <AdjacentRadioGroup>
@@ -193,14 +143,14 @@ const RoomSelectControlsStructure = ({ className }) => {
               <LinkButton
                 to={`/online/${roomCode}`}
                 variant="inline"
-                disabled={!roomCodeIsValid()}
+                disabled={!roomCodeIsValid(roomCode)}
               >
                 Go
               </LinkButton>
             ) : (
               <Button
                 variant="inline"
-                disabled={!nicknameIsValid()}
+                disabled={!nicknameIsValid(nickname)}
                 onClick={handleCreateRoom}
               >
                 Go
