@@ -8,18 +8,8 @@ import OnlineRoom from './OnlineRoom';
 import AppControls from './AppControls';
 import OnlineIndicator from './OnlineIndicator';
 
-// import { ConnectionContextContainer } from './contexts/ConnectionContext';
 import * as routes from '../types/routes';
-// import { get as getFromLocalStorage } from '../services/localStorageHandler';
-
-/**
- * Auto-populate fields in development for faster testing
- */
-// const useDebugValues = false;
-// let initialNickname = getFromLocalStorage('nickname') || '';
-// if (process.env.NODE_ENV === 'development' && useDebugValues) {
-//   initialNickname = uniqueNamesGenerator('-', true);
-// }
+import useConnection from './hooks/useConnection';
 
 /**
  * User has selected to go Online. This component handles things from there on:
@@ -27,8 +17,13 @@ import * as routes from '../types/routes';
  * - Create or join room
  */
 const Online = () => {
+  // Connect to server
+  const { connect, socket } = useConnection();
+  console.log('Connecting...');
+  connect();
+  if (socket) console.log('Connected', socket);
+
   return (
-    // <ConnectionContextContainer>
     <>
       <AnimatedSwitch>
         <Route
@@ -42,7 +37,6 @@ const Online = () => {
         <OnlineIndicator />
       </AppControls>
     </>
-    // </ConnectionContextContainer>
   );
 };
 

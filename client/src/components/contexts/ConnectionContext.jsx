@@ -1,14 +1,12 @@
-import React, { useState, createContext, useRef, useEffect } from 'react';
+import React, { useState, createContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { createSocket, startListening } from '../../services/socketHandler';
 import connectionPoller from '../../services/connectionPoller';
-// import { get as getFromLocalStorage } from '../../services/localStorageHandler';
+import { get as getFromLocalStorage } from '../../services/localStorageHandler';
 
 const ConnectionContext = createContext();
-
-// const initialNickname = getFromLocalStorage('nickname') || '';
-const initialNickname = '';
+const initialNickname = getFromLocalStorage('nickname') || '';
 
 /**
  * Contains values and functions required in connecting to a server.
@@ -16,37 +14,33 @@ const initialNickname = '';
 const ConnectionContextContainer = ({ children }) => {
   const [activeRoomCode, setActiveRoomCode] = useState();
   const [nickname, setNickname] = useState(initialNickname);
+  const [socket, setSocket] = useState();
 
-  // If no socket has been set, create a new one.
-  // We add this directly to the socket ref to prevent unnecessary changes to it in the future.
-  const socket = useRef();
-  if (socket.current === undefined) {
-    console.log('No socket set. Creating!');
-    socket.current = createSocket();
+  /**
+   * Creates a socket and connects to the server.
+   */
+  const connect = () => {
+    if (!socket) {
+      // Create a socket
+      const createdSocket = createSocket();
+      startListening(createdSocket);
 
-    // Initialize event listeners on the socket.
-    startListening(socket.current);
+      // Start polling for changes in connectivity
+      const poller = connectionPoller();
+      poller.init(createdSocket);
 
-    // Start polling for changes in connectivity
-    const poller = connectionPoller();
-    poller.init(socket.current);
-  }
+      setSocket(createdSocket);
+    }
+  };
 
   const connection = {
-    socket: socket.current,
+    connect,
+    socket,
     nickname,
     setNickname,
     activeRoomCode,
     setActiveRoomCode,
   };
-
-  useEffect(() => {
-    console.log(`>> activeRoomCode changed to ${activeRoomCode}`);
-  }, [activeRoomCode]);
-
-  useEffect(() => {
-    console.log(`>> nickname changed to ${nickname}`);
-  }, [nickname]);
 
   return (
     <ConnectionContext.Provider value={connection}>

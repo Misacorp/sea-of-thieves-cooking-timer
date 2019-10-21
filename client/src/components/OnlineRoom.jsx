@@ -30,8 +30,6 @@ const OnlineRoom = props => {
   const [status, setStatus] = useState('INIT'); // INIT, NONEXISTANT_ROOM, NO_NICKNAME, READY
   const nicknameValid = nickname && nickname.length > 0;
 
-  console.log(nickname);
-
   const attemptToJoin = useCallback(
     code => {
       if (nicknameValid) {

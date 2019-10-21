@@ -8,6 +8,7 @@ import theme from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 
 import Main from './components/Main';
+import { ConnectionContextContainer } from './components/contexts/ConnectionContext';
 
 WebFont.load({
   google: {
@@ -21,16 +22,20 @@ const prodBasename = '/sea-of-thieves-cooking-timer';
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <>
-        <GlobalStyles />
-        <BrowserRouter
-          basename={
-            process.env.NODE_ENV === 'development' ? devBasename : prodBasename
-          }
-        >
-          <Main />
-        </BrowserRouter>
-      </>
+      <ConnectionContextContainer>
+        <>
+          <GlobalStyles />
+          <BrowserRouter
+            basename={
+              process.env.NODE_ENV === 'development'
+                ? devBasename
+                : prodBasename
+            }
+          >
+            <Main />
+          </BrowserRouter>
+        </>
+      </ConnectionContextContainer>
     </ThemeProvider>
   );
 }

@@ -3,6 +3,9 @@ import uuid from 'uuid/v4';
 import * as actions from '../components/actions/actions';
 import { publish } from '../components/MessageCenter';
 
+/**
+ * Creates a socket object.
+ */
 const createSocket = () => {
   // Connect to the socket
   const serverUrl =

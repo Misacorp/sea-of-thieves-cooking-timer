@@ -1,6 +1,6 @@
-import { useContext, useCallback } from 'react';
+import { useCallback } from 'react';
 
-import ConnectionContext from '../contexts/ConnectionContext';
+import useConnection from './useConnection';
 import * as actions from '../actions/actions';
 
 /**
@@ -10,10 +10,18 @@ import * as actions from '../actions/actions';
  */
 const useComms = () => {
   // Get the socket from our context
-  const { socket } = useContext(ConnectionContext);
-  if (!socket) {
-    throw new Error('Socket not defined');
-  }
+  const { socket } = useConnection();
+
+  const trySocketAction = useCallback(
+    action => {
+      if (socket) {
+        action();
+      } else {
+        console.warn('No socket');
+      }
+    },
+    [socket],
+  );
 
   /**
    * Starts a timer with the given id and food.
@@ -21,11 +29,11 @@ const useComms = () => {
    * @param {string} food Food indicating timer duration.
    */
   const start = (id, food) => () => {
-    socket.emit(actions.START, { id, food });
+    trySocketAction(() => socket.emit(actions.START, { id, food }));
   };
 
   const reset = id => () => {
-    socket.emit(actions.RESET, { id });
+    trySocketAction(() => socket.emit(actions.RESET, { id }));
   };
 
   /**
@@ -33,29 +41,18 @@ const useComms = () => {
    * @param {string} roomCode Room to join.
    * @param {string} nickname Client nickname
    */
-  const joinRoom = useCallback(
-    (roomCode, nickname) => {
-      socket.emit(actions.JOIN_ROOM, { roomCode, nickname });
-    },
-    [socket],
-  );
-
+  const joinRoom = (roomCode, nickname) =>
+    trySocketAction(() =>
+      socket.emit(actions.JOIN_ROOM, { roomCode, nickname }),
+    );
   /**
    * Creates a new room.
    */
-  const createRoom = useCallback(
-    nickname => {
-      if (socket) {
-        socket.emit(actions.CREATE_ROOM, { nickname });
-      } else {
-        console.log('No socket!', socket);
-      }
-    },
-    [socket],
-  );
+  const createRoom = nickname =>
+    trySocketAction(() => socket.emit(actions.CREATE_ROOM, { nickname }));
 
   const requestTimers = () => {
-    socket.emit(actions.REQUEST_TIMERS);
+    trySocketAction(() => socket.emit(actions.REQUEST_TIMERS));
   };
 
   return { start, reset, createRoom, joinRoom, requestTimers };

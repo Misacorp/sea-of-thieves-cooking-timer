@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
@@ -9,10 +9,10 @@ import {
   PAGE_TRANSITION_DURATION,
 } from '../../constants/config';
 import { ONLINE_ROOT } from '../../types/routes';
-import ConnectionContext from '../contexts/ConnectionContext';
 import { ROOM_CREATED } from '../actions/actions';
 import useSubscription from '../hooks/useSubscription';
 import roomCodeIsValid from './validateRoomCode';
+import useConnection from '../hooks/useConnection';
 
 import RoomSelectControls from './RoomSelectControls';
 
@@ -20,7 +20,7 @@ import RoomSelectControls from './RoomSelectControls';
  * Room Select page.
  */
 const RoomSelectBase = ({ className }) => {
-  const { activeRoomCode, setActiveRoomCode } = useContext(ConnectionContext);
+  const { activeRoomCode, setActiveRoomCode } = useConnection();
 
   // Subscribe to an event stating a room has been created.
   const subscriptionSettings = useRef({
